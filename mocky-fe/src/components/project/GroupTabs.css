@@ -1,0 +1,36 @@
+.group-tabs {
+  width: 100%;
+  display: flex;
+  border-bottom: 1px solid #e8e8e8;
+  margin-top: 15px;
+}
+.group-tabs .tabs-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 0 0 10px;
+  margin: 0;
+  list-style: none;
+}
+.group-tabs .tabs-item {
+  margin: 5px 10px -1px 0;
+  padding: 5px 10px;
+  border: 1px solid #e8e8e8;
+  border-bottom: 0;
+  border-radius: 5px 5px 0 0;
+  background: #efefef;
+}
+.group-tabs .tabs-item.active {
+  background: #fff;
+}
+.group-tabs .tabs-item span,
+.group-tabs .tabs-item i {
+  margin-right: 6px;
+  cursor: pointer;
+}
+.group-tabs .tabs-item i:last-child {
+  margin: 0;
+}
+.group-tabs .new-tab {
+  padding: 10px 0 10px 20px;
+  white-space: nowrap;
+}

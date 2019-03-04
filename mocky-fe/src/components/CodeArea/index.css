@@ -1,0 +1,9 @@
+.code-area {
+  position: relative;
+  padding: 10px 0 0 0;
+}
+.code-area p {
+  position: absolute;
+  top: -22px;
+  left: 0;
+}

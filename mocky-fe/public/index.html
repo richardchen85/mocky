@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="theme-color" content="#000000" />
+<title>mocky - 前端数据 mock 平台</title>
+<% if (process.env.NODE_ENV === 'development') { %>
+  <script>
+    window.__DEV__ = true;
+  </script>
+<% } %>
+</head>
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <% if (process.env.NODE_ENV !== 'development') { %>
+  <script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?17e287a7e9c4cb6340915f387428399f";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+  </script>
+  <% } %>
+</body>
+</html>

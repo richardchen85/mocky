@@ -1,0 +1,58 @@
+.project-interfaces {
+  padding: 15px 0;
+  display: flex;
+}
+
+.project-interfaces .interface-sidebar {
+  width: 250px;
+}
+.project-interfaces .interface-item {
+  position: relative;
+  padding: 5px 10px;
+  margin: 0 0 10px 0;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  font-size: 0;
+}
+.project-interfaces .interface-item.active {
+  border-color: #e8e8e8;
+}
+.project-interfaces .interface-item span {
+  display: inline-block;
+  width: 190px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.project-interfaces .interface-item span,
+.project-interfaces .interface-item i {
+  cursor: pointer;
+  font-size: 12px;
+}
+.project-interfaces .interface-item .btns {
+  position: absolute;
+  top: 8px;
+  right: 5px;
+}
+.project-interfaces .interface-item .btns i {
+  margin-left: 8px;
+}
+.project-interfaces .new-interface {
+  padding-left: 10px;
+}
+
+.project-interfaces .interface-detail {
+  margin-left: 20px;
+}
+
+.project-interfaces .interface-info dt {
+  margin-bottom: 5px;
+}
+.project-interfaces .interface-info dd {
+  margin: 0;
+}
+
+
+.project-interfaces .mock-list {
+  width: 600px;
+}

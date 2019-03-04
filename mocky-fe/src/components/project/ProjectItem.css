@@ -1,0 +1,41 @@
+.project-item {
+  position: relative;
+  width: 250px;
+  height: 200px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  margin: 0 15px 15px 0;
+  transition: all .2s;
+}
+.project-item:hover {
+  box-shadow: 2px 2px 10px rgba(0,0,0,.2);
+}
+.project-item .project-name span {
+  margin-left: 5px;
+}
+.project-item .project-desc {
+  font-size: 12px;
+  color: #666;
+}
+.project-item .project-create {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0 15px 15px 0;
+  text-align: right;
+  font-size: 12px;
+  color: #999;
+}
+.project-item .project-ctrl {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: none;
+}
+.project-item:hover .project-ctrl {
+  display: block;
+}
+.project-item .project-ctrl i {
+  margin-left: 10px;
+  cursor: pointer;
+}
