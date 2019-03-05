@@ -45,7 +45,7 @@ class BaseService extends Service {
     return result.affectedRows === 1 ? result.insertId : 0;
   }
 
-  async deleteById(id) {
+  async delete(id) {
     const result = await this.app.mysql.delete(this.tableName, { id });
     return result.affectedRows === 1;
   }

@@ -17,13 +17,7 @@ class DataViewController extends Controller {
       url: params[1],
     };
 
-    try {
-      this.ctx.validate(validateRule, param);
-    } catch (e) {
-      logger.error(e.errors);
-      this.fail(messages.common.paramError);
-      return;
-    }
+    if (!this.isValid(validateRule, param)) return;
 
     if (!param.url.startsWith('/')) {
       param.url = '/' + param.url;

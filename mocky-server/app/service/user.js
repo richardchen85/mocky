@@ -40,10 +40,6 @@ class UserService extends BaseService {
     return await super.insert(user);
   }
 
-  async delete(param) {
-    return await super.deleteLogic(param);
-  }
-
   async update(user) {
     // 如果要更改密码，先加密
     if (user.password) {

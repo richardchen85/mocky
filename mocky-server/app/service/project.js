@@ -110,10 +110,17 @@ module.exports = class ProjectService extends BaseService {
     return this.app.mysql.query(sql, [ user_id ]);
   }
 
-  isOwner(project_id, user_id) {
-    return super.get({
-      id: project_id,
-      user_id,
-    });
+  async ownerOrMember(project_id, user_id) {
+    const memberTableName = this.ctx.service.member.tableName;
+    const sql = `
+      SELECT COUNT(*) AS count FROM (
+        SELECT p1.id,p1.user_id FROM ${this.tableName} AS p1 WHERE p1.id=? AND p1.user_id=?
+        UNION
+        SELECT m.project_id,m.user_id FROM ${memberTableName} AS m JOIN ${this.tableName} AS p ON m.project_id=p.id
+          WHERE m.project_id=? AND m.user_id=?
+      ) AS rows
+    `;
+    const rows = await this.app.mysql.query(sql, [ project_id, user_id, project_id, user_id ]);
+    return rows[0].count > 0;
   }
 };

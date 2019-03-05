@@ -15,15 +15,12 @@ class MockController extends Controller {
     // 去掉换行和空格
     param.body = param.body.replace(/(\r?\n)|\s/g, '');
 
-    try {
-      this.ctx.validate(validateRule, param);
-    } catch (e) {
-      logger.error(e.errors);
-      this.fail(messages.common.paramError);
-      return;
-    }
+    if (!this.isValid(validateRule, param)) return;
 
     try {
+      // check privilege
+      if (!await this.ownerOrMemberOfProject(param.project_id)) return;
+
       await service.mock.insert(Object.assign(param, {
         user_id: user.id,
         create_user: user.nickname,
@@ -39,8 +36,8 @@ class MockController extends Controller {
    * GET /mock/remove query: id=xxx
    */
   async remove() {
-    const { request, service, logger, user } = this.ctx;
-    const id = request.query.id;
+    const { request, service, logger } = this.ctx;
+    const { id } = request.query;
 
     if (!id) {
       logger.warn(`url: ${request.url} id is empty!`);
@@ -56,16 +53,9 @@ class MockController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedMock.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedMock.project_id, user.id);
-        if (!member) {
-          this.fail(messages.common.notAllowed);
-          return;
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedMock.project_id)) return;
 
-      await service.mock.deleteById(id);
+      await service.mock.delete(id);
       this.success();
     } catch (e) {
       logger.error(e);
@@ -77,19 +67,13 @@ class MockController extends Controller {
    * POST /mock/update
    */
   async update() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const param = request.body;
 
     // 去掉换行和空格
     param.body = param.body.replace(/(\r?\n)|\s/g, '');
 
-    try {
-      this.ctx.validate(validateRule, param);
-    } catch (e) {
-      logger.error(e.errors);
-      this.fail(messages.common.paramError);
-      return;
-    }
+    if (!this.isValid(validateRule, param)) return;
 
     try {
       const savedMock = await service.mock.getById(param.id);
@@ -99,14 +83,7 @@ class MockController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedMock.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedMock.project_id, user.id);
-        if (!member) {
-          this.fail(messages.common.notAllowed);
-          return;
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedMock.project_id)) return;
 
       await service.mock.update(param);
       this.success();
@@ -120,7 +97,7 @@ class MockController extends Controller {
    * GET /mock/detail query: id=xxx
    */
   async detail() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -137,14 +114,7 @@ class MockController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedMock.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedMock.project_id, user.id);
-        if (!member) {
-          this.fail(messages.common.notAllowed);
-          return;
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedMock.project_id)) return;
 
       this.success(savedMock);
     } catch (e) {
@@ -157,7 +127,7 @@ class MockController extends Controller {
    * GET /mock/list query: interface_id=xxx
    */
   async list() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const interface_id = request.query.interface_id;
 
     if (!interface_id) {
@@ -174,14 +144,7 @@ class MockController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedItface.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedItface.project_id, user.id);
-        if (!member) {
-          this.fail(messages.common.notAllowed);
-          return;
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedItface.project_id)) return;
 
       const mocks = await service.mock.query({
         where: {

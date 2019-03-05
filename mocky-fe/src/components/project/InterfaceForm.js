@@ -45,7 +45,7 @@ class InterfaceForm extends PureComponent {
               ],
               initialValue: data.url
             })(
-              <Input maxLength={500} placeholder="只填路径部分，如：/home/index" />
+              <Input maxLength={100} placeholder="只填路径部分，如：/home/index" />
             )}
           </Form.Item>
           <Form.Item label="请求类型" {...formItemProps}>

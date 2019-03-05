@@ -10,15 +10,9 @@ class UserController extends Controller {
    * post /user/signUp
    */
   async signUp() {
-    const { ctx, config, ctx: { request, service, logger, cookies } } = this;
+    const { config, ctx: { request, service, logger, cookies } } = this;
 
-    try {
-      ctx.validate(userRule.signUp, request.body);
-    } catch (e) {
-      logger.warn(e.errors);
-      this.fail(messages.common.paramError);
-      return;
-    }
+    if (!this.isValid(userRule.signUp, request.body)) return;
 
     const { email, nickname, password } = request.body;
 
@@ -47,15 +41,9 @@ class UserController extends Controller {
    * post /user/login
    */
   async login() {
-    const { ctx, config, ctx: { request, service, logger, cookies } } = this;
+    const { config, ctx: { request, service, logger, cookies } } = this;
 
-    try {
-      ctx.validate(userRule.login, request.body);
-    } catch (e) {
-      logger.warn(e.errors);
-      this.fail(messages.common.paramError);
-      return;
-    }
+    if (!this.isValid(userRule.login, request.body)) return;
 
     const { email, password, remember } = request.body;
 
@@ -92,12 +80,8 @@ class UserController extends Controller {
    * get /user/get
    */
   async getUser() {
-    const user = this.ctx.user;
-    if (user) {
-      this.success(user);
-    } else {
-      this.fail(messages.common.notLogged);
-    }
+    const { user } = this.ctx;
+    user ? this.success(user) : this.fail(messages.common.notLogged);
   }
 
   /**
@@ -105,7 +89,7 @@ class UserController extends Controller {
    */
   async search() {
     const { request, service, logger } = this.ctx;
-    const key = request.query.key;
+    const { key } = request.query;
 
     if (!key) {
       this.fail(messages.common.paramError);

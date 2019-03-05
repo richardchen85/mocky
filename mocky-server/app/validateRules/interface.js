@@ -15,9 +15,7 @@ module.exports = {
   },
   url: {
     type: 'string',
-    required: false,
-    allowEmpty: true,
-    max: 500,
+    max: 100,
   },
   method: {
     type: 'string',

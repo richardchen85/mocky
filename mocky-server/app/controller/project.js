@@ -12,26 +12,13 @@ class ProjectController extends Controller {
     const { request, service, logger, user } = this.ctx;
     const param = request.body;
 
-    try {
-      this.ctx.validate(validateRule, param);
-    } catch (e) {
-      logger.error(e.errors);
-      this.fail(messages.common.paramError);
-      return;
-    }
+    if (!this.isValid(validateRule, param)) return;
 
     try {
       // has id, means update
       if (param.id) {
         // check privilege
-        const owned = await service.project.isOwner(param.id, user.id);
-        if (!owned) {
-          const member = await service.member.isMember(param.id, user.id);
-          if (!member) {
-            this.fail(messages.common.notAllowed);
-            return;
-          }
-        }
+        if (!await this.ownerOrMemberOfProject(param.id)) return;
 
         await service.project.update(param);
       } else {
@@ -63,7 +50,7 @@ class ProjectController extends Controller {
 
     try {
       // only owner can remove project
-      const owned = await service.project.isOwner(id, user.id);
+      const owned = await service.project.get({id, user_id: user.id});
       if (!owned) {
         this.fail(messages.common.notAllowed);
         return;
@@ -72,11 +59,11 @@ class ProjectController extends Controller {
       // check if has group
       const groups = await service.group.countByProject(id);
       if (groups) {
-        this.fail('project is not empty');
+        this.fail('不能删除有分组的项目');
         return;
       }
 
-      await service.project.deleteById(id);
+      await service.project.delete(id);
       this.success();
     } catch (e) {
       logger.error(e);
@@ -88,7 +75,7 @@ class ProjectController extends Controller {
    * get /project/getById query: id=1
    */
   async getById() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -106,15 +93,11 @@ class ProjectController extends Controller {
       }
 
       // check privilege
-      let memberIds = await service.member.getByProject(project.id);
-      memberIds = memberIds.map(m => m.user_id);
-      const isMember = memberIds.includes(user.id);
-      if (user.id !== project.user_id && isMember) {
-        this.fail(messages.common.notAllowed);
-        return;
-      }
+      if (!await this.ownerOrMemberOfProject(project.id)) return;
 
       // get owner and members
+      let memberIds = await service.member.getByProject(project.id);
+      memberIds = memberIds.map(m => m.user_id);
       project.owner = await service.user.getById(project.user_id);
       if (memberIds.length > 0) {
         project.members = await service.user.query({
@@ -141,8 +124,8 @@ class ProjectController extends Controller {
     const id = user.id;
 
     try {
-      let owned,
-        joined;
+      let owned = [];
+      let joined = [];
 
       await Promise.all([
         service.project.owned(id),
@@ -178,7 +161,7 @@ class ProjectController extends Controller {
   }
 
   async detail() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -194,13 +177,7 @@ class ProjectController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(project.id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(project.id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(project.id)) return;
 
       // get group
       let groups = [];

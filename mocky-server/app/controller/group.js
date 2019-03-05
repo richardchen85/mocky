@@ -9,14 +9,12 @@ class GroupController extends Controller {
     const { request, service, logger, user } = this.ctx;
     const param = request.body;
 
-    try {
-      this.ctx.validate(validateRule, param);
-    } catch (e) {
-      logger.error(e.errors);
-      return this.fail(messages.common.paramError);
-    }
+    if (!this.isValid(validateRule, param)) return;
 
     try {
+      // check privilege
+      if (!await this.ownerOrMemberOfProject(param.project_id)) return;
+
       await service.group.insert(Object.assign(param, {
         user_id: user.id,
         create_user: user.nickname,
@@ -29,7 +27,7 @@ class GroupController extends Controller {
   }
 
   async remove() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -44,21 +42,15 @@ class GroupController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedGroup.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedGroup.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedGroup.project_id)) return;
 
       // check if has interface
       const itfaces = await service.interface.countByGroup(id);
       if (itfaces) {
-        return this.fail('group is not empty');
+        return this.fail('不能删除有接口数据的分组');
       }
 
-      await service.group.deleteById(id);
+      await service.group.delete(id);
       this.success();
     } catch (e) {
       logger.error(e);
@@ -67,25 +59,20 @@ class GroupController extends Controller {
   }
 
   async update() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const param = request.body;
 
-    try {
-      this.ctx.validate(validateRule, param);
-    } catch (e) {
-      logger.error(e.errors);
-      return this.fail(messages.common.paramError);
-    }
+    if (!this.isValid(validateRule, param)) return;
 
     try {
-      // check privilege
-      const owned = await service.project.isOwner(param.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(param.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
+      const savedGroup = await service.group.getById(param.id);
+      if (!savedGroup) {
+        this.fail(messages.common.notFound);
+        return;
       }
+
+      // check privilege
+      if (!await this.ownerOrMemberOfProject(savedGroup.project_id)) return;
 
       await service.group.update(param);
       this.success();
@@ -96,7 +83,7 @@ class GroupController extends Controller {
   }
 
   async detail() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -111,13 +98,7 @@ class GroupController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedGroup.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedGroup.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedGroup.project_id)) return;
 
       this.success(savedGroup);
     } catch (e) {

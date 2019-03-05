@@ -7,22 +7,19 @@ const dataMapFroms = require('../common/dataMapFroms');
 
 class DataMapController extends Controller {
   async create() {
-    const { request, service, logger, user, validate } = this.ctx;
+    const { request, service, logger, user } = this.ctx;
     const param = request.body;
+    const { basic, noFrom, hasFrom } = validateRule;
+    const rules = param.from === dataMapFroms.none ?
+      Object.assign({}, basic, noFrom) :
+      Object.assign({}, basic, hasFrom);
+
+    if (!this.isValid(rules, param)) return;
 
     try {
-      validate.call(this.ctx, validateRule.basic, param);
-      if (param.from === dataMapFroms.none) {
-        validate.call(this.ctx, validateRule.noFrom, param);
-      } else {
-        validate.call(this.ctx, validateRule.hasFrom, param);
-      }
-    } catch (e) {
-      logger.error(e.errors);
-      return this.fail(messages.common.paramError);
-    }
+      // check privilege
+      if (!await this.ownerOrMemberOfProject(param.project_id)) return;
 
-    try {
       await service.dataMap.insert(Object.assign(param, {
         user_id: user.id,
         create_user: user.nickname,
@@ -35,7 +32,7 @@ class DataMapController extends Controller {
   }
 
   async remove() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -50,15 +47,9 @@ class DataMapController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedMap.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedMap.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedMap.project_id)) return;
 
-      await service.dataMap.deleteById(id);
+      await service.dataMap.delete(id);
       this.success();
     } catch (e) {
       logger.error(e);
@@ -67,30 +58,24 @@ class DataMapController extends Controller {
   }
 
   async update() {
-    const { request, service, logger, user, validate } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const param = request.body;
+    const { basic, noFrom, hasFrom } = validateRule;
+    const rules = param.from === dataMapFroms.none ?
+      Object.assign({}, basic, noFrom) :
+      Object.assign({}, basic, hasFrom);
+
+    if (!this.isValid(rules, param)) return;
 
     try {
-      validate.call(this.ctx, validateRule.basic, param);
-      if (param.from === dataMapFroms.none) {
-        validate.call(this.ctx, validateRule.noFrom, param);
-      } else {
-        validate.call(this.ctx, validateRule.hasFrom, param);
+      const savedDataMap = await service.dataMap.getById(param.id);
+      if (!savedDataMap) {
+        this.fail(messages.common.notFound);
+        return;
       }
-    } catch (e) {
-      logger.error(e.errors);
-      return this.fail(messages.common.paramError);
-    }
 
-    try {
       // check privilege
-      const owned = await service.project.isOwner(param.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(param.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedDataMap.project_id)) return;
 
       await service.dataMap.update(param);
       this.success();
@@ -101,7 +86,7 @@ class DataMapController extends Controller {
   }
 
   async detail() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -116,13 +101,7 @@ class DataMapController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedMap.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedMap.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedMap.project_id)) return;
 
       this.success(savedMap);
     } catch (e) {
@@ -132,7 +111,7 @@ class DataMapController extends Controller {
   }
 
   async list() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const interface_id = request.query.interface_id;
 
     if (!interface_id) {
@@ -147,13 +126,7 @@ class DataMapController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedItface.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedItface.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedItface.project_id)) return;
 
       const maps = await service.dataMap.query({
         where: {

@@ -9,14 +9,12 @@ class InterfaceController extends Controller {
     const { request, service, logger, user } = this.ctx;
     const param = request.body;
 
-    try {
-      this.ctx.validate(validateRule, param);
-    } catch (e) {
-      logger.error(e.errors);
-      return this.fail(messages.common.paramError);
-    }
+    if (!this.isValid(validateRule, param)) return;
 
     try {
+      // check privilege
+      if (!await this.ownerOrMemberOfProject(param.project_id)) return;
+
       await service.interface.insert(Object.assign(param, {
         user_id: user.id,
         create_user: user.nickname,
@@ -29,7 +27,7 @@ class InterfaceController extends Controller {
   }
 
   async remove() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -44,13 +42,7 @@ class InterfaceController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedItface.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedItface.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedItface.project_id)) return;
 
       // check empty
       let mocks,
@@ -63,10 +55,10 @@ class InterfaceController extends Controller {
         dataMaps = values[1];
       });
       if (mocks.length > 0 || dataMaps.length > 0) {
-        return this.fail('interface is not empty');
+        return this.fail('不能删除有映射规则和模拟数据的接口');
       }
 
-      await service.interface.deleteById(id);
+      await service.interface.delete(id);
       this.success();
     } catch (e) {
       logger.error(e);
@@ -75,15 +67,10 @@ class InterfaceController extends Controller {
   }
 
   async update() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const param = request.body;
 
-    try {
-      this.ctx.validate(validateRule, param);
-    } catch (e) {
-      logger.error(e.errors);
-      return this.fail(messages.common.paramError);
-    }
+    if (!this.isValid(validateRule, param)) return;
 
     try {
       const savedItface = await service.interface.getById(param.id);
@@ -92,13 +79,7 @@ class InterfaceController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(savedItface.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(savedItface.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(savedItface.project_id)) return;
 
       await service.interface.update(param);
       this.success();
@@ -109,7 +90,7 @@ class InterfaceController extends Controller {
   }
 
   async detail() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -124,13 +105,7 @@ class InterfaceController extends Controller {
       }
 
       // check privilege
-      const owned = await service.project.isOwner(itface.project_id, user.id);
-      if (!owned) {
-        const member = await service.member.isMember(itface.project_id, user.id);
-        if (!member) {
-          return this.fail(messages.common.notAllowed);
-        }
-      }
+      if (!await this.ownerOrMemberOfProject(itface.project_id)) return;
 
       this.success(itface);
     } catch (e) {
