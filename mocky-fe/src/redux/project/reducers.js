@@ -1,8 +1,24 @@
 import { combineReducers } from 'redux';
-import createReducer from '../../redux/createReducer';
+import createReducer from '../utils/createReducer';
 import types from './types';
+import {GET_LIST, SET_LIST, GET_DETAIL, SET_DETAIL} from './actions';
 
-const projectListReducers = createReducer({ fetching: false, data: [], error: null }, {
+const projectListReducers = createReducer({ fetching: false, data: [] }, {
+  [GET_LIST]: (state) => {
+    return {...state, fetching: true};
+  },
+  [SET_LIST]: (state, {payload}) => {
+    return {...state, fetching: false, data: payload};
+  },
+
+  [GET_DETAIL]: (state) => {
+    return {...state, fetching: true};
+  },
+  [SET_DETAIL]: (state, {payload}) => {
+    return {...state, fetching: false, data: payload}
+  },
+
+
   [types.getListStart]: (state, action) => {
     return { ...state, fetching: true, error: null };
   },

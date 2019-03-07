@@ -1,14 +1,12 @@
 import { message } from 'antd';
 import messages from '../constants/messages';
-import store from '../redux/store';
-import { actions as usersActions } from '../redux/auth';
 
 const defaults = {
   toastError: true,
   toastSuccess: false,
   timeout: 30000,
-  type: 'GET',
-  data: null,
+  method: 'GET',
+  body: null,
 };
 
 const toastType = {
@@ -24,10 +22,6 @@ function toast(type, content) {
   }
 }
 
-function notLoggedIn() {
-  store.dispatch(usersActions.resetAuth());
-}
-
 /**
  * fetch with timeout
  * @param {*} fetchPromise
@@ -40,7 +34,7 @@ function _fetch(fetchPromise, timeout) {
     abortFn = function () {
       reject('abort promise');
     }
-  })
+  });
 
   let abortablePromise = Promise.race([
     fetchPromise,
@@ -65,12 +59,7 @@ function _success(json, options, resolve, reject) {
   const { toastSuccess, toastError } = options;
 
   if (!json.success) {
-    // 处理特殊返回码
-    if (json.code === 401) {
-      notLoggedIn();
-    } else {
-      toastError && toast(toastType.error, json.message || messages.serverBusy);
-    }
+    toastError && toast(toastType.error, json.message || messages.serverBusy);
 
     return reject({
       code: json.code,
@@ -101,11 +90,11 @@ function _fail(options, reject) {
 export function fetch(url, options) {
   options = Object.assign({}, defaults, options || {});
 
-    let { timeout, type, data } = options;
+    let { timeout, method, body } = options;
 
     return new Promise(function (resolve, reject) {
       const fetchOption = {
-        method: type,
+        method,
         credentials: 'include',
         headers: {
           "Accept": "application/json",
@@ -113,8 +102,8 @@ export function fetch(url, options) {
         },
       };
 
-      if (data) {
-        fetchOption.body = JSON.stringify(data);
+      if (body) {
+        fetchOption.body = JSON.stringify(body);
       }
 
       _fetch(window.fetch(url, fetchOption), timeout).then(function (response) {
@@ -125,4 +114,12 @@ export function fetch(url, options) {
         _fail(options, reject);
       })
     })
+}
+
+export function get(url, options = {}) {
+  return fetch(url, options);
+}
+
+export function post(url, body, options = {}) {
+  return fetch(url, Object.assign({}, options, { method: 'POST', body }));
 }

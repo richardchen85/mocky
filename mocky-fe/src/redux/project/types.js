@@ -1,4 +1,5 @@
 export default {
+  getList: 'project/getList',
   getListStart: 'project/getListStart',
   getListSuccess: 'project/getListSuccess',
   getListFail: 'project/getListFail',

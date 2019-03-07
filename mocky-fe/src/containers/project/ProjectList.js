@@ -4,11 +4,12 @@ import { connect } from 'react-redux';
 import PageLayout from '../../components/PageLayout';
 import ProjectList from '../../components/project/ProjectList';
 import { operations } from '../../redux/project';
+import { actions } from '../../redux/project';
 
 class ProjectListContainer extends PureComponent {
   static propTypes = {
     auth: PropTypes.object.isRequired,
-  }
+  };
 
   render() {
     const { fetching, data, auth, logout, getById } = this.props;
@@ -36,7 +37,7 @@ class ProjectListContainer extends PureComponent {
   fetchList = () => {
     this.props.getList();
   }
-  
+
   onItemClick = (projectId) => {
     this.props.history.push({
       pathname: '/project/' + projectId,
@@ -64,7 +65,7 @@ export default connect(
     ...state.project.list,
   }),
   {
-    getList: operations.getList,
+    getList: actions.getList,
     deleteProject: operations.deleteProject,
     saveProject: operations.saveProject,
     getById: operations.getProjectById,

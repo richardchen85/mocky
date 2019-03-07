@@ -4,14 +4,12 @@ import { Provider } from 'react-redux';
 import './css/index.css';
 
 import userApi from './api/user';
-import store from './redux/store';
-//import Routes from './containers/Routes';
+import { configureStore } from './redux';
 import App from './components/App';
-import { actions } from './redux/auth';
 
-function startRender() {
+function startRender(preloadState = {}) {
   ReactDOM.render(
-    <Provider store={store}>
+    <Provider store={configureStore(preloadState)}>
       <App />
     </Provider>,
     document.getElementById('root')
@@ -19,8 +17,7 @@ function startRender() {
 }
 
 userApi.getUser().then(json => {
-  store.dispatch(actions.loginSuccess(json.data));
-  startRender();
+  startRender({ auth: json.data });
 }).catch(() => {
   startRender();
 });

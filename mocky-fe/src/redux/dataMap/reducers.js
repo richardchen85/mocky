@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import createReducer from '../../redux/createReducer';
+import createReducer from '../utils/createReducer';
 import types from './types';
 
 const dataMapListReducers = createReducer({ fetching: false, data: [], error: null }, {
