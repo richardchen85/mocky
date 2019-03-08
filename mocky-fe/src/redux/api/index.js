@@ -1,4 +1,4 @@
-import { fetch } from '../../utils/fetch';
+import {fetch} from '../../utils/fetch';
 
 // action types
 export const API_REQUEST = 'API_REQUEST';
@@ -8,8 +8,7 @@ export const API_ERROR = 'API_ERROR';
 // action creators
 export const apiRequest = ({url, method, body, feature}) => ({
   type: `${feature}_${API_REQUEST}`,
-  payload: body,
-  meta: {method, url, feature}
+  meta: {url, method, body, feature}
 });
 
 export const apiSuccess = ({data, feature}) => ({

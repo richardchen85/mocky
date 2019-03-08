@@ -1,44 +1,40 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import createReducer from '../utils/createReducer';
 import types from './types';
-import {GET_LIST, SET_LIST, GET_DETAIL, SET_DETAIL} from './actions';
 
-const projectListReducers = createReducer({ fetching: false, data: [] }, {
-  [GET_LIST]: (state) => {
+const projectListReducers = createReducer({
+  fetching: false,
+  data: [],
+  project: {data: null, editing: false, saving: false}
+}, {
+  [types.GET_LIST]: (state) => {
     return {...state, fetching: true};
   },
-  [SET_LIST]: (state, {payload}) => {
+  [types.SET_LIST]: (state, {payload}) => {
     return {...state, fetching: false, data: payload};
   },
-
-  [GET_DETAIL]: (state) => {
-    return {...state, fetching: true};
-  },
-  [SET_DETAIL]: (state, {payload}) => {
-    return {...state, fetching: false, data: payload}
-  },
-
-
-  [types.getListStart]: (state, action) => {
-    return { ...state, fetching: true, error: null };
-  },
-  [types.getListSuccess]: (state, { projects = [] }) => {
-    return { ...state, fetching: false, data: projects };
-  },
-  [types.getListFail]: (state, { error }) => {
-    return { ...state, fetching: false, error };
+  [types.SET_PROJECT]: (state, {payload}) => {
+    return {...state, project: {...state.project, ...payload}};
   },
 });
 
-const projectDetailReducers = createReducer({ fetching: false, data: {}, error: null }, {
-  [types.getDetail]: (state, action) => {
-    return { ...state, fetching: true, error: null };
+const projectDetailReducers = createReducer({
+  fetching: false,
+  data: {},
+  group: {data: null, editing: false, saving: false},
+  itface: {data: null, editing: false, saving: false},
+}, {
+  [types.GET_DETAIL]: (state) => {
+    return {...state, fetching: true};
   },
-  [types.getDetailSuccess]: (state, { project = {} }) => {
-    return { ...state, fetching: false, data: project };
+  [types.SET_DETAIL]: (state, {payload}) => {
+    return {...state, fetching: false, data: payload}
   },
-  [types.getDetailFail]: (state, { error }) => {
-    return { ...state, fetching: false, error };
+  [types.SET_GROUP]: (state, {payload}) => {
+    return {...state, group: {...state.group, ...payload}};
+  },
+  [types.SET_INTERFACE]: (state, {payload}) => {
+    return {...state, itface: {...state.itface, ...payload}};
   },
 });
 

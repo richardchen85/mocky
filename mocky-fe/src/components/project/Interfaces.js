@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Icon, Modal } from 'antd';
 import './interfaces.css';
 import InterfaceDetail from './InterfaceDetail';
-import IntrerfaceTabItem from './InterfaceTabItem';
+import InterfaceTabItem from './InterfaceTabItem';
 import InterfaceForm from './InterfaceForm';
 import SortableHOC from '../SortableHOC';
 
@@ -35,7 +35,7 @@ class Interfaces extends PureComponent {
           <SortableHOC onSortChange={this.handleSort}>
             <div className="interface-tabs">
               { interfaces.map(itf => (
-                <IntrerfaceTabItem
+                <InterfaceTabItem
                   key={itf.id}
                   data={itf}
                   active={itf === activeInterface}

@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { Spin, Button, Modal } from 'antd';
+import {Spin, Button, Modal} from 'antd';
 import './ProjectList.css';
 import ProjectItem from './ProjectItem';
 import ProjectEdit from './ProjectEdit';
@@ -10,26 +10,20 @@ class ProjectList extends PureComponent {
     projects: PropTypes.array.isRequired,
     user: PropTypes.object.isRequired,
     fetching: PropTypes.bool.isRequired,
-    getById: PropTypes.func.isRequired,
+    getProject: PropTypes.func.isRequired,
+    setProject: PropTypes.func.isRequired,
     onItemClick: PropTypes.func.isRequired,
     onItemSave: PropTypes.func.isRequired,
     onItemDelete: PropTypes.func.isRequired,
-  }
-
-  state = {
-    edit: false,
-    saving: false,
-    project: {}
-  }
+  };
 
   render() {
-    const { edit, saving, project } = this.state;
-    const { projects, user, fetching, onItemClick } = this.props;
+    const {projects, project, user, fetching, onItemClick} = this.props;
 
     if (fetching) {
       return (
         <div className="project-list">
-          <Spin style={{marginLeft:15}} />
+          <Spin style={{marginLeft: 15}}/>
         </div>
       )
     }
@@ -38,7 +32,7 @@ class ProjectList extends PureComponent {
       <>
         <Button type="primary" icon="plus" onClick={this.handleCreate}>添加项目</Button>
         <div className="project-list">
-          { projects.map(project => (
+          {projects.map(project => (
             <ProjectItem
               key={project.id}
               project={project}
@@ -46,38 +40,29 @@ class ProjectList extends PureComponent {
               onClick={onItemClick}
               onEdit={this.handleEdit}
               onSave={this.handleOk}
-              onDelete={this.handleDelete} />
+              onDelete={this.handleDelete}/>
           ))}
         </div>
-        { edit && <ProjectEdit
-          fetching={saving}
-          project={project}
+        {project.editing && <ProjectEdit
+          fetching={project.saving}
+          project={project.data}
           auth={user}
           onCancel={this.handleCancel}
-          onOk={this.handleOk} /> }
+          onOk={this.handleOk}/>}
       </>
     )
   }
 
   handleCreate = () => {
-    this.setState({ edit: true, project: {} });
-  }
+    this.props.setProject({editing: true, data: {}});
+  };
 
   handleEdit = (project) => {
-    if (this.gettingProject) return;
-
-    const { getById } = this.props;
-    this.gettingProject = true;
-    getById(project.id).then(json => {
-      this.gettingProject = false;
-      this.setState({ edit: true, project: json.data });
-    }).catch(error => {
-      console.log(error);
-    });
-  }
+    this.props.getProject(project.id);
+  };
 
   handleDelete = (project) => {
-    const { onItemDelete } = this.props;
+    const {onItemDelete} = this.props;
 
     Modal.confirm({
       title: '删除项目',
@@ -86,26 +71,16 @@ class ProjectList extends PureComponent {
         onItemDelete(project.id);
       }
     });
-  }
+  };
 
   handleOk = (project) => {
-    if (this.state.saving) return;
-
-    this.setState({ saving: true });
-
-    const { onItemSave } = this.props;
-    onItemSave(project, errorMsg => {
-      if (!errorMsg) {
-        this.setState({ edit: false, saving: false });
-      } else {
-        this.setState({ saving: false });
-      }
-    });
-  }
+    const {onItemSave, project: {saving}} = this.props;
+    !saving && onItemSave(project);
+  };
 
   handleCancel = () => {
-    this.setState({ edit: false, saving: false, project: {} });
-  }
+    this.props.setProject({data: null, editing: false, saving: false});
+  };
 }
 
 export default ProjectList;

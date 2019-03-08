@@ -5,11 +5,11 @@ import PageLayout from '../../components/PageLayout';
 import ProjectInfo from '../../components/project/ProjectInfo';
 import GroupTabs from '../../components/project/GroupTabs';
 
-import { operations } from '../../redux/project';
+import { actions } from '../../redux/project';
 
 class ProjectDetail extends PureComponent {
   render() {
-    const { auth, logout, data, fetching, match, sortGroup, sortInterface } = this.props;
+    const { auth, logout, data, fetching, match, group, itface, setGroup, setInterface, sortGroup, sortInterface } = this.props;
     const groups = data.groups || [];
     const currentId = Number(match.params.id);
 
@@ -23,6 +23,10 @@ class ProjectDetail extends PureComponent {
         <GroupTabs
           projectId={data.id}
           groups={groups}
+          group={group}
+          itfac={itface}
+          setGroup={setGroup}
+          setInterface={setInterface}
           onGroupSave={this.saveGroup}
           onGroupDelete={this.deleteGroup}
           onGroupSort={sortGroup}
@@ -48,55 +52,33 @@ class ProjectDetail extends PureComponent {
   /**
    * 保存分组
    * @param {*} group
-   * @param {function} callback
    */
-  saveGroup = (group, callback) => {
+  saveGroup = (group) => {
     const { createGroup, updateGroup } = this.props;
-    const action = group.id ? updateGroup : createGroup;
-    action(group).then(json => {
-      callback && callback();
-      this.getDetail();
-    }).catch(error => {
-      callback && callback(error.message);
-    });
+    group.id ? updateGroup(group) : createGroup(group);
   };
 
   /**
    * 删除分组
    */
   deleteGroup = (id) => {
-    this.props.deleteGroup(id).then(() => {
-      this.getDetail();
-    }).catch(error => {
-      console.error(error);
-    });
+    this.props.deleteGroup(id);
   };
 
   /**
    * 保存接口
    * @param {*} itf
-   * @param {function} callback
    */
-  saveInterface = (itf, callback) => {
+  saveInterface = (itf) => {
     const { createInterface, updateInterface } = this.props;
-    const action = itf.id ? updateInterface : createInterface;
-    action(itf).then(json => {
-      callback && callback();
-      this.getDetail();
-    }).catch(error => {
-      callback && callback(error.message);
-    });
+    itf.id ? updateInterface(itf) : createInterface(itf);
   };
 
   /**
    * 删除接口
    */
   deleteInterface = (id) => {
-    this.props.deleteInterface(id).then(() => {
-      this.getDetail();
-    }).catch(error => {
-      console.error(error);
-    });
+    this.props.deleteInterface(id);
   }
 }
 
@@ -105,14 +87,16 @@ export default connect(
     ...state.project.detail
   }),
   {
-    getDetail: operations.getDetail,
-    deleteGroup: operations.deleteGroup,
-    createGroup: operations.createGroup,
-    updateGroup: operations.updateGroup,
-    sortGroup: operations.sortGroup,
-    deleteInterface: operations.deleteInterface,
-    createInterface: operations.createInterface,
-    updateInterface: operations.updateInterface,
-    sortInterface: operations.sortInterface,
+    getDetail: actions.getDetail,
+    setGroup: actions.setGroup,
+    deleteGroup: actions.deleteGroup,
+    createGroup: actions.createGroup,
+    updateGroup: actions.updateGroup,
+    sortGroup: actions.sortGroup,
+    setInterface: actions.setInterface,
+    deleteInterface: actions.deleteInterface,
+    createInterface: actions.createInterface,
+    updateInterface: actions.updateInterface,
+    sortInterface: actions.sortInterface,
   }
 )(ProjectDetail);

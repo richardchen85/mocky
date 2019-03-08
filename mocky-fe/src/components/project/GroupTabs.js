@@ -11,6 +11,10 @@ class GroupTabs extends PureComponent {
   static propTypes = {
     projectId: PropTypes.number.isRequired,
     groups: PropTypes.array.isRequired,
+    group: PropTypes.object.isRequired,
+    itface: PropTypes.object.isRequired,
+    setGroup: PropTypes.func.isRequired,
+    setInterface: PropTypes.func.isRequired,
     onGroupSave: PropTypes.func.isRequired,
     onGroupDelete: PropTypes.func.isRequired,
     onGroupSort: PropTypes.func.isRequired,
@@ -21,14 +25,11 @@ class GroupTabs extends PureComponent {
 
   state = {
     activeId: 0,
-    edit: false,
-    saving: false,
-    group: {}
   }
 
   render() {
-    const { activeId, edit, saving, group } = this.state;
-    const { projectId, groups, onGroupSave, onInterfaceDelete, onInterfaceSave, onInterfaceSort } = this.props;
+    const { activeId, } = this.state;
+    const { projectId, groups, group, itface, setInterface, onGroupSave, onInterfaceDelete, onInterfaceSave, onInterfaceSort } = this.props;
     const activeGroup = groups.find(group => group.id === activeId);
 
     return (
@@ -51,14 +52,14 @@ class GroupTabs extends PureComponent {
             </SortableHOC>
           <div className="new-tab">
             <span className="fake-link" onClick={this.handleCreate}><Icon type="plus-square" /> 添加分组</span>
-            { edit && <GroupForm
-              group={group}
-              saving={saving}
+            { group.editing && <GroupForm
+              group={group.data}
+              saving={group.saving}
               onCancel={this.handleCancel}
               onSave={this.handleSave} /> }
           </div>
         </div>
-        { activeGroup && <Interfaces projectId={projectId} groupId={activeGroup.id} interfaces={activeGroup.interfaces} onDelete={onInterfaceDelete} onSave={onInterfaceSave} onSort={onInterfaceSort} /> }
+        { activeGroup && <Interfaces projectId={projectId} groupId={activeGroup.id} interfaces={activeGroup.interfaces} itface={itface} setInterface={setInterface} onDelete={onInterfaceDelete} onSave={onInterfaceSave} onSort={onInterfaceSort} /> }
       </div>
     )
   }
@@ -83,9 +84,10 @@ class GroupTabs extends PureComponent {
   }
 
   handleCreate = () => {
-    this.setState({
-      edit: true,
-      group: { project_id: this.props.projectId }
+    const { setGroup, projectId } = this.props;
+    setGroup({
+      data: {project_id: projectId},
+      editing: true,
     });
   }
 

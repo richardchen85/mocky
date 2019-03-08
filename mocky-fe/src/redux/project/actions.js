@@ -1,44 +1,25 @@
 import types from './types';
 
-// feature name
-export const PROJECTS = 'PROJECTS';
-
-// action types
-export const GET_LIST = `${PROJECTS}_GET_LIST`;
-export const SET_LIST = `${PROJECTS}_SET_LIST`;
-
-export const GET_DETAIL = `${PROJECTS}_GET_DETAIL`;
-export const SET_DETAIL = `${PROJECTS}_SET_DETAIL`;
-
-// action creators
-export const getList = () => ({
-  type: GET_LIST,
-});
-
-export const setList = (projects = []) => ({
-  type: SET_LIST,
-  payload: projects,
-});
-
-export const getDetail = (id) => ({
-  type: GET_DETAIL,
-  payload: id,
-});
-
-export const setDetail = (project = {}) => ({
-  type: SET_DETAIL,
-  payload: project,
-});
-
 export default {
-  getList,
-  getDetail,
+  getList: () => ({type: types.GET_LIST}),
+  setList: (projects = []) => ({type: types.SET_LIST, payload: projects}),
+  getProject: (id) => ({type: types.GET_PROJECT, payload: id}),
+  setProject: (project) => ({type: types.SET_PROJECT, payload: project}),
+  saveProject: (project) => ({type: types.SAVE_PROJECT, payload: project}),
+  deleteProject: (id) => ({type: types.DELETE_PROJECT, payload: id}),
 
-  getListStart: () => ({ type: types.getListStart }),
-  getListSuccess: projects => ({ type: types.getListSuccess, projects }),
-  getListFail: error => ({ type: types.getListFail, error }),
+  getDetail: (id) => ({type: types.GET_DETAIL, payload: id}),
+  setDetail: (project = {}) => ({type: types.SET_DETAIL, payload: project}),
 
-  getDetailStart: () => ({ type: types.getDetailStart }),
-  getDetailSuccess: project => ({ type: types.getDetailSuccess, project }),
-  getDetailFail: error => ({ type: types.getDetailFail, error }),
+  setGroup: (group) => ({type: types.SET_GROUP, payload: group}),
+  deleteGroup: (id) => ({type: types.DELETE_GROUP, payload: id}),
+  updateGroup: (group) => ({type: types.UPDATE_GROUP, payload: group}),
+  createGroup: (group) => ({type: types.CREATE_GROUP, payload: group}),
+  sortGroup: (ids) => ({type: types.SORT_GROUP, payload: {ids}}),
+
+  setInterface: (itface) => ({type: types.SET_INTERFACE, payload: itface}),
+  deleteInterface: (id) => ({type: types.DELETE_INTERFACE, payload: id}),
+  createInterface: (itf) => ({type: types.CREATE_INTERFACE, payload: itf}),
+  updateInterface: (itf) => ({type: types.UPDATE_INTERFACE, payload: itf}),
+  sortInterface: (ids) => ({type: types.SORT_INTERFACE, payload: {ids}}),
 }
