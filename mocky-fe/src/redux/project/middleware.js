@@ -117,13 +117,13 @@ export default ({dispatch, getState}) => next => action => {
 
     case `${types.CREATE_INTERFACE}_${API_SUCCESS}`:
     case `${types.UPDATE_INTERFACE}_${API_SUCCESS}`:
-      next(actions.setGroup({data: null, editing: false, saving: false}));
+      next(actions.setInterface({data: null, editing: false, saving: false}));
       dispatch(fetchDetail(selectors.selectDetail(getState()).id));
       break;
 
     case `${types.CREATE_INTERFACE}_${API_ERROR}`:
     case `${types.UPDATE_INTERFACE}_${API_ERROR}`:
-      next(actions.setGroup({saving: false}));
+      next(actions.setInterface({saving: false}));
       break;
 
     case types.DELETE_INTERFACE:
@@ -141,5 +141,4 @@ export default ({dispatch, getState}) => next => action => {
     default:
       break;
   }
-
 }

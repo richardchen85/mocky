@@ -24,7 +24,7 @@ class ProjectDetail extends PureComponent {
           projectId={data.id}
           groups={groups}
           group={group}
-          itfac={itface}
+          itface={itface}
           setGroup={setGroup}
           setInterface={setInterface}
           onGroupSave={this.saveGroup}

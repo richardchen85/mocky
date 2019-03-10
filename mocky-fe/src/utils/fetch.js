@@ -110,7 +110,8 @@ export function fetch(url, options) {
         return response.json();
       }).then(function (json) {
         _success(json, options, resolve, reject);
-      }).catch(function () {
+      }).catch(function (e) {
+        console.error(e);
         _fail(options, reject);
       })
     })

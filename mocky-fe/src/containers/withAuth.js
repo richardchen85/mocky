@@ -20,7 +20,7 @@ export default function withAuth( WrappedComponent ) {
 
   return connect(
     state => ({
-      auth: state.auth
+      auth: state.auth.user
     }),
     {
       logout: actions.logout,

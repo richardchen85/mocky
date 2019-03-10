@@ -1,11 +1,8 @@
 import createReducer from '../utils/createReducer';
 import types from './types';
 
-export default createReducer({}, {
-  [types.loginSuccess]: (state, { user }) => {
-    return user || {};
-  },
-  [types.logout]: () => {
-    return {}
-  },
+export default createReducer({fetching: false, user: {}, error: null}, {
+  [types.SET_AUTH]: (state, {payload}) => {
+    return {...state, ...payload};
+  }
 });

@@ -17,7 +17,7 @@ function startRender(preloadState = {}) {
 }
 
 userApi.getUser().then(json => {
-  startRender({ auth: json.data });
+  startRender({auth: {fetching: false, user: json.data, error: null}});
 }).catch(() => {
   startRender();
 });

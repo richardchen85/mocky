@@ -12,6 +12,8 @@ class Interfaces extends PureComponent {
     projectId: PropTypes.number.isRequired,
     groupId: PropTypes.number.isRequired,
     interfaces: PropTypes.array.isRequired,
+    itface: PropTypes.object.isRequired,
+    setInterface: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     onSort: PropTypes.func.isRequired,
@@ -19,14 +21,11 @@ class Interfaces extends PureComponent {
 
   state = {
     activeId: 0,
-    edit: false,
-    saving: false,
-    itf: {}
   }
 
   render() {
-    const { activeId, edit, saving, itf } = this.state;
-    const { interfaces, projectId } = this.props;
+    const { activeId } = this.state;
+    const { interfaces, projectId, itface } = this.props;
     const activeInterface = interfaces.find(itf => itf.id === activeId);
 
     return (
@@ -51,7 +50,7 @@ class Interfaces extends PureComponent {
               <Icon type="plus" /> 新建接口
             </span>
           </div>
-          { edit && <InterfaceForm data={itf} saving={saving} onCancel={this.handleCancel}
+          { itface.editing && <InterfaceForm data={itface.data} saving={itface.saving} onCancel={this.handleCancel}
               onSave={this.handleSave} /> }
         </div>
         <div className="interface-detail">
@@ -81,33 +80,21 @@ class Interfaces extends PureComponent {
   }
 
   handleEdit = (itf) => {
-    this.setState({ edit: true, itf });
+    this.props.setInterface({editing: true, data: itf});
   }
 
   handleCreate = () => {
-    const { projectId, groupId } = this.props;
-    this.setState({
-      edit: true,
-      itf: { project_id: projectId, group_id: groupId },
-    });
+    const { projectId, groupId, setInterface } = this.props;
+    setInterface({editing: true, data: {project_id: projectId, group_id: groupId}});
   }
 
   handleSave = (itf) => {
-    if (this.state.saving) return;
-
-    this.setState({ saving: true });
-    const { onSave } = this.props;
-    onSave(itf, errorMsg => {
-      if (!errorMsg) {
-        this.setState({ edit: false, saving: false });
-      } else {
-        this.setState({ saving: false });
-      }
-    });
+    const {onSave, itface: {saving}} = this.props;
+    !saving && onSave(itf);
   }
 
   handleCancel = () => {
-    this.setState({ edit: false, saving: false, itf: {} });
+    this.props.setInterface({editing: false, data: null, saving: false});
   }
 
   handleDelete = (itf) => {

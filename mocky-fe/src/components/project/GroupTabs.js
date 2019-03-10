@@ -92,25 +92,16 @@ class GroupTabs extends PureComponent {
   }
 
   handleEdit = (group) => {
-    this.setState({ edit: true, group });
+    this.props.setGroup({editing: true, data: group});
   }
 
   handleSave = (group) => {
-    if (this.state.saving) return;
-
-    this.setState({ saving: true });
-    const { onGroupSave } = this.props;
-    onGroupSave(group, errorMsg => {
-      if (!errorMsg) {
-        this.setState({ edit: false, saving: false });
-      } else {
-        this.setState({ saving: false });
-      }
-    });
+    const {onGroupSave, group: {saving}} = this.props;
+    !saving && onGroupSave(group);
   }
 
   handleCancel = () => {
-    this.setState({ edit: false, saving: false, group: {} })
+    this.props.setGroup({editing:false, saving:false, data:null})
   }
 
   handleDelete = (group) => {

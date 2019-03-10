@@ -1,17 +1,17 @@
 import { fetch } from '../utils/fetch';
 
 export default {
-  signUp(data) {
+  signUp(body) {
     return fetch('/user/signUp', {
-      type: 'POST',
-      data,
+      method: 'POST',
+      body,
       toastError: false,
     });
   },
-  login(data) {
+  login(body) {
     return fetch('/user/login', {
-      type: 'POST',
-      data,
+      method: 'POST',
+      body,
       toastError: false,
     });
   },

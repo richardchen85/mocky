@@ -3,24 +3,17 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import SignUpForm from '../../components/auth/SignUp';
 import { actions } from '../../redux/auth';
-import api from '../../api/user';
 
 class SignUp extends PureComponent {
-  state = {
-    fetching: false,
-    errorMsg: '',
-  }
-
   render() {
-    const { fetching, errorMsg } = this.state;
-    const { auth } = this.props;
+    const { fetching, user, error } = this.props;
 
-    if (auth.id) {
+    if (user.id) {
       return <Redirect to={{pathname: '/'}} />
     }
 
     return (
-      <SignUpForm onSubmit={this.submit} fetching={fetching} errorMsg={errorMsg} />
+      <SignUpForm onSubmit={this.submit} fetching={fetching} errorMsg={error} />
     )
   }
 
@@ -33,27 +26,16 @@ class SignUp extends PureComponent {
   }
 
   submit = (values) => {
-    if (this.state.fetching) {
-      return;
-    }
-
-    this.setState({ fetching: true, errorMsg: '' });
-
-    api.signUp(values).then(json => {
-      const { signUpSuccess, history } = this.props;
-      signUpSuccess(json.data);
-      history.push('/');
-    }).catch(error => {
-      this.setState({ fetching: false, errorMsg: error.message });
-    });
+    const {signUp, fetching} = this.props;
+    !fetching && signUp(values);
   }
 }
 
 export default connect(
   state => ({
-    auth: state.auth,
+    ...state.auth,
   }),
-  dispatch => ({
-    signUpSuccess: (user) => dispatch(actions.loginSuccess(user)),
-  })
+  {
+    signUp: actions.signUp
+  }
 )(SignUp)
