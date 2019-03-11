@@ -20,12 +20,13 @@ const projectListReducers = createReducer({
 
 const projectDetailReducers = createReducer({
   fetching: false,
+  id: null,
   data: {},
   group: {data: null, editing: false, saving: false},
   itface: {data: null, editing: false, saving: false},
 }, {
-  [types.GET_DETAIL]: (state) => {
-    return {...state, fetching: true};
+  [types.GET_DETAIL]: (state, {payload}) => {
+    return {...state, fetching: true, id: payload};
   },
   [types.SET_DETAIL]: (state, {payload}) => {
     return {...state, fetching: false, data: payload}

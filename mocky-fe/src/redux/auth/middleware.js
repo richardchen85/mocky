@@ -1,22 +1,20 @@
 import {apiRequest, API_SUCCESS, API_ERROR} from '../api';
 import types from './types';
 import actions from './actions';
+import {AUTH} from '../../constants/url';
 
-const URL_SIGN_UP = '/user/signUp';
-const URL_LOGIN = '/user/login';
-const URL_LOGOUT = '/user/logout';
 
-export default ({dispatch, getState}) => next => action => {
+export default () => next => action => {
   next(action);
 
   switch (action.type) {
     case types.SIGN_UP:
-      next(apiRequest({url: URL_SIGN_UP, method: 'POST', body: action.payload, feature: types.SIGN_UP}));
+      next(apiRequest({url: AUTH.SIGN_UP, method: 'POST', body: action.payload, feature: types.SIGN_UP}));
       next(actions.setAuth({fetching: true, error: null}));
       break;
 
     case types.LOGIN:
-      next(apiRequest({url: URL_LOGIN, method: 'POST', body: action.payload, feature: types.LOGIN}));
+      next(apiRequest({url: AUTH.LOGIN, method: 'POST', body: action.payload, feature: types.LOGIN}));
       next(actions.setAuth({fetching: true, error: null}));
       break;
 
@@ -31,7 +29,7 @@ export default ({dispatch, getState}) => next => action => {
       break;
 
     case types.LOGOUT:
-      next(apiRequest({url: URL_LOGOUT, feature: types.LOGOUT}));
+      next(apiRequest({url: AUTH.LOGOUT, feature: types.LOGOUT}));
       break;
 
     case `${types.LOGOUT}_${API_SUCCESS}`:

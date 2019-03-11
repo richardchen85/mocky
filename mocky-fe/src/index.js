@@ -1,22 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import './css/index.css';
 
-import userApi from './api/user';
-import { configureStore } from './redux';
+import {get} from './utils/fetch';
+import {AUTH} from './constants/url';
+import {configureStore} from './redux';
 import App from './components/App';
 
 function startRender(preloadState = {}) {
   ReactDOM.render(
     <Provider store={configureStore(preloadState)}>
-      <App />
+      <App/>
     </Provider>,
     document.getElementById('root')
   );
 }
 
-userApi.getUser().then(json => {
+get(AUTH.GET + Date.now()).then(json => {
   startRender({auth: {fetching: false, user: json.data, error: null}});
 }).catch(() => {
   startRender();

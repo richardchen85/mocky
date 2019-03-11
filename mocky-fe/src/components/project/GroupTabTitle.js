@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
+import {Icon} from 'antd';
 
 class GroupTabTitle extends PureComponent {
   static propTypes = {
@@ -12,20 +12,20 @@ class GroupTabTitle extends PureComponent {
   }
 
   render() {
-    const { group, active, onEdit, onDelete } = this.props;
+    const {group, active, onEdit, onDelete} = this.props;
     const classes = ['tabs-item', 'sortable', active && 'active'];
 
     return (
       <li className={classes.join(' ')} data-id={group.id}>
         <span onClick={this.handleClick}>{group.name}</span>
-        <Icon type="edit" title="修改" onClick={() => onEdit(group)} />
-        <Icon type="delete" title="删除" onClick={() => onDelete(group)} />
+        <Icon type="edit" title="修改" onClick={() => onEdit(group)}/>
+        <Icon type="delete" title="删除" onClick={() => onDelete(group)}/>
       </li>
     )
   }
 
   handleClick = () => {
-    const { group, active, onClick } = this.props;
+    const {group, active, onClick} = this.props;
     !active && onClick(group.id);
   }
 }

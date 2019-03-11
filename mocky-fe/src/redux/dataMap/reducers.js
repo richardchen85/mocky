@@ -1,32 +1,24 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import createReducer from '../utils/createReducer';
 import types from './types';
 
-const dataMapListReducers = createReducer({ fetching: false, data: [], error: null }, {
-  [types.getListStart]: (state, action) => {
-    return { ...state, fetching: true, error: null };
+const dataMapListReducers = createReducer({
+  fetching: false,
+  interface_id: 0,
+  data: [],
+  dataMap: {editing: false, data: null, saving: false}
+}, {
+  [types.GET_LIST]: (state, {payload}) => {
+    return {...state, interface_id: payload, fetching: true};
   },
-  [types.getListSuccess]: (state, { dataMaps = [] }) => {
-    return { ...state, fetching: false, data: dataMaps };
+  [types.SET_LIST]: (state, {payload}) => {
+    return {...state, fetching: false, data: payload};
   },
-  [types.getListFail]: (state, { error }) => {
-    return { ...state, fetching: false, error };
-  },
-});
-
-const dataMapDetailReducers = createReducer({ fetching: false, data: {}, error: null }, {
-  [types.getDetail]: (state, action) => {
-    return { ...state, fetching: true, error: null };
-  },
-  [types.getDetailSuccess]: (state, { dataMap = {} }) => {
-    return { fetching: false, data: dataMap };
-  },
-  [types.getDetailFail]: (state, { error }) => {
-    return { ...state, fetching: false, error };
+  [types.SET_DATA_MAP]: (state, {payload}) => {
+    return {...state, dataMap: {...state.dataMap, ...payload}};
   },
 });
 
 export default combineReducers({
   list: dataMapListReducers,
-  detail: dataMapDetailReducers,
 });

@@ -1,9 +1,9 @@
 export default {
-  getDetailId: state => {
+  getInterfaceId(state) {
     try {
-      return state.project.detail.id;
+      return state.mock.list.interface_id;
     } catch (e) {
       console.error(e);
     }
   }
-};
+}

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 // import { Icon } from 'antd';
 import './index.css';
@@ -10,7 +10,7 @@ class UserInfo extends PureComponent {
   }
 
   render() {
-    const { auth, logout } = this.props;
+    const {auth, logout} = this.props;
 
     return (
       <div className="userinfo">
@@ -18,7 +18,7 @@ class UserInfo extends PureComponent {
           <Icon type="plus-circle" /> 新建项目
         </button> */}
         <span className="nickname">{auth.id ? auth.nickname : '未登录'}</span>
-        { auth.id && <button className="btn logout" onClick={logout}>退出</button> }
+        {auth.id && <button className="btn logout" onClick={logout}>退出</button>}
       </div>
     )
   }

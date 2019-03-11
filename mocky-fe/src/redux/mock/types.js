@@ -1,9 +1,12 @@
-export default {
-  getListStart: 'mock/getListStart',
-  getListSuccess: 'mock/getListSuccess',
-  getListFail: 'mock/getListFail',
+// feature name
+export const MOCKS = 'MOCKS';
 
-  getDetailStart: 'mock/getDetailStart',
-  getDetailSuccess: 'mock/getDetailSuccess',
-  getDetailFail: 'mock/getDetailFail',
+export default {
+  GET_LIST: `${MOCKS}_GET_LIST`,
+  SET_LIST: `${MOCKS}_SET_LIST`,
+  GET_MOCK: `${MOCKS}_GET_MOCK`,
+  SET_MOCKS: `${MOCKS}_SET_MOCKS`,
+  CREATE: `${MOCKS}_CREATE`,
+  UPDATE: `${MOCKS}_UPDATE`,
+  DELETE: `${MOCKS}_DELETE`,
 }

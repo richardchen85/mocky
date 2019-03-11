@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { Icon, Modal } from 'antd';
+import {Icon, Modal} from 'antd';
 import './interfaces.css';
 import InterfaceDetail from './InterfaceDetail';
 import InterfaceTabItem from './InterfaceTabItem';
@@ -24,8 +24,8 @@ class Interfaces extends PureComponent {
   }
 
   render() {
-    const { activeId } = this.state;
-    const { interfaces, projectId, itface } = this.props;
+    const {activeId} = this.state;
+    const {interfaces, projectId, itface} = this.props;
     const activeInterface = interfaces.find(itf => itf.id === activeId);
 
     return (
@@ -33,7 +33,7 @@ class Interfaces extends PureComponent {
         <div className="interface-sidebar">
           <SortableHOC onSortChange={this.handleSort}>
             <div className="interface-tabs">
-              { interfaces.map(itf => (
+              {interfaces.map(itf => (
                 <InterfaceTabItem
                   key={itf.id}
                   data={itf}
@@ -41,20 +41,20 @@ class Interfaces extends PureComponent {
                   onClick={this.changeActiveId}
                   onDelete={this.handleDelete}
                   onSave={this.handleSave}
-                  onEdit={this.handleEdit} />
-              )) }
+                  onEdit={this.handleEdit}/>
+              ))}
             </div>
           </SortableHOC>
           <div className="new-interface">
             <span className="fake-link" onClick={this.handleCreate}>
-              <Icon type="plus" /> 新建接口
+              <Icon type="plus"/> 新建接口
             </span>
           </div>
-          { itface.editing && <InterfaceForm data={itface.data} saving={itface.saving} onCancel={this.handleCancel}
-              onSave={this.handleSave} /> }
+          {itface.editing && <InterfaceForm data={itface.data} saving={itface.saving} onCancel={this.handleCancel}
+                                            onSave={this.handleSave}/>}
         </div>
         <div className="interface-detail">
-          { activeInterface && <InterfaceDetail projectId={projectId} data={activeInterface} /> }
+          {activeInterface && <InterfaceDetail projectId={projectId} data={activeInterface}/>}
         </div>
       </div>
     )
@@ -71,11 +71,11 @@ class Interfaces extends PureComponent {
   }
 
   changeActiveId = (id) => {
-    const { interfaces } = this.props;
+    const {interfaces} = this.props;
     if (id) {
-      this.setState({ activeId: id });
+      this.setState({activeId: id});
     } else if (interfaces.length > 0) {
-      this.setState({ activeId: interfaces[0].id });
+      this.setState({activeId: interfaces[0].id});
     }
   }
 
@@ -84,7 +84,7 @@ class Interfaces extends PureComponent {
   }
 
   handleCreate = () => {
-    const { projectId, groupId, setInterface } = this.props;
+    const {projectId, groupId, setInterface} = this.props;
     setInterface({editing: true, data: {project_id: projectId, group_id: groupId}});
   }
 
@@ -98,7 +98,7 @@ class Interfaces extends PureComponent {
   }
 
   handleDelete = (itf) => {
-    const { onDelete } = this.props;
+    const {onDelete} = this.props;
     Modal.confirm({
       title: '删除接口',
       content: '您确认要删除该接口吗？',
@@ -109,7 +109,7 @@ class Interfaces extends PureComponent {
   }
 
   handleSort = (e, sortable) => {
-    const { onSort } = this.props;
+    const {onSort} = this.props;
     onSort && onSort(sortable.toArray());
   }
 }

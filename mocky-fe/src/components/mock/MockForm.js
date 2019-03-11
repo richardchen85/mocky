@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Input } from 'antd';
+import {Modal, Form, Input} from 'antd';
 import CodeArea from '../CodeArea';
 
 const formItemProps = {
-  labelCol: { span: 3 },
-  wrapperCol: { span: 20 },
+  labelCol: {span: 3},
+  wrapperCol: {span: 20},
 };
 
 class MockForm extends PureComponent {
@@ -18,7 +18,7 @@ class MockForm extends PureComponent {
   }
 
   render() {
-    const { mode, saving, data, onCancel, form: { getFieldDecorator } } = this.props;
+    const {mode, saving, data, onCancel, form: {getFieldDecorator}} = this.props;
 
     return (
       <Modal
@@ -33,26 +33,26 @@ class MockForm extends PureComponent {
         <Form>
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入数据名称！' }],
+              rules: [{required: true, message: '请输入数据名称！'}],
               initialValue: data.name
             })(
-              <Input maxLength={100} />
+              <Input maxLength={100}/>
             )}
           </Form.Item>
           <Form.Item label="HTTP状态码" {...formItemProps}>
             {getFieldDecorator('status_code', {
-              rules: [{ required: true, message: '请输入HTTP状态码！' }],
+              rules: [{required: true, message: '请输入HTTP状态码！'}],
               initialValue: data.status_code || 200
             })(
-              <Input maxLength={3} type="number" />
+              <Input maxLength={3} type="number"/>
             )}
           </Form.Item>
           <Form.Item label="内容" {...formItemProps}>
             {getFieldDecorator('body', {
-              rules: [{ required: true, message: '请输入内容！' }],
+              rules: [{required: true, message: '请输入内容！'}],
               initialValue: data.body
             })(
-              <CodeArea mode={mode} />
+              <CodeArea mode={mode}/>
             )}
           </Form.Item>
         </Form>
@@ -61,7 +61,7 @@ class MockForm extends PureComponent {
   }
 
   handleSubmit = () => {
-    const { form, onSave, data: { project_id, interface_id, id, } } = this.props;
+    const {form, onSave, data: {project_id, interface_id, id,}} = this.props;
 
     form.validateFields((err, values) => {
       if (!err && onSave) {

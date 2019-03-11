@@ -1,32 +1,24 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import createReducer from '../utils/createReducer';
 import types from './types';
 
-const mockListReducers = createReducer({ fetching: false, data: [], error: null }, {
-  [types.getListStart]: (state, action) => {
-    return { ...state, fetching: true, error: null };
+const mockListReducers = createReducer({
+  fetching: false,
+  interface_id: null,
+  data: [],
+  mock: {editing: false, data: null, saving: false}
+}, {
+  [types.GET_LIST]: (state, {payload}) => {
+    return {...state, interface_id: payload, fetching: true};
   },
-  [types.getListSuccess]: (state, { mocks = [] }) => {
-    return { ...state, fetching: false, data: mocks };
+  [types.SET_LIST]: (state, {payload}) => {
+    return {...state, fetching: false, data: payload};
   },
-  [types.getListFail]: (state, { error }) => {
-    return { ...state, fetching: false, error };
-  },
-});
-
-const mockDetailReducers = createReducer({ fetching: false, data: {}, error: null }, {
-  [types.getDetail]: (state, action) => {
-    return { ...state, fetching: true };
-  },
-  [types.getDetailSuccess]: (state, { mock = {} }) => {
-    return { fetching: false, data: mock };
-  },
-  [types.getDetailFail]: (state, { error }) => {
-    return { ...state, fetching: false, error };
+  [types.SET_MOCKS]: (state, {payload}) => {
+    return {...state, mock: {...state.mock, ...payload}};
   },
 });
 
 export default combineReducers({
   list: mockListReducers,
-  detail: mockDetailReducers,
 });

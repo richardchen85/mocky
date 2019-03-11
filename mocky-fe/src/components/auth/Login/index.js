@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Form, Icon, Input, Button, Checkbox, Alert } from 'antd';
+import {Link} from 'react-router-dom';
+import {Form, Icon, Input, Button, Checkbox, Alert} from 'antd';
 import "./index.css";
 
 const FormItem = Form.Item;
@@ -15,40 +15,40 @@ class Login extends PureComponent {
   }
 
   render() {
-    const { form: { getFieldDecorator }, fetching, errorMsg } = this.props;
+    const {form: {getFieldDecorator}, fetching, errorMsg} = this.props;
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
         <FormItem>
           {getFieldDecorator('email', {
             rules: [
-              { required: true, message: '请输入邮箱' },
-              { min: 5, message: '邮箱至少5个字符'},
-              { type: 'email', message: '请输入正确的邮箱' },
+              {required: true, message: '请输入邮箱'},
+              {min: 5, message: '邮箱至少5个字符'},
+              {type: 'email', message: '请输入正确的邮箱'},
             ],
           })(
             <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>}
               placeholder="邮箱"
-              maxLength={50} />
+              maxLength={50}/>
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('password', {
             rules: [
-              { required: true, message: '请输入密码' },
-              { min: 6, message: '密码至少6个字符' },
+              {required: true, message: '请输入密码'},
+              {min: 6, message: '密码至少6个字符'},
             ],
           })(
             <Input
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>}
               type="password"
               placeholder="密码"
-              maxLength={12} />
+              maxLength={12}/>
           )}
         </FormItem>
-        { errorMsg && <FormItem>
-            <Alert message={errorMsg} type="error" />
-          </FormItem>
+        {errorMsg && <FormItem>
+          <Alert message={errorMsg} type="error"/>
+        </FormItem>
         }
         <FormItem>
           {getFieldDecorator('remember', {

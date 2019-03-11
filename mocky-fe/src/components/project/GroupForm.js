@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Input } from 'antd';
+import {Modal, Form, Input} from 'antd';
 
 const formItemProps = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 12 },
+  labelCol: {span: 5},
+  wrapperCol: {span: 12},
 };
 
 class GroupForm extends PureComponent {
@@ -16,7 +16,7 @@ class GroupForm extends PureComponent {
   }
 
   render() {
-    let { saving, group, onCancel, form: { getFieldDecorator } } = this.props;
+    let {saving, group, onCancel, form: {getFieldDecorator}} = this.props;
 
     return (
       <Modal
@@ -30,18 +30,18 @@ class GroupForm extends PureComponent {
         <Form>
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
-              rules: [{ required: true, message: '请输入分组名称！' }],
+              rules: [{required: true, message: '请输入分组名称！'}],
               initialValue: group.name
             })(
-              <Input maxLength={20} />
+              <Input maxLength={20}/>
             )}
           </Form.Item>
           <Form.Item label="描述" {...formItemProps}>
             {getFieldDecorator('desc', {
-              rules: [{ required: true, message: '请输入分组描述！' }],
+              rules: [{required: true, message: '请输入分组描述！'}],
               initialValue: group.desc || '-'
             })(
-              <Input maxLength={50} />
+              <Input maxLength={50}/>
             )}
           </Form.Item>
         </Form>
@@ -50,7 +50,7 @@ class GroupForm extends PureComponent {
   }
 
   handleSubmit = () => {
-    const { form, onSave, group } = this.props;
+    const {form, onSave, group} = this.props;
 
     form.validateFields((err, values) => {
       if (!err && onSave) {

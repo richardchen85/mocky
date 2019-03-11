@@ -1,28 +1,30 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Spin } from 'antd';
+import {connect} from 'react-redux';
+import {Spin} from 'antd';
 import MockList from '../../components/mock/MockList';
 
-import { operations } from '../../redux/mock';
+import {actions} from '../../redux/mock';
 
 class MockListContainer extends PureComponent {
   static propTypes = {
     projectId: PropTypes.number.isRequired,
+    itf: PropTypes.object.isRequired,
   };
 
   render() {
-    const { projectId, itf, fetching, data, getById } = this.props;
+    const {fetching, projectId, itf, data, mock, getMock, setMock} = this.props;
 
     if (fetching) {
       return (
-        <div className="mock-list" style={{width:500}}><Spin /></div>
+        <div className="mock-list" style={{width: 500}}><Spin/></div>
       )
     }
 
     return (
-      <div className="mock-list" style={{width:500}}>
-        <MockList projectId={projectId} itf={itf} data={data} onDelete={this.deleteMock} onSave={this.saveMock} getById={getById} />
+      <div className="mock-list" style={{width: 500}}>
+        <MockList projectId={projectId} itf={itf} data={data} onDelete={this.deleteMock} onSave={this.saveMock}
+                  mock={mock} getMock={getMock} setMock={setMock}/>
       </div>
     )
   }
@@ -38,26 +40,16 @@ class MockListContainer extends PureComponent {
   }
 
   getList() {
-    const { itf, getList } = this.props;
+    const {itf, getList} = this.props;
     getList(itf.id);
   }
 
   deleteMock = (id) => {
-    this.props.delete(id).then(() => {
-      this.getList();
-    }).catch(error => {
-      console.error(error);
-    });
+    this.props.delete(id);
   };
 
-  saveMock = (mock, callback) => {
-    const action = mock.id ? this.props.update : this.props.create;
-    action(mock).then(() => {
-      callback && callback();
-      this.getList();
-    }).catch(error => {
-      callback && callback(error.message);
-    });
+  saveMock = (mock) => {
+    mock.id ? this.props.update(mock) : this.props.create(mock);
   }
 }
 
@@ -66,10 +58,11 @@ export default connect(
     ...state.mock.list,
   }),
   {
-    getList: operations.getList,
-    delete: operations.delete,
-    create: operations.create,
-    update: operations.update,
-    getById: operations.getById,
+    getList: actions.getList,
+    delete: actions.delete,
+    getMock: actions.getMock,
+    setMock: actions.setMock,
+    create: actions.create,
+    update: actions.update,
   }
 )(MockListContainer);

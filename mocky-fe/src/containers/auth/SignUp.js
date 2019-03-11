@@ -1,19 +1,19 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import React, {PureComponent} from 'react';
+import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 import SignUpForm from '../../components/auth/SignUp';
-import { actions } from '../../redux/auth';
+import {actions} from '../../redux/auth';
 
 class SignUp extends PureComponent {
   render() {
-    const { fetching, user, error } = this.props;
+    const {fetching, user, error} = this.props;
 
     if (user.id) {
-      return <Redirect to={{pathname: '/'}} />
+      return <Redirect to={{pathname: '/'}}/>
     }
 
     return (
-      <SignUpForm onSubmit={this.submit} fetching={fetching} errorMsg={error} />
+      <SignUpForm onSubmit={this.submit} fetching={fetching} errorMsg={error}/>
     )
   }
 

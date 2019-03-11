@@ -1,6 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
-import { Table, Divider, Icon, Modal, Button } from 'antd';
+import {Table, Divider, Icon, Modal, Button} from 'antd';
 import MockForm from './MockForm';
 import contentTypes from '../../constants/contentTypes';
 
@@ -9,71 +9,61 @@ class MockList extends PureComponent {
     projectId: PropTypes.number.isRequired,
     itf: PropTypes.object.isRequired,
     data: PropTypes.array.isRequired,
+    mock: PropTypes.object.isRequired,
     onDelete: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    getById: PropTypes.func.isRequired,
-  }
+    getMock: PropTypes.func.isRequired,
+    setMock: PropTypes.func.isRequired,
+  };
 
   columns = [
-    { title: 'id', key:' id', dataIndex: 'id' },
-    { title: '名称', key: 'name', dataIndex: 'name' },
-    { title: '状态码', key: 'status_code', dataIndex: 'status_code' },
-    { title: '操作', key: 'action', render: (text, record) => (
-      <span>
-        <Icon type="edit" title="修改" onClick={ () => this.handleEdit(record.id) } style={{cursor:'pointer'}} />
-        <Divider type="vertical" />
-        <Icon type="delete" title="删除" onClick={ () => this.handleDelete(record.id) } style={{cursor:'pointer'}} />
+    {title: 'id', key: ' id', dataIndex: 'id'},
+    {title: '名称', key: 'name', dataIndex: 'name'},
+    {title: '状态码', key: 'status_code', dataIndex: 'status_code'},
+    {
+      title: '操作', key: 'action', render: (text, record) => (
+        <span>
+        <Icon type="edit" title="修改" onClick={() => this.handleEdit(record.id)} style={{cursor: 'pointer'}}/>
+        <Divider type="vertical"/>
+        <Icon type="delete" title="删除" onClick={() => this.handleDelete(record.id)} style={{cursor: 'pointer'}}/>
       </span>
-    )},
+      )
+    },
   ];
 
-  state = {
-    edit: false,
-    saving: false,
-    mock: {}
-  }
-
   render() {
-    const { edit, saving, mock } = this.state;
-    const { data } = this.props;
+    const {data, mock} = this.props;
     const codeMode = this.getCodeMode();
 
     return (
       <>
-        <div style={{marginBottom:10}}> 
+        <div style={{marginBottom: 10}}>
           <Button type="primary" size="small" onClick={this.handleCreate}>添加模拟数据</Button>
         </div>
-        <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false} />
-        { edit && <MockForm data={mock} mode={codeMode} saving={saving} onCancel={this.handleCancel} onSave={this.handleSave} /> }
+        <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false}/>
+        {mock.editing &&
+        <MockForm data={mock.data} mode={codeMode} saving={mock.saving} onCancel={this.handleCancel} onSave={this.handleSave}/>}
       </>
     )
   }
 
   handleCreate = () => {
-    const { projectId, itf } = this.props;
-    this.setState({
-      edit: true,
-      mock: {
+    const {projectId, itf, setMock} = this.props;
+    setMock({
+      editing: true,
+      data: {
         project_id: projectId,
         interface_id: itf.id,
       }
     });
-  }
+  };
 
   handleEdit = (id) => {
-    if (this.gettingDetail) return;
-    this.gettingDetail = true;
-    this.props.getById(id).then(json => {
-      this.gettingDetail = false;
-      this.setState({ edit: true, mock: json.data });
-    }).catch(error => {
-      this.gettingDetail = false;
-      console.error(error);
-    });
-  }
+    this.props.getMock(id);
+  };
 
   handleDelete = (id) => {
-    const { onDelete } = this.props;
+    const {onDelete} = this.props;
 
     Modal.confirm({
       title: '删除映射',
@@ -82,29 +72,20 @@ class MockList extends PureComponent {
         onDelete(id);
       }
     })
-  }
+  };
 
   handleSave = (mock) => {
-    if (this.state.saving) return;
-
-    this.setState({ saving: true });
-    const { onSave } = this.props;
-    onSave(mock, errorMsg => {
-      if (!errorMsg) {
-        this.setState({ edit: false, saving: false });
-      } else {
-        this.setState({ saving: false });
-      }
-    });
-  }
+    const {onSave, mock: {saving}} = this.props;
+    !saving && onSave(mock);
+  };
 
   handleCancel = () => {
-    this.setState({ edit: false, saving: false, mock: {} });
-  }
+    this.props.setMock({editing: false, saving: false});
+  };
 
   getCodeMode() {
-    const { itf } = this.props;
-    return itf.content_type === contentTypes.types[0].key ? { name: 'javascript', json: true } : 'htmlmixed';
+    const {itf} = this.props;
+    return itf.content_type === contentTypes.types[0].key ? {name: 'javascript', json: true} : 'htmlmixed';
   }
 }
 
