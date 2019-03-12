@@ -9,7 +9,12 @@ export default ({ dispatch, getState }) => next => action => {
 
   switch (action.type) {
     case types.GET_LIST: {
-      next(apiRequest({ url: MOCK.GET_LIST + action.payload, feature: types.GET_LIST }));
+      next(
+        apiRequest({
+          url: MOCK.GET_LIST + action.payload,
+          feature: types.GET_LIST,
+        })
+      );
       break;
     }
 
@@ -19,7 +24,12 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     case types.GET_MOCK: {
-      next(apiRequest({ url: MOCK.GET_MOCK + action.payload, feature: types.GET_MOCK }));
+      next(
+        apiRequest({
+          url: MOCK.GET_MOCK + action.payload,
+          feature: types.GET_MOCK,
+        })
+      );
       break;
     }
 
@@ -29,12 +39,26 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     case types.CREATE: {
-      next(apiRequest({ url: MOCK.CREATE, method: 'POST', body: action.payload, feature: types.CREATE }));
+      next(
+        apiRequest({
+          url: MOCK.CREATE,
+          method: 'POST',
+          body: action.payload,
+          feature: types.CREATE,
+        })
+      );
       break;
     }
 
     case types.UPDATE: {
-      next(apiRequest({ url: MOCK.UPDATE, method: 'POST', body: action.payload, feature: types.UPDATE }));
+      next(
+        apiRequest({
+          url: MOCK.UPDATE,
+          method: 'POST',
+          body: action.payload,
+          feature: types.UPDATE,
+        })
+      );
       break;
     }
 
@@ -65,4 +89,4 @@ export default ({ dispatch, getState }) => next => action => {
     default:
       break;
   }
-}
+};

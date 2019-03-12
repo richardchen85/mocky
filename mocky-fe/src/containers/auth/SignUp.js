@@ -9,12 +9,10 @@ class SignUp extends PureComponent {
     const { fetching, user, error } = this.props;
 
     if (user.id) {
-      return <Redirect to={{ pathname: '/' }}/>
+      return <Redirect to={{ pathname: '/' }} />;
     }
 
-    return (
-      <SignUpForm onSubmit={this.submit} fetching={fetching} errorMsg={error}/>
-    )
+    return <SignUpForm onSubmit={this.submit} fetching={fetching} errorMsg={error} />;
   }
 
   componentDidMount() {
@@ -25,10 +23,10 @@ class SignUp extends PureComponent {
     }
   }
 
-  submit = (values) => {
+  submit = values => {
     const { signUp, fetching } = this.props;
     !fetching && signUp(values);
-  }
+  };
 }
 
 export default connect(
@@ -36,6 +34,6 @@ export default connect(
     ...state.auth,
   }),
   {
-    signUp: actions.signUp
+    signUp: actions.signUp,
   }
-)(SignUp)
+)(SignUp);

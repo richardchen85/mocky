@@ -14,12 +14,17 @@ class InterfaceInfo extends PureComponent {
     return (
       <dl className="interface-info">
         <dt>{data.desc}</dt>
-        <dd>地址：<a href={url} target="_blank" rel="noopener noreferrer">{data.url}</a></dd>
+        <dd>
+          地址：
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            {data.url}
+          </a>
+        </dd>
         <dd>请求类型：{data.method.toUpperCase()}</dd>
         <dd>响应格式：{contentType.name}</dd>
         <dd>jsonp回调key：{data.jsonp_callback || '-'}</dd>
       </dl>
-    )
+    );
   }
 }
 

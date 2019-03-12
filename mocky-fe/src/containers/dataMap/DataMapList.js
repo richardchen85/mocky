@@ -17,16 +17,25 @@ class DataMapListContainer extends PureComponent {
 
     if (fetching) {
       return (
-        <div className="dataMap-list" style={{ width: 600 }}><Spin/></div>
-      )
+        <div className="dataMap-list" style={{ width: 600 }}>
+          <Spin />
+        </div>
+      );
     }
 
     return (
       <div className="dataMap-list" style={{ marginRight: 15, width: 600 }}>
-        <DataMapList projectId={projectId} interfaceId={interfaceId} data={data} setDataMap={setDataMap}
-                     dataMap={dataMap} onDelete={this.deleteDataMap} onSave={this.saveDataMap}/>
+        <DataMapList
+          projectId={projectId}
+          interfaceId={interfaceId}
+          data={data}
+          setDataMap={setDataMap}
+          dataMap={dataMap}
+          onDelete={this.deleteDataMap}
+          onSave={this.saveDataMap}
+        />
       </div>
-    )
+    );
   }
 
   componentDidMount() {
@@ -47,13 +56,13 @@ class DataMapListContainer extends PureComponent {
     getList(interfaceId);
   }
 
-  deleteDataMap = (id) => {
+  deleteDataMap = id => {
     this.props.delete(id);
   };
 
-  saveDataMap = (dataMap) => {
+  saveDataMap = dataMap => {
     dataMap.id ? this.props.update(dataMap) : this.props.create(dataMap);
-  }
+  };
 }
 
 export default connect(

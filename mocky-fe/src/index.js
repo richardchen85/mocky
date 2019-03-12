@@ -11,14 +11,16 @@ import App from './components/App';
 function startRender(preloadState = {}) {
   ReactDOM.render(
     <Provider store={configureStore(preloadState)}>
-      <App/>
+      <App />
     </Provider>,
     document.getElementById('root')
   );
 }
 
-get(AUTH.GET + Date.now()).then(json => {
-  startRender({ auth: { fetching: false, user: json.data, error: null } });
-}).catch(() => {
-  startRender();
-});
+get(AUTH.GET + Date.now())
+  .then(json => {
+    startRender({ auth: { fetching: false, user: json.data, error: null } });
+  })
+  .catch(() => {
+    startRender();
+  });

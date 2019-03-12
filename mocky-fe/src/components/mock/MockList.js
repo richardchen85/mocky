@@ -21,13 +21,15 @@ class MockList extends PureComponent {
     { title: '名称', key: 'name', dataIndex: 'name' },
     { title: '状态码', key: 'status_code', dataIndex: 'status_code' },
     {
-      title: '操作', key: 'action', render: (text, record) => (
+      title: '操作',
+      key: 'action',
+      render: (text, record) => (
         <span>
-        <Icon type="edit" title="修改" onClick={() => this.handleEdit(record.id)} style={{ cursor: 'pointer' }}/>
-        <Divider type="vertical"/>
-        <Icon type="delete" title="删除" onClick={() => this.handleDelete(record.id)} style={{ cursor: 'pointer' }}/>
-      </span>
-      )
+          <Icon type="edit" title="修改" onClick={() => this.handleEdit(record.id)} style={{ cursor: 'pointer' }} />
+          <Divider type="vertical" />
+          <Icon type="delete" title="删除" onClick={() => this.handleDelete(record.id)} style={{ cursor: 'pointer' }} />
+        </span>
+      ),
     },
   ];
 
@@ -38,14 +40,22 @@ class MockList extends PureComponent {
     return (
       <>
         <div style={{ marginBottom: 10 }}>
-          <Button type="primary" size="small" onClick={this.handleCreate}>添加模拟数据</Button>
+          <Button type="primary" size="small" onClick={this.handleCreate}>
+            添加模拟数据
+          </Button>
         </div>
-        <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false}/>
-        {mock.editing &&
-        <MockForm data={mock.data} mode={codeMode} saving={mock.saving} onCancel={this.handleCancel}
-                  onSave={this.handleSave}/>}
+        <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false} />
+        {mock.editing && (
+          <MockForm
+            data={mock.data}
+            mode={codeMode}
+            saving={mock.saving}
+            onCancel={this.handleCancel}
+            onSave={this.handleSave}
+          />
+        )}
       </>
-    )
+    );
   }
 
   handleCreate = () => {
@@ -55,15 +65,15 @@ class MockList extends PureComponent {
       data: {
         project_id: projectId,
         interface_id: itf.id,
-      }
+      },
     });
   };
 
-  handleEdit = (id) => {
+  handleEdit = id => {
     this.props.getMock(id);
   };
 
-  handleDelete = (id) => {
+  handleDelete = id => {
     const { onDelete } = this.props;
 
     Modal.confirm({
@@ -71,12 +81,15 @@ class MockList extends PureComponent {
       content: '您确认要删除该数据映射规则吗？',
       onOk: () => {
         onDelete(id);
-      }
-    })
+      },
+    });
   };
 
-  handleSave = (mock) => {
-    const { onSave, mock: { saving } } = this.props;
+  handleSave = mock => {
+    const {
+      onSave,
+      mock: { saving },
+    } = this.props;
     !saving && onSave(mock);
   };
 

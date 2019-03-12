@@ -21,7 +21,7 @@ class UserSelect extends PureComponent {
         labelInValue
         value={value}
         filterOption={false}
-        notFoundContent={fetching ? <Spin size="small" style={{ marginLeft: 5 }}/> : null}
+        notFoundContent={fetching ? <Spin size="small" style={{ marginLeft: 5 }} /> : null}
         style={this.props.style}
         onSearch={this.handleSearch}
         onChange={this.handleChange}
@@ -31,7 +31,7 @@ class UserSelect extends PureComponent {
     );
   }
 
-  handleSearch = (value) => {
+  handleSearch = value => {
     if (this.timer) {
       clearTimeout(this.timer);
       this.timer = null;
@@ -60,12 +60,12 @@ class UserSelect extends PureComponent {
     }, 800);
   };
 
-  handleChange = (value) => {
+  handleChange = value => {
     this.setState({ value, data: [], fetching: false }, () => {
       const { onChange } = this.props;
       onChange && onChange(this.state.value);
     });
-  }
+  };
 }
 
 export default UserSelect;

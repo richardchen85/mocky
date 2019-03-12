@@ -15,10 +15,16 @@ class MockForm extends PureComponent {
     data: PropTypes.object.isRequired,
     onCancel: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-  }
+  };
 
   render() {
-    const { mode, saving, data, onCancel, form: { getFieldDecorator } } = this.props;
+    const {
+      mode,
+      saving,
+      data,
+      onCancel,
+      form: { getFieldDecorator },
+    } = this.props;
 
     return (
       <Modal
@@ -34,34 +40,32 @@ class MockForm extends PureComponent {
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入数据名称！' }],
-              initialValue: data.name
-            })(
-              <Input maxLength={100}/>
-            )}
+              initialValue: data.name,
+            })(<Input maxLength={100} />)}
           </Form.Item>
           <Form.Item label="HTTP状态码" {...formItemProps}>
             {getFieldDecorator('status_code', {
               rules: [{ required: true, message: '请输入HTTP状态码！' }],
-              initialValue: data.status_code || 200
-            })(
-              <Input maxLength={3} type="number"/>
-            )}
+              initialValue: data.status_code || 200,
+            })(<Input maxLength={3} type="number" />)}
           </Form.Item>
           <Form.Item label="内容" {...formItemProps}>
             {getFieldDecorator('body', {
               rules: [{ required: true, message: '请输入内容！' }],
-              initialValue: data.body
-            })(
-              <CodeArea mode={mode}/>
-            )}
+              initialValue: data.body,
+            })(<CodeArea mode={mode} />)}
           </Form.Item>
         </Form>
       </Modal>
-    )
+    );
   }
 
   handleSubmit = () => {
-    const { form, onSave, data: { project_id, interface_id, id, } } = this.props;
+    const {
+      form,
+      onSave,
+      data: { project_id, interface_id, id },
+    } = this.props;
 
     form.validateFields((err, values) => {
       if (!err && onSave) {
@@ -74,7 +78,7 @@ class MockForm extends PureComponent {
         });
       }
     });
-  }
+  };
 }
 
 export default Form.create()(MockForm);

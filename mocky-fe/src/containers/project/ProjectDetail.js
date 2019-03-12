@@ -9,17 +9,33 @@ import { actions } from '../../redux/project';
 
 class ProjectDetail extends PureComponent {
   render() {
-    const { auth, logout, data, fetching, match, group, itface, setGroup, setInterface, sortGroup, sortInterface } = this.props;
+    const {
+      auth,
+      logout,
+      data,
+      fetching,
+      match,
+      group,
+      itface,
+      setGroup,
+      setInterface,
+      sortGroup,
+      sortInterface,
+    } = this.props;
     const groups = data.groups || [];
     const currentId = Number(match.params.id);
 
     if (fetching || !data.id || currentId !== data.id) {
-      return <PageLayout auth={auth} logout={logout}><Spin/></PageLayout>
+      return (
+        <PageLayout auth={auth} logout={logout}>
+          <Spin />
+        </PageLayout>
+      );
     }
 
     return (
       <PageLayout auth={auth} logout={logout}>
-        <ProjectInfo data={data}/>
+        <ProjectInfo data={data} />
         <GroupTabs
           projectId={data.id}
           groups={groups}
@@ -32,9 +48,10 @@ class ProjectDetail extends PureComponent {
           onGroupSort={sortGroup}
           onInterfaceSave={this.saveInterface}
           onInterfaceDelete={this.deleteInterface}
-          onInterfaceSort={sortInterface}/>
+          onInterfaceSort={sortInterface}
+        />
       </PageLayout>
-    )
+    );
   }
 
   componentDidMount() {
@@ -53,7 +70,7 @@ class ProjectDetail extends PureComponent {
    * 保存分组
    * @param {*} group
    */
-  saveGroup = (group) => {
+  saveGroup = group => {
     const { createGroup, updateGroup } = this.props;
     group.id ? updateGroup(group) : createGroup(group);
   };
@@ -61,7 +78,7 @@ class ProjectDetail extends PureComponent {
   /**
    * 删除分组
    */
-  deleteGroup = (id) => {
+  deleteGroup = id => {
     this.props.deleteGroup(id);
   };
 
@@ -69,7 +86,7 @@ class ProjectDetail extends PureComponent {
    * 保存接口
    * @param {*} itf
    */
-  saveInterface = (itf) => {
+  saveInterface = itf => {
     const { createInterface, updateInterface } = this.props;
     itf.id ? updateInterface(itf) : createInterface(itf);
   };
@@ -77,14 +94,14 @@ class ProjectDetail extends PureComponent {
   /**
    * 删除接口
    */
-  deleteInterface = (id) => {
+  deleteInterface = id => {
     this.props.deleteInterface(id);
-  }
+  };
 }
 
 export default connect(
   state => ({
-    ...state.project.detail
+    ...state.project.detail,
   }),
   {
     getDetail: actions.getDetail,

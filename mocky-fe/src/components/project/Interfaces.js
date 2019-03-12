@@ -17,11 +17,11 @@ class Interfaces extends PureComponent {
     onDelete: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     onSort: PropTypes.func.isRequired,
-  }
+  };
 
   state = {
     activeId: 0,
-  }
+  };
 
   render() {
     const { activeId } = this.state;
@@ -41,23 +41,30 @@ class Interfaces extends PureComponent {
                   onClick={this.changeActiveId}
                   onDelete={this.handleDelete}
                   onSave={this.handleSave}
-                  onEdit={this.handleEdit}/>
+                  onEdit={this.handleEdit}
+                />
               ))}
             </div>
           </SortableHOC>
           <div className="new-interface">
             <span className="fake-link" onClick={this.handleCreate}>
-              <Icon type="plus"/> 新建接口
+              <Icon type="plus" /> 新建接口
             </span>
           </div>
-          {itface.editing && <InterfaceForm data={itface.data} saving={itface.saving} onCancel={this.handleCancel}
-                                            onSave={this.handleSave}/>}
+          {itface.editing && (
+            <InterfaceForm
+              data={itface.data}
+              saving={itface.saving}
+              onCancel={this.handleCancel}
+              onSave={this.handleSave}
+            />
+          )}
         </div>
         <div className="interface-detail">
-          {activeInterface && <InterfaceDetail projectId={projectId} data={activeInterface}/>}
+          {activeInterface && <InterfaceDetail projectId={projectId} data={activeInterface} />}
         </div>
       </div>
-    )
+    );
   }
 
   componentDidMount() {
@@ -70,48 +77,54 @@ class Interfaces extends PureComponent {
     }
   }
 
-  changeActiveId = (id) => {
+  changeActiveId = id => {
     const { interfaces } = this.props;
     if (id) {
       this.setState({ activeId: id });
     } else if (interfaces.length > 0) {
       this.setState({ activeId: interfaces[0].id });
     }
-  }
+  };
 
-  handleEdit = (itf) => {
+  handleEdit = itf => {
     this.props.setInterface({ editing: true, data: itf });
-  }
+  };
 
   handleCreate = () => {
     const { projectId, groupId, setInterface } = this.props;
-    setInterface({ editing: true, data: { project_id: projectId, group_id: groupId } });
-  }
+    setInterface({
+      editing: true,
+      data: { project_id: projectId, group_id: groupId },
+    });
+  };
 
-  handleSave = (itf) => {
-    const { onSave, itface: { saving } } = this.props;
+  handleSave = itf => {
+    const {
+      onSave,
+      itface: { saving },
+    } = this.props;
     !saving && onSave(itf);
-  }
+  };
 
   handleCancel = () => {
     this.props.setInterface({ editing: false, data: null, saving: false });
-  }
+  };
 
-  handleDelete = (itf) => {
+  handleDelete = itf => {
     const { onDelete } = this.props;
     Modal.confirm({
       title: '删除接口',
       content: '您确认要删除该接口吗？',
       onOk: () => {
         onDelete(itf.id);
-      }
+      },
     });
-  }
+  };
 
   handleSort = (e, sortable) => {
     const { onSort } = this.props;
     onSort && onSort(sortable.toArray());
-  }
+  };
 }
 
 export default Interfaces;

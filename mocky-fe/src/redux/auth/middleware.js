@@ -3,18 +3,31 @@ import types from './types';
 import actions from './actions';
 import { AUTH } from '../../constants/url';
 
-
 export default () => next => action => {
   next(action);
 
   switch (action.type) {
     case types.SIGN_UP:
-      next(apiRequest({ url: AUTH.SIGN_UP, method: 'POST', body: action.payload, feature: types.SIGN_UP }));
+      next(
+        apiRequest({
+          url: AUTH.SIGN_UP,
+          method: 'POST',
+          body: action.payload,
+          feature: types.SIGN_UP,
+        })
+      );
       next(actions.setAuth({ fetching: true, error: null }));
       break;
 
     case types.LOGIN:
-      next(apiRequest({ url: AUTH.LOGIN, method: 'POST', body: action.payload, feature: types.LOGIN }));
+      next(
+        apiRequest({
+          url: AUTH.LOGIN,
+          method: 'POST',
+          body: action.payload,
+          feature: types.LOGIN,
+        })
+      );
       next(actions.setAuth({ fetching: true, error: null }));
       break;
 
@@ -39,4 +52,4 @@ export default () => next => action => {
     default:
       break;
   }
-}
+};

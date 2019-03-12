@@ -17,16 +17,26 @@ class MockListContainer extends PureComponent {
 
     if (fetching) {
       return (
-        <div className="mock-list" style={{ width: 500 }}><Spin/></div>
-      )
+        <div className="mock-list" style={{ width: 500 }}>
+          <Spin />
+        </div>
+      );
     }
 
     return (
       <div className="mock-list" style={{ width: 500 }}>
-        <MockList projectId={projectId} itf={itf} data={data} onDelete={this.deleteMock} onSave={this.saveMock}
-                  mock={mock} getMock={getMock} setMock={setMock}/>
+        <MockList
+          projectId={projectId}
+          itf={itf}
+          data={data}
+          onDelete={this.deleteMock}
+          onSave={this.saveMock}
+          mock={mock}
+          getMock={getMock}
+          setMock={setMock}
+        />
       </div>
-    )
+    );
   }
 
   componentDidMount() {
@@ -44,13 +54,13 @@ class MockListContainer extends PureComponent {
     getList(itf.id);
   }
 
-  deleteMock = (id) => {
+  deleteMock = id => {
     this.props.delete(id);
   };
 
-  saveMock = (mock) => {
+  saveMock = mock => {
     mock.id ? this.props.update(mock) : this.props.create(mock);
-  }
+  };
 }
 
 export default connect(

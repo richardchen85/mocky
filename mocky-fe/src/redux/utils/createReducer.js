@@ -9,5 +9,5 @@ export default function createReducer(initialState, actionHandlerMap) {
       return handler(state, action);
     }
     return state;
-  }
+  };
 }

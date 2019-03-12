@@ -9,13 +9,13 @@ class InterfaceDetail extends PureComponent {
 
     return (
       <div className="interface-detail">
-        <InterfaceInfo projectId={projectId} data={data}/>
+        <InterfaceInfo projectId={projectId} data={data} />
         <div style={{ display: 'flex' }}>
-          <DataMapList projectId={projectId} interfaceId={data.id}/>
-          <MockList projectId={projectId} itf={data}/>
+          <DataMapList projectId={projectId} interfaceId={data.id} />
+          <MockList projectId={projectId} itf={data} />
         </div>
       </div>
-    )
+    );
   }
 }
 

@@ -9,7 +9,7 @@ class PageLayout extends PureComponent {
   static propTypes = {
     auth: PropTypes.object.isRequired,
     logout: PropTypes.func.isRequired,
-  }
+  };
 
   render() {
     const { auth, logout } = this.props;
@@ -18,16 +18,17 @@ class PageLayout extends PureComponent {
       <Layout>
         <Header>
           <div id="logo">mocky</div>
-          <UserInfo auth={auth} logout={logout}/>
+          <UserInfo auth={auth} logout={logout} />
         </Header>
-        <Content style={{ backgroundColor: '#fff', padding: 15 }}>
-          {this.props.children}
-        </Content>
+        <Content style={{ backgroundColor: '#fff', padding: 15 }}>{this.props.children}</Content>
         <Footer style={{ textAlign: 'center' }}>
-          <p>Created by Richard Chen &nbsp;&nbsp;<a href="mailto:clq_web@126.com">clq_web@126.com</a></p>
+          <p>
+            Created by Richard Chen &nbsp;&nbsp;
+            <a href="mailto:clq_web@126.com">clq_web@126.com</a>
+          </p>
         </Footer>
       </Layout>
-    )
+    );
   }
 
   componentDidMount() {
@@ -39,4 +40,4 @@ class PageLayout extends PureComponent {
   }
 }
 
-export default PageLayout
+export default PageLayout;

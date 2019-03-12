@@ -5,4 +5,4 @@ export default {
   LOGIN: `${AUTH}_LOGIN`,
   LOGOUT: `${AUTH}_LOGOUT`,
   SET_AUTH: `${AUTH}_SET_AUTH`,
-}
+};

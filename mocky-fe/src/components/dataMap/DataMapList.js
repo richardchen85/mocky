@@ -17,23 +17,32 @@ class DataMapList extends PureComponent {
   columns = [
     { title: '名称', key: 'name', dataIndex: 'name' },
     {
-      title: '匹配来源', key: 'from', dataIndex: 'from', render: from => {
+      title: '匹配来源',
+      key: 'from',
+      dataIndex: 'from',
+      render: from => {
         const d = dataMapFroms.getByKey(from);
         return d ? d.name : '未知';
-      }
+      },
     },
-    { title: '正则', key: 'regex', dataIndex: 'regex', render: regex => regex ? '是' : '否' },
+    {
+      title: '正则',
+      key: 'regex',
+      dataIndex: 'regex',
+      render: regex => (regex ? '是' : '否'),
+    },
     { title: '匹配规则', key: 'match', dataIndex: 'match' },
     { title: 'mock_id', key: 'mock_id', dataIndex: 'mock_id' },
     {
-      title: '操作', key: 'action', render: (text, record) => (
+      title: '操作',
+      key: 'action',
+      render: (text, record) => (
         <span>
-        <Icon type="edit" title="修改" onClick={() => this.handleEdit(record)}
-              style={{ cursor: 'pointer' }}/>
-        <Divider type="vertical"/>
-        <Icon type="delete" title="删除" onClick={() => this.handleDelete(record.id)} style={{ cursor: 'pointer' }}/>
-      </span>
-      )
+          <Icon type="edit" title="修改" onClick={() => this.handleEdit(record)} style={{ cursor: 'pointer' }} />
+          <Divider type="vertical" />
+          <Icon type="delete" title="删除" onClick={() => this.handleDelete(record.id)} style={{ cursor: 'pointer' }} />
+        </span>
+      ),
     },
   ];
 
@@ -43,13 +52,21 @@ class DataMapList extends PureComponent {
     return (
       <>
         <div style={{ marginBottom: 10 }}>
-          <Button type="primary" size="small" onClick={this.handleCreate}>添加数据映射</Button>
+          <Button type="primary" size="small" onClick={this.handleCreate}>
+            添加数据映射
+          </Button>
         </div>
-        <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false}/>
-        {dataMap.editing && <DataMapForm data={dataMap.data} saving={dataMap.saving} onCancel={this.handleCancel}
-                                         onSave={this.handleSave}/>}
+        <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false} />
+        {dataMap.editing && (
+          <DataMapForm
+            data={dataMap.data}
+            saving={dataMap.saving}
+            onCancel={this.handleCancel}
+            onSave={this.handleSave}
+          />
+        )}
       </>
-    )
+    );
   }
 
   handleCreate = () => {
@@ -60,15 +77,15 @@ class DataMapList extends PureComponent {
         project_id: projectId,
         interface_id: interfaceId,
         from: dataMapFroms.froms[0].key,
-      }
+      },
     });
   };
 
-  handleEdit = (dataMap) => {
+  handleEdit = dataMap => {
     this.props.setDataMap({ editing: true, data: dataMap });
   };
 
-  handleDelete = (id) => {
+  handleDelete = id => {
     const { onDelete } = this.props;
 
     Modal.confirm({
@@ -76,18 +93,21 @@ class DataMapList extends PureComponent {
       content: '您确认要删除该数据映射规则吗？',
       onOk: () => {
         onDelete(id);
-      }
-    })
+      },
+    });
   };
 
-  handleSave = (dataMap) => {
-    const { onSave, dataMap: { saving } } = this.props;
+  handleSave = dataMap => {
+    const {
+      onSave,
+      dataMap: { saving },
+    } = this.props;
     !saving && onSave(dataMap);
   };
 
   handleCancel = () => {
     this.props.setDataMap({ editing: false, saving: false });
-  }
+  };
 }
 
 export default DataMapList;

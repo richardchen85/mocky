@@ -9,12 +9,10 @@ class Login extends PureComponent {
     const { fetching, user, error } = this.props;
 
     if (user.id) {
-      return <Redirect to={{ pathname: '/' }}/>
+      return <Redirect to={{ pathname: '/' }} />;
     }
 
-    return (
-      <LoginForm onSubmit={this.submit} fetching={fetching} errorMsg={error}/>
-    )
+    return <LoginForm onSubmit={this.submit} fetching={fetching} errorMsg={error} />;
   }
 
   componentDidMount() {
@@ -25,10 +23,10 @@ class Login extends PureComponent {
     }
   }
 
-  submit = (values) => {
+  submit = values => {
     const { login, fetching } = this.props;
     !fetching && login(values);
-  }
+  };
 }
 
 export default connect(
@@ -38,4 +36,4 @@ export default connect(
   {
     login: actions.login,
   }
-)(Login)
+)(Login);

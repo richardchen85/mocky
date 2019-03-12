@@ -21,15 +21,25 @@ class GroupTabs extends PureComponent {
     onInterfaceSave: PropTypes.func.isRequired,
     onInterfaceDelete: PropTypes.func.isRequired,
     onInterfaceSort: PropTypes.func.isRequired,
-  }
+  };
 
   state = {
     activeId: 0,
-  }
+  };
 
   render() {
-    const { activeId, } = this.state;
-    const { projectId, groups, group, itface, setInterface, onGroupSave, onInterfaceDelete, onInterfaceSave, onInterfaceSort } = this.props;
+    const { activeId } = this.state;
+    const {
+      projectId,
+      groups,
+      group,
+      itface,
+      setInterface,
+      onGroupSave,
+      onInterfaceDelete,
+      onInterfaceSave,
+      onInterfaceSort,
+    } = this.props;
     const activeGroup = groups.find(group => group.id === activeId);
 
     return (
@@ -46,25 +56,39 @@ class GroupTabs extends PureComponent {
                   onClick={this.changeActiveId}
                   onGroupSave={onGroupSave}
                   onDelete={this.handleDelete}
-                  onEdit={this.handleEdit}/>
+                  onEdit={this.handleEdit}
+                />
               ))}
             </ul>
           </SortableHOC>
           <div className="new-tab">
-            <span className="fake-link" onClick={this.handleCreate}><Icon type="plus-square"/> 添加分组</span>
-            {group.editing && <GroupForm
-              group={group.data}
-              saving={group.saving}
-              onCancel={this.handleCancel}
-              onSave={this.handleSave}/>}
+            <span className="fake-link" onClick={this.handleCreate}>
+              <Icon type="plus-square" /> 添加分组
+            </span>
+            {group.editing && (
+              <GroupForm
+                group={group.data}
+                saving={group.saving}
+                onCancel={this.handleCancel}
+                onSave={this.handleSave}
+              />
+            )}
           </div>
         </div>
-        {activeGroup &&
-        <Interfaces projectId={projectId} groupId={activeGroup.id} interfaces={activeGroup.interfaces} itface={itface}
-                    setInterface={setInterface} onDelete={onInterfaceDelete} onSave={onInterfaceSave}
-                    onSort={onInterfaceSort}/>}
+        {activeGroup && (
+          <Interfaces
+            projectId={projectId}
+            groupId={activeGroup.id}
+            interfaces={activeGroup.interfaces}
+            itface={itface}
+            setInterface={setInterface}
+            onDelete={onInterfaceDelete}
+            onSave={onInterfaceSave}
+            onSort={onInterfaceSort}
+          />
+        )}
       </div>
-    )
+    );
   }
 
   componentDidMount() {
@@ -77,14 +101,14 @@ class GroupTabs extends PureComponent {
     }
   }
 
-  changeActiveId = (id) => {
+  changeActiveId = id => {
     const { groups } = this.props;
     if (id) {
       this.setState({ activeId: id });
     } else if (groups.length > 0) {
       this.setState({ activeId: groups[0].id });
     }
-  }
+  };
 
   handleCreate = () => {
     const { setGroup, projectId } = this.props;
@@ -92,22 +116,25 @@ class GroupTabs extends PureComponent {
       data: { project_id: projectId },
       editing: true,
     });
-  }
+  };
 
-  handleEdit = (group) => {
+  handleEdit = group => {
     this.props.setGroup({ editing: true, data: group });
-  }
+  };
 
-  handleSave = (group) => {
-    const { onGroupSave, group: { saving } } = this.props;
+  handleSave = group => {
+    const {
+      onGroupSave,
+      group: { saving },
+    } = this.props;
     !saving && onGroupSave(group);
-  }
+  };
 
   handleCancel = () => {
-    this.props.setGroup({ editing: false, saving: false, data: null })
-  }
+    this.props.setGroup({ editing: false, saving: false, data: null });
+  };
 
-  handleDelete = (group) => {
+  handleDelete = group => {
     const { onGroupDelete } = this.props;
 
     Modal.confirm({
@@ -115,14 +142,14 @@ class GroupTabs extends PureComponent {
       content: '您确认要删除该分组吗？',
       onOk: () => {
         onGroupDelete(group.id);
-      }
+      },
     });
-  }
+  };
 
   handleSort = (e, sortable) => {
     const { onGroupSort } = this.props;
     onGroupSort && onGroupSort(sortable.toArray());
-  }
+  };
 }
 
 export default GroupTabs;

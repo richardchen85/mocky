@@ -11,12 +11,20 @@ class CodeArea extends PureComponent {
 
     return (
       <div className="code-area">
-        {isJSON && <p><span className="fake-link" onClick={this.formatJSON}>格式化</span></p>}
-        <textarea ref={$host => {
-          this.$host = $host
-        }}/>
+        {isJSON && (
+          <p>
+            <span className="fake-link" onClick={this.formatJSON}>
+              格式化
+            </span>
+          </p>
+        )}
+        <textarea
+          ref={$host => {
+            this.$host = $host;
+          }}
+        />
       </div>
-    )
+    );
   }
 
   componentDidMount() {
@@ -35,7 +43,7 @@ class CodeArea extends PureComponent {
 
   formatJSON = () => {
     this.setValue(this.cm.getValue());
-  }
+  };
 
   setValue(value) {
     const { mode } = this.props;
@@ -59,7 +67,7 @@ class CodeArea extends PureComponent {
 
   getCollapsedValue = () => {
     return this.cm.getValue().replace(/\n|\s/g, '');
-  }
+  };
 }
 
 export default CodeArea;

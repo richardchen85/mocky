@@ -1,13 +1,13 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { actions } from '../redux/auth';
 
 export default function withAuth(WrappedComponent) {
   const WithAuth = props => {
     if (!props.auth || !props.auth.id) {
-      return <Redirect to="/user/login"/>;
+      return <Redirect to="/user/login" />;
     }
 
     return <WrappedComponent {...props} />;
@@ -20,7 +20,7 @@ export default function withAuth(WrappedComponent) {
 
   return connect(
     state => ({
-      auth: state.auth.user
+      auth: state.auth.user,
     }),
     {
       logout: actions.logout,

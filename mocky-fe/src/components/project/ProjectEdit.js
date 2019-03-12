@@ -9,12 +9,20 @@ const formItemProps = {
 
 class ProjectEdit extends PureComponent {
   render() {
-    let { fetching, project, auth, onCancel, form: { getFieldDecorator } } = this.props;
+    let {
+      fetching,
+      project,
+      auth,
+      onCancel,
+      form: { getFieldDecorator },
+    } = this.props;
     project = project || {};
     const userExcludes = auth ? [auth] : [];
-    const members = project.members ? project.members.map(user => {
-      return { key: user.id, label: user.nickname };
-    }) : [];
+    const members = project.members
+      ? project.members.map(user => {
+          return { key: user.id, label: user.nickname };
+        })
+      : [];
 
     return (
       <Modal
@@ -29,29 +37,23 @@ class ProjectEdit extends PureComponent {
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入项目名称！' }],
-              initialValue: project.name
-            })(
-              <Input maxLength={50}/>
-            )}
+              initialValue: project.name,
+            })(<Input maxLength={50} />)}
           </Form.Item>
           <Form.Item label="描述" {...formItemProps}>
             {getFieldDecorator('desc', {
               rules: [{ required: true, message: '请输入项目描述！' }],
-              initialValue: project.desc
-            })(
-              <Input maxLength={100}/>
-            )}
+              initialValue: project.desc,
+            })(<Input maxLength={100} />)}
           </Form.Item>
           <Form.Item label="成员" {...formItemProps}>
             {getFieldDecorator('members', {
-              initialValue: members
-            })(
-              <UserSelect excludes={userExcludes} style={{ width: 350 }}/>
-            )}
+              initialValue: members,
+            })(<UserSelect excludes={userExcludes} style={{ width: 350 }} />)}
           </Form.Item>
         </Form>
       </Modal>
-    )
+    );
   }
 
   handleSubmit = () => {
@@ -66,7 +68,7 @@ class ProjectEdit extends PureComponent {
         });
       }
     });
-  }
+  };
 }
 
 export default Form.create()(ProjectEdit);

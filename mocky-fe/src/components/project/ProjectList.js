@@ -23,14 +23,16 @@ class ProjectList extends PureComponent {
     if (fetching) {
       return (
         <div className="project-list">
-          <Spin style={{ marginLeft: 15 }}/>
+          <Spin style={{ marginLeft: 15 }} />
         </div>
-      )
+      );
     }
 
     return (
       <>
-        <Button type="primary" icon="plus" onClick={this.handleCreate}>添加项目</Button>
+        <Button type="primary" icon="plus" onClick={this.handleCreate}>
+          添加项目
+        </Button>
         <div className="project-list">
           {projects.map(project => (
             <ProjectItem
@@ -40,28 +42,32 @@ class ProjectList extends PureComponent {
               onClick={onItemClick}
               onEdit={this.handleEdit}
               onSave={this.handleOk}
-              onDelete={this.handleDelete}/>
+              onDelete={this.handleDelete}
+            />
           ))}
         </div>
-        {project.editing && <ProjectEdit
-          fetching={project.saving}
-          project={project.data}
-          auth={user}
-          onCancel={this.handleCancel}
-          onOk={this.handleOk}/>}
+        {project.editing && (
+          <ProjectEdit
+            fetching={project.saving}
+            project={project.data}
+            auth={user}
+            onCancel={this.handleCancel}
+            onOk={this.handleOk}
+          />
+        )}
       </>
-    )
+    );
   }
 
   handleCreate = () => {
     this.props.setProject({ editing: true, data: {} });
   };
 
-  handleEdit = (project) => {
+  handleEdit = project => {
     this.props.getProject(project.id);
   };
 
-  handleDelete = (project) => {
+  handleDelete = project => {
     const { onItemDelete } = this.props;
 
     Modal.confirm({
@@ -69,12 +75,15 @@ class ProjectList extends PureComponent {
       content: '您确认要删除该项目吗？',
       onOk: () => {
         onItemDelete(project.id);
-      }
+      },
     });
   };
 
-  handleOk = (project) => {
-    const { onItemSave, project: { saving } } = this.props;
+  handleOk = project => {
+    const {
+      onItemSave,
+      project: { saving },
+    } = this.props;
     !saving && onItemSave(project);
   };
 

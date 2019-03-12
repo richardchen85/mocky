@@ -8,4 +8,4 @@ export default {
   CREATE: `${DATA_MAP}_CREATE`,
   UPDATE: `${DATA_MAP}_UPDATE`,
   DELETE: `${DATA_MAP}_DELETE`,
-}
+};

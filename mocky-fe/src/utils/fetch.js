@@ -30,18 +30,15 @@ function toast(type, content) {
 function _fetch(fetchPromise, timeout) {
   let abortFn = null;
 
-  let abortPromise = new Promise(function (resolve, reject) {
-    abortFn = function () {
+  let abortPromise = new Promise(function(resolve, reject) {
+    abortFn = function() {
       reject('abort promise');
-    }
+    };
   });
 
-  let abortablePromise = Promise.race([
-    fetchPromise,
-    abortPromise,
-  ]);
+  let abortablePromise = Promise.race([fetchPromise, abortPromise]);
 
-  setTimeout(function () {
+  setTimeout(function() {
     abortFn();
   }, timeout);
 
@@ -64,7 +61,7 @@ function _success(json, options, resolve, reject) {
     return reject({
       code: json.code,
       message: json.message,
-      data: json.data || {}
+      data: json.data || {},
     });
   }
 
@@ -92,13 +89,13 @@ export function fetch(url, options) {
 
   let { timeout, method, body } = options;
 
-  return new Promise(function (resolve, reject) {
+  return new Promise(function(resolve, reject) {
     const fetchOption = {
       method,
       credentials: 'include',
       headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json; charset=utf-8",
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
       },
     };
 
@@ -106,15 +103,18 @@ export function fetch(url, options) {
       fetchOption.body = JSON.stringify(body);
     }
 
-    _fetch(window.fetch(url, fetchOption), timeout).then(function (response) {
-      return response.json();
-    }).then(function (json) {
-      _success(json, options, resolve, reject);
-    }).catch(function (e) {
-      console.error(e);
-      _fail(options, reject);
-    })
-  })
+    _fetch(window.fetch(url, fetchOption), timeout)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        _success(json, options, resolve, reject);
+      })
+      .catch(function(e) {
+        console.error(e);
+        _fail(options, reject);
+      });
+  });
 }
 
 export function get(url, options = {}) {

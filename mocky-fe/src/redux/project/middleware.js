@@ -25,7 +25,12 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     case types.GET_PROJECT: {
-      next(apiRequest({ url: PROJECT.GET_PROJECT + action.payload, feature: types.GET_PROJECT }));
+      next(
+        apiRequest({
+          url: PROJECT.GET_PROJECT + action.payload,
+          feature: types.GET_PROJECT,
+        })
+      );
       break;
     }
 
@@ -35,12 +40,14 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     case types.SAVE_PROJECT: {
-      next(apiRequest({
-        url: PROJECT.SAVE_PROJECT,
-        method: 'POST',
-        body: action.payload,
-        feature: types.SAVE_PROJECT
-      }));
+      next(
+        apiRequest({
+          url: PROJECT.SAVE_PROJECT,
+          method: 'POST',
+          body: action.payload,
+          feature: types.SAVE_PROJECT,
+        })
+      );
       break;
     }
 
@@ -56,7 +63,12 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     case types.DELETE_PROJECT: {
-      next(apiRequest({ url: PROJECT.DELETE_PROJECT + action.payload, feature: types.DELETE_PROJECT }));
+      next(
+        apiRequest({
+          url: PROJECT.DELETE_PROJECT + action.payload,
+          feature: types.DELETE_PROJECT,
+        })
+      );
       break;
     }
 
@@ -78,12 +90,26 @@ export default ({ dispatch, getState }) => next => action => {
 
     // group
     case types.CREATE_GROUP: {
-      next(apiRequest({ url: GROUP.CREATE_GROUP, method: 'POST', body: action.payload, feature: types.CREATE_GROUP }));
+      next(
+        apiRequest({
+          url: GROUP.CREATE_GROUP,
+          method: 'POST',
+          body: action.payload,
+          feature: types.CREATE_GROUP,
+        })
+      );
       break;
     }
 
     case types.UPDATE_GROUP: {
-      next(apiRequest({ url: GROUP.UPDATE_GROUP, method: 'POST', body: action.payload, feature: types.CREATE_GROUP }));
+      next(
+        apiRequest({
+          url: GROUP.UPDATE_GROUP,
+          method: 'POST',
+          body: action.payload,
+          feature: types.CREATE_GROUP,
+        })
+      );
       break;
     }
 
@@ -101,12 +127,24 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     case types.DELETE_GROUP: {
-      next(apiRequest({ url: GROUP.DELETE_GROUP + action.payload, feature: types.DELETE_GROUP }));
+      next(
+        apiRequest({
+          url: GROUP.DELETE_GROUP + action.payload,
+          feature: types.DELETE_GROUP,
+        })
+      );
       break;
     }
 
     case types.SORT_GROUP: {
-      next(apiRequest({ url: GROUP.SORT_GROUP, method: 'POST', body: action.payload, feature: types.SORT_GROUP }));
+      next(
+        apiRequest({
+          url: GROUP.SORT_GROUP,
+          method: 'POST',
+          body: action.payload,
+          feature: types.SORT_GROUP,
+        })
+      );
       break;
     }
 
@@ -117,22 +155,26 @@ export default ({ dispatch, getState }) => next => action => {
 
     // interface
     case types.CREATE_INTERFACE: {
-      next(apiRequest({
-        url: INTERFACE.CREATE_INTERFACE,
-        method: 'POST',
-        body: action.payload,
-        feature: types.CREATE_INTERFACE
-      }));
+      next(
+        apiRequest({
+          url: INTERFACE.CREATE_INTERFACE,
+          method: 'POST',
+          body: action.payload,
+          feature: types.CREATE_INTERFACE,
+        })
+      );
       break;
     }
 
     case types.UPDATE_INTERFACE: {
-      next(apiRequest({
-        url: INTERFACE.UPDATE_INTERFACE,
-        method: 'POST',
-        body: action.payload,
-        feature: types.CREATE_INTERFACE
-      }));
+      next(
+        apiRequest({
+          url: INTERFACE.UPDATE_INTERFACE,
+          method: 'POST',
+          body: action.payload,
+          feature: types.CREATE_INTERFACE,
+        })
+      );
       break;
     }
 
@@ -150,17 +192,24 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     case types.DELETE_INTERFACE: {
-      next(apiRequest({ url: INTERFACE.DELETE_INTERFACE + action.payload, feature: types.DELETE_INTERFACE }));
+      next(
+        apiRequest({
+          url: INTERFACE.DELETE_INTERFACE + action.payload,
+          feature: types.DELETE_INTERFACE,
+        })
+      );
       break;
     }
 
     case types.SORT_INTERFACE: {
-      next(apiRequest({
-        url: INTERFACE.SORT_INTERFACE,
-        method: 'POST',
-        body: action.payload,
-        feature: types.SORT_INTERFACE
-      }));
+      next(
+        apiRequest({
+          url: INTERFACE.SORT_INTERFACE,
+          method: 'POST',
+          body: action.payload,
+          feature: types.SORT_INTERFACE,
+        })
+      );
       break;
     }
 
@@ -172,4 +221,4 @@ export default ({ dispatch, getState }) => next => action => {
     default:
       break;
   }
-}
+};

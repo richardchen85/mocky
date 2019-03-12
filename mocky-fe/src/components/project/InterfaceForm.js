@@ -9,7 +9,12 @@ const formItemProps = {
 
 class InterfaceForm extends PureComponent {
   render() {
-    let { saving, data, onCancel, form: { getFieldDecorator } } = this.props;
+    let {
+      saving,
+      data,
+      onCancel,
+      form: { getFieldDecorator },
+    } = this.props;
 
     return (
       <Modal
@@ -24,18 +29,14 @@ class InterfaceForm extends PureComponent {
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入接口名称！' }],
-              initialValue: data.name
-            })(
-              <Input maxLength={50}/>
-            )}
+              initialValue: data.name,
+            })(<Input maxLength={50} />)}
           </Form.Item>
           <Form.Item label="描述" {...formItemProps}>
             {getFieldDecorator('desc', {
               rules: [{ required: true, message: '请输入接口描述！' }],
-              initialValue: data.desc
-            })(
-              <Input maxLength={100}/>
-            )}
+              initialValue: data.desc,
+            })(<Input maxLength={100} />)}
           </Form.Item>
           <Form.Item label="请求路径" {...formItemProps}>
             {getFieldDecorator('url', {
@@ -43,15 +44,13 @@ class InterfaceForm extends PureComponent {
                 { required: true, message: '请输入接口请求路径！' },
                 { pattern: /^\/.*/, message: '请求路径必须以 / 开头！' },
               ],
-              initialValue: data.url
-            })(
-              <Input maxLength={100} placeholder="只填路径部分，如：/home/index"/>
-            )}
+              initialValue: data.url,
+            })(<Input maxLength={100} placeholder="只填路径部分，如：/home/index" />)}
           </Form.Item>
           <Form.Item label="请求类型" {...formItemProps}>
             {getFieldDecorator('method', {
               rules: [{ required: true, message: '请输入接口类型！' }],
-              initialValue: data.method || 'get'
+              initialValue: data.method || 'get',
             })(
               <Select>
                 <Select.Option key={'get'}>get</Select.Option>
@@ -64,7 +63,7 @@ class InterfaceForm extends PureComponent {
           <Form.Item label="内容格式" {...formItemProps}>
             {getFieldDecorator('content_type', {
               rules: [{ required: true, message: '请输入接口类型！' }],
-              initialValue: (data.content_type && String(data.content_type)) || '1'
+              initialValue: (data.content_type && String(data.content_type)) || '1',
             })(
               <Select>
                 {contentTypes.types.map(type => (
@@ -75,14 +74,12 @@ class InterfaceForm extends PureComponent {
           </Form.Item>
           <Form.Item label="jsonp回调key" {...formItemProps}>
             {getFieldDecorator('jsonp_callback', {
-              initialValue: data.jsonp_callback
-            })(
-              <Input placeholder="callback" maxLength={50}/>
-            )}
+              initialValue: data.jsonp_callback,
+            })(<Input placeholder="callback" maxLength={50} />)}
           </Form.Item>
         </Form>
       </Modal>
-    )
+    );
   }
 
   handleSubmit = () => {
@@ -91,13 +88,15 @@ class InterfaceForm extends PureComponent {
     form.validateFields((err, values) => {
       if (!err && onSave) {
         let content_type = parseInt(values.content_type, 10);
-        onSave(Object.assign({}, data, {
-          ...values,
-          content_type,
-        }));
+        onSave(
+          Object.assign({}, data, {
+            ...values,
+            content_type,
+          })
+        );
       }
     });
-  }
+  };
 }
 
 export default Form.create()(InterfaceForm);

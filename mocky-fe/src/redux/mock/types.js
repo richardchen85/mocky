@@ -9,4 +9,4 @@ export default {
   CREATE: `${MOCKS}_CREATE`,
   UPDATE: `${MOCKS}_UPDATE`,
   DELETE: `${MOCKS}_DELETE`,
-}
+};

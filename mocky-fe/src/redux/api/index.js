@@ -8,24 +8,23 @@ export const API_ERROR = 'API_ERROR';
 // action creators
 export const apiRequest = ({ url, method, body, feature }) => ({
   type: `${feature}_${API_REQUEST}`,
-  meta: { url, method, body, feature }
+  meta: { url, method, body, feature },
 });
 
 export const apiSuccess = ({ data, feature }) => ({
   type: `${feature}_${API_SUCCESS}`,
   payload: data,
-  meta: { feature }
+  meta: { feature },
 });
 
 export const apiError = ({ error, feature }) => ({
   type: `${feature}_${API_ERROR}`,
   payload: error,
-  meta: { feature }
+  meta: { feature },
 });
 
-
 // middleware
-export const apiMiddleware = ({ dispatch }) => (next) => (action) => {
+export const apiMiddleware = ({ dispatch }) => next => action => {
   next(action);
 
   if (action.type.includes(API_REQUEST)) {
@@ -33,6 +32,6 @@ export const apiMiddleware = ({ dispatch }) => (next) => (action) => {
 
     fetch(url, { body, method })
       .then(json => dispatch(apiSuccess({ data: json.data, feature })))
-      .catch(error => dispatch(apiError({ error: error, feature })))
+      .catch(error => dispatch(apiError({ error: error, feature })));
   }
 };

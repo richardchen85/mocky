@@ -9,7 +9,12 @@ export default ({ dispatch, getState }) => next => action => {
 
   switch (action.type) {
     case types.GET_LIST: {
-      next(apiRequest({ url: DATA_MAP.GET_LIST + action.payload, feature: types.GET_LIST }));
+      next(
+        apiRequest({
+          url: DATA_MAP.GET_LIST + action.payload,
+          feature: types.GET_LIST,
+        })
+      );
       break;
     }
 
@@ -19,12 +24,26 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     case types.CREATE: {
-      next(apiRequest({ url: DATA_MAP.CREATE, method: 'POST', body: action.payload, feature: types.CREATE }));
+      next(
+        apiRequest({
+          url: DATA_MAP.CREATE,
+          method: 'POST',
+          body: action.payload,
+          feature: types.CREATE,
+        })
+      );
       break;
     }
 
     case types.UPDATE: {
-      next(apiRequest({ url: DATA_MAP.UPDATE, method: 'POST', body: action.payload, feature: types.UPDATE }));
+      next(
+        apiRequest({
+          url: DATA_MAP.UPDATE,
+          method: 'POST',
+          body: action.payload,
+          feature: types.UPDATE,
+        })
+      );
       break;
     }
 
@@ -41,7 +60,12 @@ export default ({ dispatch, getState }) => next => action => {
       break;
 
     case types.DELETE: {
-      next(apiRequest({ url: DATA_MAP.DELETE + action.payload, feature: types.DELETE }));
+      next(
+        apiRequest({
+          url: DATA_MAP.DELETE + action.payload,
+          feature: types.DELETE,
+        })
+      );
       break;
     }
 
@@ -53,4 +77,4 @@ export default ({ dispatch, getState }) => next => action => {
     default:
       break;
   }
-}
+};

@@ -13,10 +13,15 @@ class GroupForm extends PureComponent {
     saving: PropTypes.bool.isRequired,
     onCancel: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-  }
+  };
 
   render() {
-    let { saving, group, onCancel, form: { getFieldDecorator } } = this.props;
+    let {
+      saving,
+      group,
+      onCancel,
+      form: { getFieldDecorator },
+    } = this.props;
 
     return (
       <Modal
@@ -31,22 +36,18 @@ class GroupForm extends PureComponent {
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
               rules: [{ required: true, message: '请输入分组名称！' }],
-              initialValue: group.name
-            })(
-              <Input maxLength={20}/>
-            )}
+              initialValue: group.name,
+            })(<Input maxLength={20} />)}
           </Form.Item>
           <Form.Item label="描述" {...formItemProps}>
             {getFieldDecorator('desc', {
               rules: [{ required: true, message: '请输入分组描述！' }],
-              initialValue: group.desc || '-'
-            })(
-              <Input maxLength={50}/>
-            )}
+              initialValue: group.desc || '-',
+            })(<Input maxLength={50} />)}
           </Form.Item>
         </Form>
       </Modal>
-    )
+    );
   }
 
   handleSubmit = () => {
@@ -57,7 +58,7 @@ class GroupForm extends PureComponent {
         onSave(Object.assign({}, group, values));
       }
     });
-  }
+  };
 }
 
 export default Form.create()(GroupForm);

@@ -25,10 +25,11 @@ class ProjectListContainer extends PureComponent {
             setProject={setProject}
             onItemClick={this.onItemClick}
             onItemSave={this.saveProject}
-            onItemDelete={this.onItemDelete}/>
+            onItemDelete={this.onItemDelete}
+          />
         </PageLayout>
       </>
-    )
+    );
   }
 
   componentDidMount() {
@@ -39,19 +40,19 @@ class ProjectListContainer extends PureComponent {
     this.props.getList();
   };
 
-  onItemClick = (projectId) => {
+  onItemClick = projectId => {
     this.props.history.push({
       pathname: '/project/' + projectId,
     });
   };
 
-  onItemDelete = (projectId) => {
+  onItemDelete = projectId => {
     this.props.deleteProject(projectId);
   };
 
-  saveProject = (project) => {
+  saveProject = project => {
     this.props.saveProject(project);
-  }
+  };
 }
 
 export default connect(
