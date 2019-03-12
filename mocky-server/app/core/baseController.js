@@ -50,7 +50,7 @@ class BaseController extends Controller {
    */
   async ownerOrMemberOfProject(project_id) {
     const { service, user } = this.ctx;
-    if (!await service.project.ownerOrMember(project_id, user.id)) {
+    if (!(await service.project.ownerOrMember(project_id, user.id))) {
       this.fail(messages.common.notAllowed);
       return false;
     }

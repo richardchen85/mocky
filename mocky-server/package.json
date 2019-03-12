@@ -45,5 +45,10 @@
     "url": ""
   },
   "author": "chenliqiang",
-  "license": "MIT"
+  "license": "MIT",
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 120
+  }
 }

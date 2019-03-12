@@ -13,12 +13,14 @@ class InterfaceController extends Controller {
 
     try {
       // check privilege
-      if (!await this.ownerOrMemberOfProject(param.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(param.project_id))) return;
 
-      await service.interface.insert(Object.assign(param, {
-        user_id: user.id,
-        create_user: user.nickname,
-      }));
+      await service.interface.insert(
+        Object.assign(param, {
+          user_id: user.id,
+          create_user: user.nickname,
+        })
+      );
       this.success();
     } catch (e) {
       logger.error(e);
@@ -42,15 +44,12 @@ class InterfaceController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedItface.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
 
       // check empty
-      let mocks,
-        dataMaps;
-      await Promise.all([
-        service.mock.getByInterface(id),
-        service.dataMap.getByInterface(id),
-      ]).then(values => {
+      let mocks = [];
+      let dataMaps = [];
+      await Promise.all([service.mock.getByInterface(id), service.dataMap.getByInterface(id)]).then(values => {
         mocks = values[0];
         dataMaps = values[1];
       });
@@ -79,7 +78,7 @@ class InterfaceController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedItface.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
 
       await service.interface.update(param);
       this.success();
@@ -105,7 +104,7 @@ class InterfaceController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(itface.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(itface.project_id))) return;
 
       this.success(itface);
     } catch (e) {
@@ -129,7 +128,10 @@ class InterfaceController extends Controller {
 
     try {
       for (let i = 0; i < ids.length; i++) {
-        await service.interface.update({ id: parseInt(ids[i], 10), priority: i + 1 });
+        await service.interface.update({
+          id: parseInt(ids[i], 10),
+          priority: i + 1,
+        });
       }
       this.success();
     } catch (e) {

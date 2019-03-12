@@ -18,14 +18,16 @@ class ProjectController extends Controller {
       // has id, means update
       if (param.id) {
         // check privilege
-        if (!await this.ownerOrMemberOfProject(param.id)) return;
+        if (!(await this.ownerOrMemberOfProject(param.id))) return;
 
         await service.project.update(param);
       } else {
-        await service.project.insert(Object.assign(param, {
-          user_id: user.id,
-          create_user: user.nickname,
-        }));
+        await service.project.insert(
+          Object.assign(param, {
+            user_id: user.id,
+            create_user: user.nickname,
+          })
+        );
       }
 
       this.success();
@@ -93,7 +95,7 @@ class ProjectController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(project.id)) return;
+      if (!(await this.ownerOrMemberOfProject(project.id))) return;
 
       // get owner and members
       let memberIds = await service.member.getByProject(project.id);
@@ -127,10 +129,7 @@ class ProjectController extends Controller {
       let owned = [];
       let joined = [];
 
-      await Promise.all([
-        service.project.owned(id),
-        service.project.joined(id),
-      ]).then(values => {
+      await Promise.all([service.project.owned(id), service.project.joined(id)]).then(values => {
         owned = values[0];
         joined = values[1];
       });
@@ -177,19 +176,18 @@ class ProjectController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(project.id)) return;
+      if (!(await this.ownerOrMemberOfProject(project.id))) return;
 
       // get group
       let groups = [];
       // get interface
       let interfaces = [];
-      await Promise.all([
-        service.group.getByProject(project.id),
-        service.interface.getByProject(project.id),
-      ]).then(values => {
-        groups = values[0];
-        interfaces = values[1];
-      });
+      await Promise.all([service.group.getByProject(project.id), service.interface.getByProject(project.id)]).then(
+        values => {
+          groups = values[0];
+          interfaces = values[1];
+        }
+      );
       groups.forEach(group => {
         group.interfaces = interfaces.filter(itf => itf.group_id === group.id);
       });

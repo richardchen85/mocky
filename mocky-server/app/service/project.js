@@ -10,7 +10,7 @@ module.exports = class ProjectService extends BaseService {
   constructor(args) {
     super(args);
     this.tableName = 'mk_project';
-    this.updateFields = [ 'name', 'desc' ];
+    this.updateFields = ['name', 'desc'];
   }
 
   /**
@@ -88,9 +88,7 @@ module.exports = class ProjectService extends BaseService {
       where: {
         user_id,
       },
-      orders: [
-        [ 'id', 'desc' ],
-      ],
+      orders: [['id', 'desc']],
     };
     return super.query(param);
   }
@@ -107,7 +105,7 @@ module.exports = class ProjectService extends BaseService {
       ORDER BY p.id DESC
     `;
 
-    return this.app.mysql.query(sql, [ user_id ]);
+    return this.app.mysql.query(sql, [user_id]);
   }
 
   async ownerOrMember(project_id, user_id) {
@@ -120,7 +118,7 @@ module.exports = class ProjectService extends BaseService {
           WHERE m.project_id=? AND m.user_id=?
       ) AS rows
     `;
-    const rows = await this.app.mysql.query(sql, [ project_id, user_id, project_id, user_id ]);
+    const rows = await this.app.mysql.query(sql, [project_id, user_id, project_id, user_id]);
     return rows[0].count > 0;
   }
 };

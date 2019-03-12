@@ -10,7 +10,10 @@ class UserController extends Controller {
    * post /user/signUp
    */
   async signUp() {
-    const { config, ctx: { request, service, logger, cookies } } = this;
+    const {
+      config,
+      ctx: { request, service, logger, cookies },
+    } = this;
 
     if (!this.isValid(userRule.signUp, request.body)) return;
 
@@ -24,7 +27,12 @@ class UserController extends Controller {
         return;
       }
 
-      const userId = await service.user.insert({ email, nickname, password, status: userStatus.NORMAL });
+      const userId = await service.user.insert({
+        email,
+        nickname,
+        password,
+        status: userStatus.NORMAL,
+      });
       const user = await service.user.getById(userId);
       cookies.set(config.auth_cookie_name, user.id.toString(), {
         encrypt: true,
@@ -41,7 +49,10 @@ class UserController extends Controller {
    * post /user/login
    */
   async login() {
-    const { config, ctx: { request, service, logger, cookies } } = this;
+    const {
+      config,
+      ctx: { request, service, logger, cookies },
+    } = this;
 
     if (!this.isValid(userRule.login, request.body)) return;
 

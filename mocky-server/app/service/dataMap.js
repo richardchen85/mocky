@@ -11,7 +11,7 @@ class DataMapService extends BaseService {
     super(args);
 
     this.tableName = 'mk_data_map';
-    this.updateFields = [ 'name', 'from', 'match', 'regex', 'mock_id' ];
+    this.updateFields = ['name', 'from', 'match', 'regex', 'mock_id'];
   }
 
   getByInterface(interface_id) {

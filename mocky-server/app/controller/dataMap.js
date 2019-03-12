@@ -10,20 +10,21 @@ class DataMapController extends Controller {
     const { request, service, logger, user } = this.ctx;
     const param = request.body;
     const { basic, noFrom, hasFrom } = validateRule;
-    const rules = param.from === dataMapFroms.none ?
-      Object.assign({}, basic, noFrom) :
-      Object.assign({}, basic, hasFrom);
+    const rules =
+      param.from === dataMapFroms.none ? Object.assign({}, basic, noFrom) : Object.assign({}, basic, hasFrom);
 
     if (!this.isValid(rules, param)) return;
 
     try {
       // check privilege
-      if (!await this.ownerOrMemberOfProject(param.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(param.project_id))) return;
 
-      await service.dataMap.insert(Object.assign(param, {
-        user_id: user.id,
-        create_user: user.nickname,
-      }));
+      await service.dataMap.insert(
+        Object.assign(param, {
+          user_id: user.id,
+          create_user: user.nickname,
+        })
+      );
       this.success();
     } catch (e) {
       logger.error(e);
@@ -47,7 +48,7 @@ class DataMapController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedMap.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedMap.project_id))) return;
 
       await service.dataMap.delete(id);
       this.success();
@@ -61,9 +62,8 @@ class DataMapController extends Controller {
     const { request, service, logger } = this.ctx;
     const param = request.body;
     const { basic, noFrom, hasFrom } = validateRule;
-    const rules = param.from === dataMapFroms.none ?
-      Object.assign({}, basic, noFrom) :
-      Object.assign({}, basic, hasFrom);
+    const rules =
+      param.from === dataMapFroms.none ? Object.assign({}, basic, noFrom) : Object.assign({}, basic, hasFrom);
 
     if (!this.isValid(rules, param)) return;
 
@@ -75,7 +75,7 @@ class DataMapController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedDataMap.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedDataMap.project_id))) return;
 
       await service.dataMap.update(param);
       this.success();
@@ -101,7 +101,7 @@ class DataMapController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedMap.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedMap.project_id))) return;
 
       this.success(savedMap);
     } catch (e) {
@@ -126,15 +126,13 @@ class DataMapController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedItface.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
 
       const maps = await service.dataMap.query({
         where: {
           interface_id,
         },
-        orders: [
-          [ 'id', 'desc' ],
-        ],
+        orders: [['id', 'desc']],
       });
       this.success(maps);
     } catch (e) {

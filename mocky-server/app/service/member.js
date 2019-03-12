@@ -20,10 +20,13 @@ module.exports = class ProjectService extends BaseService {
    * @return {Object} Promise
    */
   insertByTransaction(trans, project_id, values) {
-    values = values.map(m => [ project_id, m ]);
-    return trans.query(`
+    values = values.map(m => [project_id, m]);
+    return trans.query(
+      `
       INSERT INTO ${this.tableName} (project_id, user_id) VALUES ?
-    `, [ values ]);
+    `,
+      [values]
+    );
   }
 
   /**
@@ -44,7 +47,7 @@ module.exports = class ProjectService extends BaseService {
     const added = [];
     members.forEach(m => {
       if (saved.filter(s => s.user_id === m).length === 0) {
-        added.push([ project_id, m ]);
+        added.push([project_id, m]);
       }
     });
 
@@ -64,9 +67,12 @@ module.exports = class ProjectService extends BaseService {
       await trans.query(`DELETE FROM ${this.tableName} WHERE user_id in (?)`, deleted);
     }
     if (added.length > 0) {
-      await trans.query(`
+      await trans.query(
+        `
         INSERT INTO ${this.tableName} (project_id, user_id) VALUES ?
-      `, [ added ]);
+      `,
+        [added]
+      );
     }
   }
 

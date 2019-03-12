@@ -13,12 +13,14 @@ class GroupController extends Controller {
 
     try {
       // check privilege
-      if (!await this.ownerOrMemberOfProject(param.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(param.project_id))) return;
 
-      await service.group.insert(Object.assign(param, {
-        user_id: user.id,
-        create_user: user.nickname,
-      }));
+      await service.group.insert(
+        Object.assign(param, {
+          user_id: user.id,
+          create_user: user.nickname,
+        })
+      );
       this.success();
     } catch (e) {
       logger.error(e);
@@ -42,7 +44,7 @@ class GroupController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedGroup.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedGroup.project_id))) return;
 
       // check if has interface
       const itfaces = await service.interface.countByGroup(id);
@@ -72,7 +74,7 @@ class GroupController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedGroup.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedGroup.project_id))) return;
 
       await service.group.update(param);
       this.success();
@@ -98,7 +100,7 @@ class GroupController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedGroup.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedGroup.project_id))) return;
 
       this.success(savedGroup);
     } catch (e) {
@@ -122,7 +124,10 @@ class GroupController extends Controller {
 
     try {
       for (let i = 0; i < ids.length; i++) {
-        await service.group.update({ id: parseInt(ids[i], 10), priority: i + 1 });
+        await service.group.update({
+          id: parseInt(ids[i], 10),
+          priority: i + 1,
+        });
       }
       this.success();
     } catch (e) {

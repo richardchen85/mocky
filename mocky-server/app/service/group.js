@@ -10,7 +10,7 @@ module.exports = class GroupService extends BaseService {
   constructor(args) {
     super(args);
     this.tableName = 'mk_group';
-    this.updateFields = [ 'name', 'desc', 'priority' ];
+    this.updateFields = ['name', 'desc', 'priority'];
   }
 
   getByProject(project_id) {
@@ -18,9 +18,7 @@ module.exports = class GroupService extends BaseService {
       where: {
         project_id,
       },
-      orders: [
-        [ 'priority', 'ASC' ],
-      ],
+      orders: [['priority', 'ASC']],
     });
   }
 

@@ -26,11 +26,13 @@ class BaseService extends Service {
     if (!fields || fields.length === 0) return model;
 
     const newModel = {};
-    Object.keys(model).filter(key => {
-      return fields.includes(key);
-    }).forEach(key => {
-      newModel[key] = model[key];
-    });
+    Object.keys(model)
+      .filter(key => {
+        return fields.includes(key);
+      })
+      .forEach(key => {
+        newModel[key] = model[key];
+      });
     return newModel;
   }
 
@@ -61,16 +63,18 @@ class BaseService extends Service {
 
   async getById(id) {
     const options = {};
-    this.getFields.length && Object.assign(options, {
-      columns: this.getFields,
-    });
+    this.getFields.length &&
+      Object.assign(options, {
+        columns: this.getFields,
+      });
     return await this.app.mysql.get(this.tableName, { id }, options);
   }
 
   async get(param, options = {}) {
-    this.getFields.length && Object.assign(options, {
-      columns: this.getFields,
-    });
+    this.getFields.length &&
+      Object.assign(options, {
+        columns: this.getFields,
+      });
     return await this.app.mysql.get(this.tableName, param, options);
   }
 
@@ -79,9 +83,10 @@ class BaseService extends Service {
   }
 
   async query(param) {
-    this.queryFields.length && Object.assign(param, {
-      columns: this.queryFields,
-    });
+    this.queryFields.length &&
+      Object.assign(param, {
+        columns: this.queryFields,
+      });
     return await this.app.mysql.select(this.tableName, param);
   }
 }

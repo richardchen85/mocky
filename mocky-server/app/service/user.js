@@ -17,7 +17,7 @@
 const BaseService = require('../core/baseService');
 const userStatus = require('../common/userStatus');
 
-const filterFields = [ 'password', 'create_time', 'update_time', 'status' ];
+const filterFields = ['password', 'create_time', 'update_time', 'status'];
 const userInfoFilter = user => {
   filterFields.forEach(field => {
     delete user[field];
@@ -68,7 +68,7 @@ class UserService extends BaseService {
     const sql = `
       SELECT email,nickname FROM ${this.tableName} WHERE email=? OR nickname=?
     `;
-    const results = await this.app.mysql.query(sql, [ email, nickname ]);
+    const results = await this.app.mysql.query(sql, [email, nickname]);
     if (results.length > 0) {
       for (let i = 0; i < results.length; i++) {
         if (results[i].email === email) return 1;
@@ -80,7 +80,10 @@ class UserService extends BaseService {
 
   async login(email, password) {
     email = email.trim().toLowerCase();
-    const user = await this.app.mysql.get(this.tableName, { email, status: userStatus.NORMAL });
+    const user = await this.app.mysql.get(this.tableName, {
+      email,
+      status: userStatus.NORMAL,
+    });
     let validPassword = false;
     if (user) {
       validPassword = this.ctx.helper.bCompare(password, user.password);
@@ -104,7 +107,7 @@ class UserService extends BaseService {
 
   async search(key) {
     const sql = `SELECT * FROM ${this.tableName} WHERE nickname LIKE ? ORDER BY id DESC`;
-    const users = await this.app.mysql.query(sql, [ key + '%' ]);
+    const users = await this.app.mysql.query(sql, [key + '%']);
     return users.map(user => userInfoFilter(user));
   }
 }

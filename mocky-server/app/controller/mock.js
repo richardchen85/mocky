@@ -19,12 +19,14 @@ class MockController extends Controller {
 
     try {
       // check privilege
-      if (!await this.ownerOrMemberOfProject(param.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(param.project_id))) return;
 
-      await service.mock.insert(Object.assign(param, {
-        user_id: user.id,
-        create_user: user.nickname,
-      }));
+      await service.mock.insert(
+        Object.assign(param, {
+          user_id: user.id,
+          create_user: user.nickname,
+        })
+      );
       this.success();
     } catch (e) {
       logger.error(e);
@@ -53,7 +55,7 @@ class MockController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedMock.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedMock.project_id))) return;
 
       await service.mock.delete(id);
       this.success();
@@ -83,7 +85,7 @@ class MockController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedMock.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedMock.project_id))) return;
 
       await service.mock.update(param);
       this.success();
@@ -114,7 +116,7 @@ class MockController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedMock.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedMock.project_id))) return;
 
       this.success(savedMock);
     } catch (e) {
@@ -144,15 +146,13 @@ class MockController extends Controller {
       }
 
       // check privilege
-      if (!await this.ownerOrMemberOfProject(savedItface.project_id)) return;
+      if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
 
       const mocks = await service.mock.query({
         where: {
           interface_id,
         },
-        orders: [
-          [ 'id', 'desc' ],
-        ],
+        orders: [['id', 'desc']],
       });
       this.success(mocks);
     } catch (e) {

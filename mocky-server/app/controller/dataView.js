@@ -63,7 +63,7 @@ class DataViewController extends Controller {
       }
       this.ctx.set('Content-Type', contentTypes.getByKey(itface.content_type).content);
       this.ctx.status = mock.status_code;
-      this.ctx.body = callback ? (`${callback}(${mock.body})`) : mock.body;
+      this.ctx.body = callback ? `${callback}(${mock.body})` : mock.body;
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);
@@ -110,7 +110,7 @@ class DataViewController extends Controller {
         const matchResult = new RegExp(map.match, 'ig').exec(source);
         if (matchResult) {
           if (map.mock_id.indexOf('$') > -1) {
-            mockId = map.mock_id.replace(/\$(\d)/ig, function(match, g1) {
+            mockId = map.mock_id.replace(/\$(\d)/gi, function(match, g1) {
               return matchResult[g1];
             });
           } else {

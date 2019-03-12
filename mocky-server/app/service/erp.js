@@ -17,8 +17,11 @@ module.exports = class ErpService extends BaseService {
   }
 
   async searchByUserName(keyword) {
-    return await this.app.mysql.query(`
+    return await this.app.mysql.query(
+      `
       SELECT * FROM ${this.tableName} WHERE username like ?
-    `, keyword + '%');
+    `,
+      keyword + '%'
+    );
   }
 };
