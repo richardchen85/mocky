@@ -1,9 +1,9 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import contentTypes from '../../constants/contentTypes';
 
 class InterfaceInfo extends PureComponent {
   render() {
-    const {data, projectId} = this.props;
+    const { data, projectId } = this.props;
     const contentType = contentTypes.getByKey(data.content_type);
 
     let url = `//mocky.chenliqiang.cn/dataView/${projectId}${data.url}`;

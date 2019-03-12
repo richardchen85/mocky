@@ -1,5 +1,5 @@
-import React, {PureComponent} from 'react';
-import {findDOMNode} from 'react-dom'
+import React, { PureComponent } from 'react';
+import { findDOMNode } from 'react-dom'
 import Sortable from 'sortablejs'
 
 class SortableHOC extends PureComponent {
@@ -10,7 +10,7 @@ class SortableHOC extends PureComponent {
   }
 
   componentDidMount() {
-    let {onSortChange} = this.props
+    let { onSortChange } = this.props
     let $sortable = Sortable.create(findDOMNode(this), {
       animation: 100,
       onEnd: (e) => {

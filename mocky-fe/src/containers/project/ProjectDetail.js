@@ -1,15 +1,15 @@
-import React, {PureComponent} from 'react';
-import {connect} from 'react-redux';
-import {Spin} from 'antd';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { Spin } from 'antd';
 import PageLayout from '../../components/PageLayout';
 import ProjectInfo from '../../components/project/ProjectInfo';
 import GroupTabs from '../../components/project/GroupTabs';
 
-import {actions} from '../../redux/project';
+import { actions } from '../../redux/project';
 
 class ProjectDetail extends PureComponent {
   render() {
-    const {auth, logout, data, fetching, match, group, itface, setGroup, setInterface, sortGroup, sortInterface} = this.props;
+    const { auth, logout, data, fetching, match, group, itface, setGroup, setInterface, sortGroup, sortInterface } = this.props;
     const groups = data.groups || [];
     const currentId = Number(match.params.id);
 
@@ -45,7 +45,7 @@ class ProjectDetail extends PureComponent {
    * 拉取当前项目的详细数据
    */
   getDetail() {
-    const {match, getDetail} = this.props;
+    const { match, getDetail } = this.props;
     getDetail(match.params.id);
   }
 
@@ -54,7 +54,7 @@ class ProjectDetail extends PureComponent {
    * @param {*} group
    */
   saveGroup = (group) => {
-    const {createGroup, updateGroup} = this.props;
+    const { createGroup, updateGroup } = this.props;
     group.id ? updateGroup(group) : createGroup(group);
   };
 
@@ -70,7 +70,7 @@ class ProjectDetail extends PureComponent {
    * @param {*} itf
    */
   saveInterface = (itf) => {
-    const {createInterface, updateInterface} = this.props;
+    const { createInterface, updateInterface } = this.props;
     itf.id ? updateInterface(itf) : createInterface(itf);
   };
 

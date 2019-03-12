@@ -1,10 +1,10 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Spin} from 'antd';
+import { connect } from 'react-redux';
+import { Spin } from 'antd';
 import MockList from '../../components/mock/MockList';
 
-import {actions} from '../../redux/mock';
+import { actions } from '../../redux/mock';
 
 class MockListContainer extends PureComponent {
   static propTypes = {
@@ -13,16 +13,16 @@ class MockListContainer extends PureComponent {
   };
 
   render() {
-    const {fetching, projectId, itf, data, mock, getMock, setMock} = this.props;
+    const { fetching, projectId, itf, data, mock, getMock, setMock } = this.props;
 
     if (fetching) {
       return (
-        <div className="mock-list" style={{width: 500}}><Spin/></div>
+        <div className="mock-list" style={{ width: 500 }}><Spin/></div>
       )
     }
 
     return (
-      <div className="mock-list" style={{width: 500}}>
+      <div className="mock-list" style={{ width: 500 }}>
         <MockList projectId={projectId} itf={itf} data={data} onDelete={this.deleteMock} onSave={this.saveMock}
                   mock={mock} getMock={getMock} setMock={setMock}/>
       </div>
@@ -40,7 +40,7 @@ class MockListContainer extends PureComponent {
   }
 
   getList() {
-    const {itf, getList} = this.props;
+    const { itf, getList } = this.props;
     getList(itf.id);
   }
 

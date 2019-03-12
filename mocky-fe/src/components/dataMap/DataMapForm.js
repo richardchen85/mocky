@@ -1,11 +1,11 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {Modal, Form, Input, Select, Switch} from 'antd';
+import { Modal, Form, Input, Select, Switch } from 'antd';
 import dataMapFroms from '../../constants/dataMapFroms';
 
 const formItemProps = {
-  labelCol: {span: 5},
-  wrapperCol: {span: 18},
+  labelCol: { span: 5 },
+  wrapperCol: { span: 18 },
 };
 
 class DataMapForm extends PureComponent {
@@ -21,7 +21,7 @@ class DataMapForm extends PureComponent {
   }
 
   render() {
-    const {saving, data, onCancel, form: {getFieldDecorator}} = this.props;
+    const { saving, data, onCancel, form: { getFieldDecorator } } = this.props;
     const noFrom = this.state.from === dataMapFroms.froms[0].key;
 
     return (
@@ -36,7 +36,7 @@ class DataMapForm extends PureComponent {
         <Form>
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
-              rules: [{required: true, message: '请输入映射名称！'}],
+              rules: [{ required: true, message: '请输入映射名称！' }],
               initialValue: data.name
             })(
               <Input maxLength={50}/>
@@ -44,7 +44,7 @@ class DataMapForm extends PureComponent {
           </Form.Item>
           <Form.Item label="匹配来源" {...formItemProps}>
             {getFieldDecorator('from', {
-              rules: [{required: true, message: '请选择匹配来源！'}],
+              rules: [{ required: true, message: '请选择匹配来源！' }],
               initialValue: String(data.from)
             })(
               <Select onChange={this.onFromChanged}>
@@ -58,7 +58,7 @@ class DataMapForm extends PureComponent {
             <>
               <Form.Item label="匹配规则" {...formItemProps}>
                 {getFieldDecorator('match', {
-                  rules: [{required: true, message: '请输入匹配规则！'}],
+                  rules: [{ required: true, message: '请输入匹配规则！' }],
                   initialValue: data.match
                 })(
                   <Input maxLength={100}/>
@@ -76,7 +76,7 @@ class DataMapForm extends PureComponent {
           )}
           <Form.Item label="mock_id" {...formItemProps}>
             {getFieldDecorator('mock_id', {
-              rules: [{required: noFrom, message: '请输入要映射的mock_id！'}],
+              rules: [{ required: noFrom, message: '请输入要映射的mock_id！' }],
               initialValue: data.mock_id
             })(
               <Input maxLength={50}/>
@@ -100,7 +100,7 @@ class DataMapForm extends PureComponent {
   }
 
   handleSubmit = () => {
-    const {form, onSave, data: {project_id, interface_id, id,}} = this.props;
+    const { form, onSave, data: { project_id, interface_id, id, } } = this.props;
 
     form.validateFields((err, values) => {
       var fields = values;

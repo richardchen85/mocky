@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {connect} from "react-redux";
-import {Redirect} from "react-router-dom";
-import {actions} from '../redux/auth';
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import { actions } from '../redux/auth';
 
 export default function withAuth(WrappedComponent) {
   const WithAuth = props => {

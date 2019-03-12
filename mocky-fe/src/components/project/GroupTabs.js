@@ -1,6 +1,6 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {Icon, Modal} from 'antd';
+import { Icon, Modal } from 'antd';
 import './GroupTabs.css';
 import GroupTabTitle from './GroupTabTitle';
 import Interfaces from './Interfaces';
@@ -28,8 +28,8 @@ class GroupTabs extends PureComponent {
   }
 
   render() {
-    const {activeId,} = this.state;
-    const {projectId, groups, group, itface, setInterface, onGroupSave, onInterfaceDelete, onInterfaceSave, onInterfaceSort} = this.props;
+    const { activeId, } = this.state;
+    const { projectId, groups, group, itface, setInterface, onGroupSave, onInterfaceDelete, onInterfaceSave, onInterfaceSort } = this.props;
     const activeGroup = groups.find(group => group.id === activeId);
 
     return (
@@ -78,37 +78,37 @@ class GroupTabs extends PureComponent {
   }
 
   changeActiveId = (id) => {
-    const {groups} = this.props;
+    const { groups } = this.props;
     if (id) {
-      this.setState({activeId: id});
+      this.setState({ activeId: id });
     } else if (groups.length > 0) {
-      this.setState({activeId: groups[0].id});
+      this.setState({ activeId: groups[0].id });
     }
   }
 
   handleCreate = () => {
-    const {setGroup, projectId} = this.props;
+    const { setGroup, projectId } = this.props;
     setGroup({
-      data: {project_id: projectId},
+      data: { project_id: projectId },
       editing: true,
     });
   }
 
   handleEdit = (group) => {
-    this.props.setGroup({editing: true, data: group});
+    this.props.setGroup({ editing: true, data: group });
   }
 
   handleSave = (group) => {
-    const {onGroupSave, group: {saving}} = this.props;
+    const { onGroupSave, group: { saving } } = this.props;
     !saving && onGroupSave(group);
   }
 
   handleCancel = () => {
-    this.props.setGroup({editing: false, saving: false, data: null})
+    this.props.setGroup({ editing: false, saving: false, data: null })
   }
 
   handleDelete = (group) => {
-    const {onGroupDelete} = this.props;
+    const { onGroupDelete } = this.props;
 
     Modal.confirm({
       title: '删除分组',
@@ -120,7 +120,7 @@ class GroupTabs extends PureComponent {
   }
 
   handleSort = (e, sortable) => {
-    const {onGroupSort} = this.props;
+    const { onGroupSort } = this.props;
     onGroupSort && onGroupSort(sortable.toArray());
   }
 }

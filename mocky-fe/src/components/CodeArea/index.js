@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/htmlmixed/htmlmixed';
@@ -6,7 +6,7 @@ import './index.css';
 
 class CodeArea extends PureComponent {
   render() {
-    const {mode} = this.props;
+    const { mode } = this.props;
     const isJSON = mode.name === 'javascript';
 
     return (
@@ -20,7 +20,7 @@ class CodeArea extends PureComponent {
   }
 
   componentDidMount() {
-    const {value, mode, onChange} = this.props;
+    const { value, mode, onChange } = this.props;
 
     this.cm = CodeMirror.fromTextArea(this.$host, {
       lineNumbers: true,
@@ -38,7 +38,7 @@ class CodeArea extends PureComponent {
   }
 
   setValue(value) {
-    const {mode} = this.props;
+    const { mode } = this.props;
     const isJSON = mode.name === 'javascript';
 
     if (isJSON) {

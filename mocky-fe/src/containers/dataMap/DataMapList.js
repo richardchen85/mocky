@@ -1,10 +1,10 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Spin} from 'antd';
+import { connect } from 'react-redux';
+import { Spin } from 'antd';
 import DataMapList from '../../components/dataMap/DataMapList';
 
-import {actions} from '../../redux/dataMap';
+import { actions } from '../../redux/dataMap';
 
 class DataMapListContainer extends PureComponent {
   static propTypes = {
@@ -13,16 +13,16 @@ class DataMapListContainer extends PureComponent {
   };
 
   render() {
-    const {fetching, data, projectId, interfaceId, dataMap, setDataMap} = this.props;
+    const { fetching, data, projectId, interfaceId, dataMap, setDataMap } = this.props;
 
     if (fetching) {
       return (
-        <div className="dataMap-list" style={{width: 600}}><Spin/></div>
+        <div className="dataMap-list" style={{ width: 600 }}><Spin/></div>
       )
     }
 
     return (
-      <div className="dataMap-list" style={{marginRight: 15, width: 600}}>
+      <div className="dataMap-list" style={{ marginRight: 15, width: 600 }}>
         <DataMapList projectId={projectId} interfaceId={interfaceId} data={data} setDataMap={setDataMap}
                      dataMap={dataMap} onDelete={this.deleteDataMap} onSave={this.saveDataMap}/>
       </div>
@@ -43,7 +43,7 @@ class DataMapListContainer extends PureComponent {
    * 查询当前接口的所有映射规则
    */
   getList() {
-    const {interfaceId, getList} = this.props;
+    const { interfaceId, getList } = this.props;
     getList(interfaceId);
   }
 

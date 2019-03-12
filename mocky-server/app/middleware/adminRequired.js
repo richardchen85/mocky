@@ -4,6 +4,8 @@
 
 'use strict';
 
+const messages = require('../common/messages');
+
 module.exports = () => {
   return async function adminRequired(ctx, next) {
     if (!ctx.user || !ctx.user.isAdmin) {

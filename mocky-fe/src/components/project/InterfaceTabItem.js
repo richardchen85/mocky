@@ -1,6 +1,6 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {Icon} from 'antd';
+import { Icon } from 'antd';
 
 class InterfaceTabItem extends PureComponent {
   static propTypes = {
@@ -13,7 +13,7 @@ class InterfaceTabItem extends PureComponent {
   }
 
   render() {
-    const {data, active, onEdit, onDelete} = this.props;
+    const { data, active, onEdit, onDelete } = this.props;
 
     return (
       <>
@@ -29,7 +29,7 @@ class InterfaceTabItem extends PureComponent {
   }
 
   handleChange = () => {
-    const {active, data, onClick} = this.props;
+    const { active, data, onClick } = this.props;
     !active && onClick(data.id);
   }
 }

@@ -1,6 +1,6 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {Spin, Button, Modal} from 'antd';
+import { Spin, Button, Modal } from 'antd';
 import './ProjectList.css';
 import ProjectItem from './ProjectItem';
 import ProjectEdit from './ProjectEdit';
@@ -18,12 +18,12 @@ class ProjectList extends PureComponent {
   };
 
   render() {
-    const {projects, project, user, fetching, onItemClick} = this.props;
+    const { projects, project, user, fetching, onItemClick } = this.props;
 
     if (fetching) {
       return (
         <div className="project-list">
-          <Spin style={{marginLeft: 15}}/>
+          <Spin style={{ marginLeft: 15 }}/>
         </div>
       )
     }
@@ -54,7 +54,7 @@ class ProjectList extends PureComponent {
   }
 
   handleCreate = () => {
-    this.props.setProject({editing: true, data: {}});
+    this.props.setProject({ editing: true, data: {} });
   };
 
   handleEdit = (project) => {
@@ -62,7 +62,7 @@ class ProjectList extends PureComponent {
   };
 
   handleDelete = (project) => {
-    const {onItemDelete} = this.props;
+    const { onItemDelete } = this.props;
 
     Modal.confirm({
       title: '删除项目',
@@ -74,12 +74,12 @@ class ProjectList extends PureComponent {
   };
 
   handleOk = (project) => {
-    const {onItemSave, project: {saving}} = this.props;
+    const { onItemSave, project: { saving } } = this.props;
     !saving && onItemSave(project);
   };
 
   handleCancel = () => {
-    this.props.setProject({data: null, editing: false, saving: false});
+    this.props.setProject({ data: null, editing: false, saving: false });
   };
 }
 

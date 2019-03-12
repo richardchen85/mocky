@@ -1,19 +1,19 @@
-import React, {PureComponent} from 'react';
-import {Modal, Form, Input} from 'antd';
+import React, { PureComponent } from 'react';
+import { Modal, Form, Input } from 'antd';
 import UserSelect from '../UserSelect';
 
 const formItemProps = {
-  labelCol: {span: 5},
-  wrapperCol: {span: 16},
+  labelCol: { span: 5 },
+  wrapperCol: { span: 16 },
 };
 
 class ProjectEdit extends PureComponent {
   render() {
-    let {fetching, project, auth, onCancel, form: {getFieldDecorator}} = this.props;
+    let { fetching, project, auth, onCancel, form: { getFieldDecorator } } = this.props;
     project = project || {};
     const userExcludes = auth ? [auth] : [];
     const members = project.members ? project.members.map(user => {
-      return {key: user.id, label: user.nickname};
+      return { key: user.id, label: user.nickname };
     }) : [];
 
     return (
@@ -28,7 +28,7 @@ class ProjectEdit extends PureComponent {
         <Form>
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
-              rules: [{required: true, message: '请输入项目名称！'}],
+              rules: [{ required: true, message: '请输入项目名称！' }],
               initialValue: project.name
             })(
               <Input maxLength={50}/>
@@ -36,7 +36,7 @@ class ProjectEdit extends PureComponent {
           </Form.Item>
           <Form.Item label="描述" {...formItemProps}>
             {getFieldDecorator('desc', {
-              rules: [{required: true, message: '请输入项目描述！'}],
+              rules: [{ required: true, message: '请输入项目描述！' }],
               initialValue: project.desc
             })(
               <Input maxLength={100}/>
@@ -46,7 +46,7 @@ class ProjectEdit extends PureComponent {
             {getFieldDecorator('members', {
               initialValue: members
             })(
-              <UserSelect excludes={userExcludes} style={{width: 350}}/>
+              <UserSelect excludes={userExcludes} style={{ width: 350 }}/>
             )}
           </Form.Item>
         </Form>
@@ -55,7 +55,7 @@ class ProjectEdit extends PureComponent {
   }
 
   handleSubmit = () => {
-    const {form, onOk, project} = this.props;
+    const { form, onOk, project } = this.props;
 
     form.validateFields((err, values) => {
       if (!err && onOk) {

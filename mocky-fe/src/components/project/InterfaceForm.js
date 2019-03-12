@@ -1,15 +1,15 @@
-import React, {PureComponent} from 'react';
-import {Modal, Form, Input, Select} from 'antd';
+import React, { PureComponent } from 'react';
+import { Modal, Form, Input, Select } from 'antd';
 import contentTypes from '../../constants/contentTypes';
 
 const formItemProps = {
-  labelCol: {span: 5},
-  wrapperCol: {span: 18},
+  labelCol: { span: 5 },
+  wrapperCol: { span: 18 },
 };
 
 class InterfaceForm extends PureComponent {
   render() {
-    let {saving, data, onCancel, form: {getFieldDecorator}} = this.props;
+    let { saving, data, onCancel, form: { getFieldDecorator } } = this.props;
 
     return (
       <Modal
@@ -23,7 +23,7 @@ class InterfaceForm extends PureComponent {
         <Form>
           <Form.Item label="名称" {...formItemProps}>
             {getFieldDecorator('name', {
-              rules: [{required: true, message: '请输入接口名称！'}],
+              rules: [{ required: true, message: '请输入接口名称！' }],
               initialValue: data.name
             })(
               <Input maxLength={50}/>
@@ -31,7 +31,7 @@ class InterfaceForm extends PureComponent {
           </Form.Item>
           <Form.Item label="描述" {...formItemProps}>
             {getFieldDecorator('desc', {
-              rules: [{required: true, message: '请输入接口描述！'}],
+              rules: [{ required: true, message: '请输入接口描述！' }],
               initialValue: data.desc
             })(
               <Input maxLength={100}/>
@@ -40,8 +40,8 @@ class InterfaceForm extends PureComponent {
           <Form.Item label="请求路径" {...formItemProps}>
             {getFieldDecorator('url', {
               rules: [
-                {required: true, message: '请输入接口请求路径！'},
-                {pattern: /^\/.*/, message: '请求路径必须以 / 开头！'},
+                { required: true, message: '请输入接口请求路径！' },
+                { pattern: /^\/.*/, message: '请求路径必须以 / 开头！' },
               ],
               initialValue: data.url
             })(
@@ -50,7 +50,7 @@ class InterfaceForm extends PureComponent {
           </Form.Item>
           <Form.Item label="请求类型" {...formItemProps}>
             {getFieldDecorator('method', {
-              rules: [{required: true, message: '请输入接口类型！'}],
+              rules: [{ required: true, message: '请输入接口类型！' }],
               initialValue: data.method || 'get'
             })(
               <Select>
@@ -63,7 +63,7 @@ class InterfaceForm extends PureComponent {
           </Form.Item>
           <Form.Item label="内容格式" {...formItemProps}>
             {getFieldDecorator('content_type', {
-              rules: [{required: true, message: '请输入接口类型！'}],
+              rules: [{ required: true, message: '请输入接口类型！' }],
               initialValue: (data.content_type && String(data.content_type)) || '1'
             })(
               <Select>
@@ -86,7 +86,7 @@ class InterfaceForm extends PureComponent {
   }
 
   handleSubmit = () => {
-    const {form, onSave, data} = this.props;
+    const { form, onSave, data } = this.props;
 
     form.validateFields((err, values) => {
       if (!err && onSave) {

@@ -1,6 +1,6 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {Icon} from 'antd';
+import { Icon } from 'antd';
 import './ProjectItem.css';
 
 class ProjectItem extends PureComponent {
@@ -13,7 +13,7 @@ class ProjectItem extends PureComponent {
   }
 
   render() {
-    const {project, user, onClick, onEdit, onDelete} = this.props
+    const { project, user, onClick, onEdit, onDelete } = this.props
 
     return (
       <div className="project-item">

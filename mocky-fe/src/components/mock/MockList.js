@@ -1,6 +1,6 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import {Table, Divider, Icon, Modal, Button} from 'antd';
+import { Table, Divider, Icon, Modal, Button } from 'antd';
 import MockForm from './MockForm';
 import contentTypes from '../../constants/contentTypes';
 
@@ -17,38 +17,39 @@ class MockList extends PureComponent {
   };
 
   columns = [
-    {title: 'id', key: ' id', dataIndex: 'id'},
-    {title: '名称', key: 'name', dataIndex: 'name'},
-    {title: '状态码', key: 'status_code', dataIndex: 'status_code'},
+    { title: 'id', key: ' id', dataIndex: 'id' },
+    { title: '名称', key: 'name', dataIndex: 'name' },
+    { title: '状态码', key: 'status_code', dataIndex: 'status_code' },
     {
       title: '操作', key: 'action', render: (text, record) => (
         <span>
-        <Icon type="edit" title="修改" onClick={() => this.handleEdit(record.id)} style={{cursor: 'pointer'}}/>
+        <Icon type="edit" title="修改" onClick={() => this.handleEdit(record.id)} style={{ cursor: 'pointer' }}/>
         <Divider type="vertical"/>
-        <Icon type="delete" title="删除" onClick={() => this.handleDelete(record.id)} style={{cursor: 'pointer'}}/>
+        <Icon type="delete" title="删除" onClick={() => this.handleDelete(record.id)} style={{ cursor: 'pointer' }}/>
       </span>
       )
     },
   ];
 
   render() {
-    const {data, mock} = this.props;
+    const { data, mock } = this.props;
     const codeMode = this.getCodeMode();
 
     return (
       <>
-        <div style={{marginBottom: 10}}>
+        <div style={{ marginBottom: 10 }}>
           <Button type="primary" size="small" onClick={this.handleCreate}>添加模拟数据</Button>
         </div>
         <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false}/>
         {mock.editing &&
-        <MockForm data={mock.data} mode={codeMode} saving={mock.saving} onCancel={this.handleCancel} onSave={this.handleSave}/>}
+        <MockForm data={mock.data} mode={codeMode} saving={mock.saving} onCancel={this.handleCancel}
+                  onSave={this.handleSave}/>}
       </>
     )
   }
 
   handleCreate = () => {
-    const {projectId, itf, setMock} = this.props;
+    const { projectId, itf, setMock } = this.props;
     setMock({
       editing: true,
       data: {
@@ -63,7 +64,7 @@ class MockList extends PureComponent {
   };
 
   handleDelete = (id) => {
-    const {onDelete} = this.props;
+    const { onDelete } = this.props;
 
     Modal.confirm({
       title: '删除映射',
@@ -75,17 +76,17 @@ class MockList extends PureComponent {
   };
 
   handleSave = (mock) => {
-    const {onSave, mock: {saving}} = this.props;
+    const { onSave, mock: { saving } } = this.props;
     !saving && onSave(mock);
   };
 
   handleCancel = () => {
-    this.props.setMock({editing: false, saving: false});
+    this.props.setMock({ editing: false, saving: false });
   };
 
   getCodeMode() {
-    const {itf} = this.props;
-    return itf.content_type === contentTypes.types[0].key ? {name: 'javascript', json: true} : 'htmlmixed';
+    const { itf } = this.props;
+    return itf.content_type === contentTypes.types[0].key ? { name: 'javascript', json: true } : 'htmlmixed';
   }
 }
 

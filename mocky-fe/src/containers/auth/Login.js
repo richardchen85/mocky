@@ -1,15 +1,15 @@
-import React, {PureComponent} from 'react';
-import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import LoginForm from '../../components/auth/Login';
-import {actions} from '../../redux/auth';
+import { actions } from '../../redux/auth';
 
 class Login extends PureComponent {
   render() {
-    const {fetching, user, error} = this.props;
+    const { fetching, user, error } = this.props;
 
     if (user.id) {
-      return <Redirect to={{pathname: '/'}}/>
+      return <Redirect to={{ pathname: '/' }}/>
     }
 
     return (
@@ -26,7 +26,7 @@ class Login extends PureComponent {
   }
 
   submit = (values) => {
-    const {login, fetching} = this.props;
+    const { login, fetching } = this.props;
     !fetching && login(values);
   }
 }

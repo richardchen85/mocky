@@ -1,4 +1,4 @@
-import {message} from 'antd';
+import { message } from 'antd';
 import messages from '../constants/messages';
 
 const defaults = {
@@ -56,7 +56,7 @@ function _fetch(fetchPromise, timeout) {
  * @param {*} reject
  */
 function _success(json, options, resolve, reject) {
-  const {toastSuccess, toastError} = options;
+  const { toastSuccess, toastError } = options;
 
   if (!json.success) {
     toastError && toast(toastType.error, json.message || messages.serverBusy);
@@ -79,7 +79,7 @@ function _success(json, options, resolve, reject) {
  * @param {*} reject
  */
 function _fail(options, reject) {
-  const {toastError} = options;
+  const { toastError } = options;
   toastError && toast(toastType.error, messages.networkError);
 
   reject({
@@ -90,7 +90,7 @@ function _fail(options, reject) {
 export function fetch(url, options) {
   options = Object.assign({}, defaults, options || {});
 
-  let {timeout, method, body} = options;
+  let { timeout, method, body } = options;
 
   return new Promise(function (resolve, reject) {
     const fetchOption = {
@@ -122,5 +122,5 @@ export function get(url, options = {}) {
 }
 
 export function post(url, body, options = {}) {
-  return fetch(url, Object.assign({}, options, {method: 'POST', body}));
+  return fetch(url, Object.assign({}, options, { method: 'POST', body }));
 }

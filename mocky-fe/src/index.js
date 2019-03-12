@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Provider} from 'react-redux';
+import { Provider } from 'react-redux';
 import './css/index.css';
 
-import {get} from './utils/fetch';
-import {AUTH} from './constants/url';
-import {configureStore} from './redux';
+import { get } from './utils/fetch';
+import { AUTH } from './constants/url';
+import { configureStore } from './redux';
 import App from './components/App';
 
 function startRender(preloadState = {}) {
@@ -18,7 +18,7 @@ function startRender(preloadState = {}) {
 }
 
 get(AUTH.GET + Date.now()).then(json => {
-  startRender({auth: {fetching: false, user: json.data, error: null}});
+  startRender({ auth: { fetching: false, user: json.data, error: null } });
 }).catch(() => {
   startRender();
 });

@@ -50,7 +50,7 @@ class ProjectController extends Controller {
 
     try {
       // only owner can remove project
-      const owned = await service.project.get({id, user_id: user.id});
+      const owned = await service.project.get({ id, user_id: user.id });
       if (!owned) {
         this.fail(messages.common.notAllowed);
         return;
