@@ -14,6 +14,8 @@ class InterfaceController extends Controller {
     try {
       // check privilege
       if (!(await this.ownerOrMemberOfProject(param.project_id))) return;
+      // check group_id
+      if (!(await this.checkGroup(param))) return;
 
       await service.interface.insert(
         Object.assign(param, {
@@ -79,6 +81,8 @@ class InterfaceController extends Controller {
 
       // check privilege
       if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
+      // check group_id
+      if (!(await this.checkGroup(param))) return;
 
       await service.interface.update(param);
       this.success();
@@ -115,7 +119,8 @@ class InterfaceController extends Controller {
 
   /**
    * 排序
-   * post /interface/sort body: { ids: [] }
+   * post /interface/sort
+   * body: { ids: [] }
    */
   async sort() {
     const { request, service, logger } = this.ctx;
@@ -138,6 +143,29 @@ class InterfaceController extends Controller {
       logger.error(e);
       this.fail(messages.common.sysError);
     }
+  }
+
+  /**
+   * 检查 group_id 是否属于当前 interface 的项目
+   * @param {Object} itf 接口
+   * @return {Promise} boolean
+   */
+  async checkGroup(itf) {
+    const { service, logger } = this.ctx;
+    let groupCount = 0;
+    try {
+      groupCount = await service.group.count({
+        id: itf.group_id,
+        project_id: itf.project_id,
+      });
+    } catch (e) {
+      logger.error(e);
+    }
+    if (groupCount === 0) {
+      this.fail('请选择正确的分组');
+      return false;
+    }
+    return true;
   }
 }
 

@@ -10,7 +10,7 @@ module.exports = class InterfaceService extends BaseService {
   constructor(args) {
     super(args);
     this.tableName = 'mk_interface';
-    this.updateFields = ['name', 'url', 'method', 'content_type', 'jsonp_callback', 'desc', 'priority'];
+    this.updateFields = ['group_id', 'name', 'url', 'method', 'content_type', 'jsonp_callback', 'desc', 'priority'];
   }
 
   countByGroup(group_id) {

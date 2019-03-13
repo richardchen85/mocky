@@ -79,6 +79,7 @@ class GroupTabs extends PureComponent {
           <Interfaces
             projectId={projectId}
             groupId={activeGroup.id}
+            groups={groups}
             interfaces={activeGroup.interfaces}
             itface={itface}
             setInterface={setInterface}

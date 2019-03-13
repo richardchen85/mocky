@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { Modal, Form, Input, Select } from 'antd';
 import contentTypes from '../../constants/contentTypes';
 
@@ -8,10 +9,19 @@ const formItemProps = {
 };
 
 class InterfaceForm extends PureComponent {
+  static propTypes = {
+    data: PropTypes.object.isRequired,
+    groups: PropTypes.array.isRequired,
+    saving: PropTypes.bool.isRequired,
+    onCancel: PropTypes.func.isRequired,
+    onSave: PropTypes.func.isRequired,
+  };
+
   render() {
     let {
       saving,
       data,
+      groups,
       onCancel,
       form: { getFieldDecorator },
     } = this.props;
@@ -37,6 +47,17 @@ class InterfaceForm extends PureComponent {
               rules: [{ required: true, message: '请输入接口描述！' }],
               initialValue: data.desc,
             })(<Input maxLength={100} />)}
+          </Form.Item>
+          <Form.Item label="分组" {...formItemProps}>
+            {getFieldDecorator('group_id', {
+              initialValue: String(data.group_id),
+            })(
+              <Select>
+                {groups.map(group => (
+                  <Select.Option key={group.id}>{group.name}</Select.Option>
+                ))}
+              </Select>
+            )}
           </Form.Item>
           <Form.Item label="请求路径" {...formItemProps}>
             {getFieldDecorator('url', {
@@ -88,10 +109,12 @@ class InterfaceForm extends PureComponent {
     form.validateFields((err, values) => {
       if (!err && onSave) {
         let content_type = parseInt(values.content_type, 10);
+        let group_id = parseInt(values.group_id, 10);
         onSave(
           Object.assign({}, data, {
             ...values,
             content_type,
+            group_id,
           })
         );
       }

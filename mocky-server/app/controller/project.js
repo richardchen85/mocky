@@ -38,7 +38,7 @@ class ProjectController extends Controller {
   }
 
   /**
-   * get /project/delete query: id=1
+   * get /project/delete?id=1
    */
   async delete() {
     const { request, service, logger, user } = this.ctx;
@@ -65,7 +65,7 @@ class ProjectController extends Controller {
         return;
       }
 
-      await service.project.delete(id);
+      await service.project.deleteById(id);
       this.success();
     } catch (e) {
       logger.error(e);
@@ -74,7 +74,7 @@ class ProjectController extends Controller {
   }
 
   /**
-   * get /project/getById query: id=1
+   * get /project/getById?id=1
    */
   async getById() {
     const { request, service, logger } = this.ctx;
@@ -120,16 +120,23 @@ class ProjectController extends Controller {
 
   /**
    * 获取用户拥有和参与的项目
+   * get /project/getByUser
    */
   async getByUser() {
-    const { service, logger, user } = this.ctx;
+    const {
+      ctx,
+      ctx: { service, logger, user },
+    } = this;
     const id = user.id;
 
     try {
       let owned = [];
       let joined = [];
 
-      await Promise.all([service.project.owned(id), service.project.joined(id)]).then(values => {
+      const pOwned = service.project.owned(id);
+      // 超管可以查所有项目
+      const pJoined = ctx.isAdmin ? service.project.query() : service.project.joined(id);
+      await Promise.all([pOwned, pJoined]).then(values => {
         owned = values[0];
         joined = values[1];
       });
@@ -140,6 +147,7 @@ class ProjectController extends Controller {
         }
       });
 
+      // add owner to project
       if (owned.length > 0) {
         const ownerIds = owned.map(p => p.user_id);
         const owners = await service.user.query({
@@ -159,20 +167,25 @@ class ProjectController extends Controller {
     }
   }
 
+  /**
+   * get /project/detail?id=1
+   */
   async detail() {
     const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
       logger.warn(`url: ${request.url} id is empty!`);
-      return this.fail(messages.common.paramError);
+      this.fail(messages.common.paramError);
+      return;
     }
 
     try {
       // get project
       const project = await service.project.getById(id);
       if (!project) {
-        return this.fail(messages.common.notFound);
+        this.fail(messages.common.notFound);
+        return;
       }
 
       // check privilege
@@ -182,12 +195,13 @@ class ProjectController extends Controller {
       let groups = [];
       // get interface
       let interfaces = [];
-      await Promise.all([service.group.getByProject(project.id), service.interface.getByProject(project.id)]).then(
-        values => {
-          groups = values[0];
-          interfaces = values[1];
-        }
-      );
+
+      const pGroup = service.group.getByProject(project.id);
+      const pItf = service.interface.getByProject(project.id);
+      await Promise.all([pGroup, pItf]).then(values => {
+        groups = values[0];
+        interfaces = values[1];
+      });
       groups.forEach(group => {
         group.interfaces = interfaces.filter(itf => itf.group_id === group.id);
       });

@@ -11,6 +11,7 @@ class Interfaces extends PureComponent {
   static propTypes = {
     projectId: PropTypes.number.isRequired,
     groupId: PropTypes.number.isRequired,
+    groups: PropTypes.array.isRequired,
     interfaces: PropTypes.array.isRequired,
     itface: PropTypes.object.isRequired,
     setInterface: PropTypes.func.isRequired,
@@ -25,7 +26,7 @@ class Interfaces extends PureComponent {
 
   render() {
     const { activeId } = this.state;
-    const { interfaces, projectId, itface } = this.props;
+    const { interfaces, projectId, itface, groups } = this.props;
     const activeInterface = interfaces.find(itf => itf.id === activeId);
 
     return (
@@ -54,6 +55,7 @@ class Interfaces extends PureComponent {
           {itface.editing && (
             <InterfaceForm
               data={itface.data}
+              groups={groups}
               saving={itface.saving}
               onCancel={this.handleCancel}
               onSave={this.handleSave}
