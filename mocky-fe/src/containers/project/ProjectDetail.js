@@ -71,8 +71,7 @@ class ProjectDetail extends PureComponent {
    * @param {*} group
    */
   saveGroup = group => {
-    const { createGroup, updateGroup } = this.props;
-    group.id ? updateGroup(group) : createGroup(group);
+    this.props.saveGroup(group);
   };
 
   /**
@@ -87,8 +86,7 @@ class ProjectDetail extends PureComponent {
    * @param {*} itf
    */
   saveInterface = itf => {
-    const { createInterface, updateInterface } = this.props;
-    itf.id ? updateInterface(itf) : createInterface(itf);
+    this.props.saveInterface(itf);
   };
 
   /**
@@ -107,13 +105,11 @@ export default connect(
     getDetail: actions.getDetail,
     setGroup: actions.setGroup,
     deleteGroup: actions.deleteGroup,
-    createGroup: actions.createGroup,
-    updateGroup: actions.updateGroup,
+    saveGroup: actions.saveGroup,
     sortGroup: actions.sortGroup,
     setInterface: actions.setInterface,
     deleteInterface: actions.deleteInterface,
-    createInterface: actions.createInterface,
-    updateInterface: actions.updateInterface,
+    saveInterface: actions.saveInterface,
     sortInterface: actions.sortInterface,
   }
 )(ProjectDetail);

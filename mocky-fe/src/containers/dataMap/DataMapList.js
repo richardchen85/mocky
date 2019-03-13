@@ -61,7 +61,7 @@ class DataMapListContainer extends PureComponent {
   };
 
   saveDataMap = dataMap => {
-    dataMap.id ? this.props.update(dataMap) : this.props.create(dataMap);
+    this.props.save(dataMap);
   };
 }
 
@@ -73,7 +73,6 @@ export default connect(
     getList: actions.getList,
     setDataMap: actions.setDataMap,
     delete: actions.delete,
-    create: actions.create,
-    update: actions.update,
+    save: actions.save,
   }
 )(DataMapListContainer);

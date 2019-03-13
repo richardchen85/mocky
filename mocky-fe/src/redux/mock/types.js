@@ -6,7 +6,6 @@ export default {
   SET_LIST: `${MOCKS}_SET_LIST`,
   GET_MOCK: `${MOCKS}_GET_MOCK`,
   SET_MOCKS: `${MOCKS}_SET_MOCKS`,
-  CREATE: `${MOCKS}_CREATE`,
-  UPDATE: `${MOCKS}_UPDATE`,
+  SAVE: `${MOCKS}_SAVE`,
   DELETE: `${MOCKS}_DELETE`,
 };

@@ -6,6 +6,5 @@ export default {
   getMock: id => ({ type: types.GET_MOCK, payload: id }),
   setMock: mock => ({ type: types.SET_MOCKS, payload: mock }),
   delete: id => ({ type: types.DELETE, payload: id }),
-  create: mock => ({ type: types.CREATE, payload: mock }),
-  update: mock => ({ type: types.UPDATE, payload: mock }),
+  save: mock => ({ type: types.SAVE, payload: mock }),
 };

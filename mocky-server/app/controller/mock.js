@@ -6,9 +6,9 @@ const messages = require('../common/messages');
 
 class MockController extends Controller {
   /**
-   * POST /mock/create
+   * POST /mock/save
    */
-  async create() {
+  async save() {
     const { request, service, logger, user } = this.ctx;
     const param = request.body;
 
@@ -21,13 +21,19 @@ class MockController extends Controller {
       // check privilege
       if (!(await this.ownerOrMemberOfProject(param.project_id))) return;
 
-      await service.mock.insert(
-        Object.assign(param, {
-          user_id: user.id,
-          create_user: user.nickname,
-        })
-      );
-      this.success();
+      let result;
+      if (param.id) {
+        result = await service.mock.update(param);
+      } else {
+        result = await service.mock.insert(
+          Object.assign(param, {
+            user_id: user.id,
+            create_user: user.nickname,
+          })
+        );
+      }
+
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);
@@ -35,9 +41,9 @@ class MockController extends Controller {
   }
 
   /**
-   * GET /mock/remove query: id=xxx
+   * GET /mock/delete?id=xxx
    */
-  async remove() {
+  async delete() {
     const { request, service, logger } = this.ctx;
     const { id } = request.query;
 
@@ -66,37 +72,7 @@ class MockController extends Controller {
   }
 
   /**
-   * POST /mock/update
-   */
-  async update() {
-    const { request, service, logger } = this.ctx;
-    const param = request.body;
-
-    // 去掉换行和空格
-    param.body = param.body.replace(/(\r?\n)|\s/g, '');
-
-    if (!this.isValid(validateRule, param)) return;
-
-    try {
-      const savedMock = await service.mock.getById(param.id);
-      if (!savedMock) {
-        this.fail(messages.common.notFound);
-        return;
-      }
-
-      // check privilege
-      if (!(await this.ownerOrMemberOfProject(savedMock.project_id))) return;
-
-      await service.mock.update(param);
-      this.success();
-    } catch (e) {
-      logger.error(e);
-      this.fail(messages.common.sysError);
-    }
-  }
-
-  /**
-   * GET /mock/detail query: id=xxx
+   * GET /mock/detail?id=xxx
    */
   async detail() {
     const { request, service, logger } = this.ctx;
@@ -126,7 +102,7 @@ class MockController extends Controller {
   }
 
   /**
-   * GET /mock/list query: interface_id=xxx
+   * GET /mock/list?interface_id=xxx
    */
   async list() {
     const { request, service, logger } = this.ctx;

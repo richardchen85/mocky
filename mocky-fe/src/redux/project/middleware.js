@@ -89,39 +89,25 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     // group
-    case types.CREATE_GROUP: {
+    case types.SAVE_GROUP: {
       next(
         apiRequest({
-          url: GROUP.CREATE_GROUP,
+          url: GROUP.SAVE_GROUP,
           method: 'POST',
           body: action.payload,
-          feature: types.CREATE_GROUP,
+          feature: types.SAVE_GROUP,
         })
       );
       break;
     }
 
-    case types.UPDATE_GROUP: {
-      next(
-        apiRequest({
-          url: GROUP.UPDATE_GROUP,
-          method: 'POST',
-          body: action.payload,
-          feature: types.CREATE_GROUP,
-        })
-      );
-      break;
-    }
-
-    case `${types.CREATE_GROUP}_${API_SUCCESS}`:
-    case `${types.UPDATE_GROUP}_${API_SUCCESS}`: {
+    case `${types.SAVE_GROUP}_${API_SUCCESS}`: {
       next(actions.setGroup({ data: null, editing: false, saving: false }));
       fetchDetail(dispatch, getState);
       break;
     }
 
-    case `${types.CREATE_GROUP}_${API_ERROR}`:
-    case `${types.UPDATE_GROUP}_${API_ERROR}`: {
+    case `${types.SAVE_GROUP}_${API_ERROR}`: {
       next(actions.setGroup({ saving: false }));
       break;
     }
@@ -154,39 +140,25 @@ export default ({ dispatch, getState }) => next => action => {
     }
 
     // interface
-    case types.CREATE_INTERFACE: {
+    case types.SAVE_INTERFACE: {
       next(
         apiRequest({
-          url: INTERFACE.CREATE_INTERFACE,
+          url: INTERFACE.SAVE_INTERFACE,
           method: 'POST',
           body: action.payload,
-          feature: types.CREATE_INTERFACE,
+          feature: types.SAVE_INTERFACE,
         })
       );
       break;
     }
 
-    case types.UPDATE_INTERFACE: {
-      next(
-        apiRequest({
-          url: INTERFACE.UPDATE_INTERFACE,
-          method: 'POST',
-          body: action.payload,
-          feature: types.CREATE_INTERFACE,
-        })
-      );
-      break;
-    }
-
-    case `${types.CREATE_INTERFACE}_${API_SUCCESS}`:
-    case `${types.UPDATE_INTERFACE}_${API_SUCCESS}`: {
+    case `${types.SAVE_INTERFACE}_${API_SUCCESS}`: {
       next(actions.setInterface({ data: null, editing: false, saving: false }));
       fetchDetail(dispatch, getState);
       break;
     }
 
-    case `${types.CREATE_INTERFACE}_${API_ERROR}`:
-    case `${types.UPDATE_INTERFACE}_${API_ERROR}`: {
+    case `${types.SAVE_INTERFACE}_${API_ERROR}`: {
       next(actions.setInterface({ saving: false }));
       break;
     }

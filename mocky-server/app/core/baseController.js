@@ -13,7 +13,7 @@ class BaseController extends Controller {
    * @param {Object} data 数据
    * @param {Number} code statusCode
    */
-  success(data, code) {
+  success(data = null, code = 200) {
     this.ctx.body = {
       success: true,
       data,
@@ -26,7 +26,7 @@ class BaseController extends Controller {
    * @param {String} message 失败消息
    * @param {Number} code statusCode
    */
-  fail(message, code) {
+  fail(message, code = 500) {
     this.ctx.body = {
       success: false,
       message,

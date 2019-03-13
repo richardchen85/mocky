@@ -23,41 +23,28 @@ export default ({ dispatch, getState }) => next => action => {
       break;
     }
 
-    case types.CREATE: {
+    case types.SAVE: {
       next(
         apiRequest({
-          url: DATA_MAP.CREATE,
+          url: DATA_MAP.SAVE,
           method: 'POST',
           body: action.payload,
-          feature: types.CREATE,
+          feature: types.SAVE,
         })
       );
       break;
     }
 
-    case types.UPDATE: {
-      next(
-        apiRequest({
-          url: DATA_MAP.UPDATE,
-          method: 'POST',
-          body: action.payload,
-          feature: types.UPDATE,
-        })
-      );
-      break;
-    }
-
-    case `${types.CREATE}_${API_SUCCESS}`:
-    case `${types.UPDATE}_${API_SUCCESS}`: {
+    case `${types.SAVE}_${API_SUCCESS}`: {
       next(actions.setDataMap({ data: null, editing: false, saving: false }));
       dispatch(actions.getList(selectors.getInterfaceId(getState())));
       break;
     }
 
-    case `${types.CREATE}_${API_ERROR}`:
-    case `${types.UPDATE}_${API_ERROR}`:
+    case `${types.SAVE}_${API_ERROR}`: {
       next(actions.setDataMap({ saving: false }));
       break;
+    }
 
     case types.DELETE: {
       next(

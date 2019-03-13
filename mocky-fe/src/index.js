@@ -17,7 +17,7 @@ function startRender(preloadState = {}) {
   );
 }
 
-get(AUTH.GET + Date.now())
+get(AUTH.GET)
   .then(json => {
     startRender({ auth: { fetching: false, user: json.data, error: null } });
   })

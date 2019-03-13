@@ -5,7 +5,7 @@ const validateRule = require('../validateRules/interface');
 const messages = require('../common/messages');
 
 class InterfaceController extends Controller {
-  async create() {
+  async save() {
     const { request, service, logger, user } = this.ctx;
     const param = request.body;
 
@@ -17,20 +17,26 @@ class InterfaceController extends Controller {
       // check group_id
       if (!(await this.checkGroup(param))) return;
 
-      await service.interface.insert(
-        Object.assign(param, {
-          user_id: user.id,
-          create_user: user.nickname,
-        })
-      );
-      this.success();
+      let result;
+      if (param.id) {
+        result = await service.interface.update(param);
+      } else {
+        result = await service.interface.insert(
+          Object.assign(param, {
+            user_id: user.id,
+            create_user: user.nickname,
+          })
+        );
+      }
+
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);
     }
   }
 
-  async remove() {
+  async delete() {
     const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
@@ -60,31 +66,6 @@ class InterfaceController extends Controller {
       }
 
       await service.interface.delete(id);
-      this.success();
-    } catch (e) {
-      logger.error(e);
-      this.fail(messages.common.sysError);
-    }
-  }
-
-  async update() {
-    const { request, service, logger } = this.ctx;
-    const param = request.body;
-
-    if (!this.isValid(validateRule, param)) return;
-
-    try {
-      const savedItface = await service.interface.getById(param.id);
-      if (!savedItface) {
-        return this.fail(messages.common.notFound);
-      }
-
-      // check privilege
-      if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
-      // check group_id
-      if (!(await this.checkGroup(param))) return;
-
-      await service.interface.update(param);
       this.success();
     } catch (e) {
       logger.error(e);

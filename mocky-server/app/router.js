@@ -24,16 +24,14 @@ module.exports = app => {
   router.get('/project/detail', project.detail);
 
   // group
-  router.post('/group/create', group.create);
-  router.get('/group/remove', group.remove);
-  router.post('/group/update', group.update);
+  router.post('/group/save', group.save);
+  router.get('/group/delete', group.delete);
   router.get('/group/detail', group.detail);
   router.post('/group/sort', group.sort);
 
   // interface
-  router.post('/interface/create', itface.create);
-  router.get('/interface/remove', itface.remove);
-  router.post('/interface/update', itface.update);
+  router.post('/interface/save', itface.save);
+  router.get('/interface/delete', itface.delete);
   router.get('/interface/detail', itface.detail);
   router.post('/interface/sort', itface.sort);
 
@@ -42,16 +40,14 @@ module.exports = app => {
   router.all(/\/dataView\/(\d+)\/(.*)/, dataView.view);
 
   // mock
-  router.post('/mock/create', mock.create);
-  router.get('/mock/remove', mock.remove);
-  router.post('/mock/update', mock.update);
+  router.post('/mock/save', mock.save);
+  router.get('/mock/delete', mock.delete);
   router.get('/mock/detail', mock.detail);
   router.get('/mock/list', mock.list);
 
   // dataMap
-  router.post('/dataMap/create', dataMap.create);
-  router.get('/dataMap/remove', dataMap.remove);
-  router.post('/dataMap/update', dataMap.update);
+  router.post('/dataMap/save', dataMap.save);
+  router.get('/dataMap/delete', dataMap.delete);
   router.get('/dataMap/detail', dataMap.detail);
   router.get('/dataMap/list', dataMap.list);
 };

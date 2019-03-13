@@ -59,7 +59,7 @@ class MockListContainer extends PureComponent {
   };
 
   saveMock = mock => {
-    mock.id ? this.props.update(mock) : this.props.create(mock);
+    this.props.save(mock);
   };
 }
 
@@ -72,7 +72,6 @@ export default connect(
     delete: actions.delete,
     getMock: actions.getMock,
     setMock: actions.setMock,
-    create: actions.create,
-    update: actions.update,
+    save: actions.save,
   }
 )(MockListContainer);

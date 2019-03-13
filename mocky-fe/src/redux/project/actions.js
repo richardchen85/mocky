@@ -13,13 +13,11 @@ export default {
 
   setGroup: group => ({ type: types.SET_GROUP, payload: group }),
   deleteGroup: id => ({ type: types.DELETE_GROUP, payload: id }),
-  updateGroup: group => ({ type: types.UPDATE_GROUP, payload: group }),
-  createGroup: group => ({ type: types.CREATE_GROUP, payload: group }),
+  saveGroup: group => ({ type: types.SAVE_GROUP, payload: group }),
   sortGroup: ids => ({ type: types.SORT_GROUP, payload: { ids } }),
 
   setInterface: itface => ({ type: types.SET_INTERFACE, payload: itface }),
   deleteInterface: id => ({ type: types.DELETE_INTERFACE, payload: id }),
-  createInterface: itf => ({ type: types.CREATE_INTERFACE, payload: itf }),
-  updateInterface: itf => ({ type: types.UPDATE_INTERFACE, payload: itf }),
+  saveInterface: itf => ({ type: types.SAVE_INTERFACE, payload: itf }),
   sortInterface: ids => ({ type: types.SORT_INTERFACE, payload: { ids } }),
 };

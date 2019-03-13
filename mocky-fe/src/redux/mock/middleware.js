@@ -38,42 +38,29 @@ export default ({ dispatch, getState }) => next => action => {
       break;
     }
 
-    case types.CREATE: {
+    case types.SAVE: {
       next(
         apiRequest({
-          url: MOCK.CREATE,
+          url: MOCK.SAVE,
           method: 'POST',
           body: action.payload,
-          feature: types.CREATE,
+          feature: types.SAVE,
         })
       );
       break;
     }
 
-    case types.UPDATE: {
-      next(
-        apiRequest({
-          url: MOCK.UPDATE,
-          method: 'POST',
-          body: action.payload,
-          feature: types.UPDATE,
-        })
-      );
-      break;
-    }
-
-    case `${types.CREATE}_${API_SUCCESS}`:
-    case `${types.UPDATE}_${API_SUCCESS}`: {
+    case `${types.SAVE}_${API_SUCCESS}`: {
       next(actions.setMock({ data: null, editing: false, saving: false }));
       let interfaceId = selectors.getInterfaceId(getState());
       interfaceId && dispatch(actions.getList(interfaceId));
       break;
     }
 
-    case `${types.CREATE}_${API_ERROR}`:
-    case `${types.UPDATE}_${API_ERROR}`:
+    case `${types.SAVE}_${API_ERROR}`: {
       next(actions.setMock({ saving: false }));
       break;
+    }
 
     case types.DELETE: {
       next(apiRequest({ url: MOCK.DELETE + action.payload, feature: types.DELETE }));
