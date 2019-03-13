@@ -12,6 +12,7 @@ export const PROJECT = {
   SAVE_PROJECT: '/project/save',
   DELETE_PROJECT: '/project/delete?id=',
   GET_DETAIL: '/project/detail?id=',
+  TRANSFER: '/project/transfer',
 };
 
 export const GROUP = {

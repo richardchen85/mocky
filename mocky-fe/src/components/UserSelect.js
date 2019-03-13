@@ -14,13 +14,16 @@ class UserSelect extends PureComponent {
 
   render() {
     const { value, data, fetching } = this.state;
+    const { mode = 'multiple', placeholder } = this.props;
     const options = data.map(d => <Option key={d.value}>{d.text}</Option>);
     return (
       <Select
-        mode="multiple"
+        mode={mode}
         labelInValue
         value={value}
+        placeholder={placeholder}
         filterOption={false}
+        showSearch={true}
         notFoundContent={fetching ? <Spin size="small" style={{ marginLeft: 5 }} /> : null}
         style={this.props.style}
         onSearch={this.handleSearch}

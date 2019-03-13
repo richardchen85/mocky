@@ -5,7 +5,7 @@ import './ProjectInfo.css';
 
 class ProjectInfo extends PureComponent {
   render() {
-    const { data, auth } = this.props;
+    const { data, auth, openTransfer } = this.props;
 
     return (
       <div className="project-info">
@@ -16,7 +16,7 @@ class ProjectInfo extends PureComponent {
         <div className="project-desc">
           <span style={{ marginRight: 10 }}>{data.desc}</span>
           {auth.id === data.user_id && (
-            <Button type="danger" size="small" icon="export">
+            <Button type="danger" size="small" icon="export" onClick={openTransfer}>
               转移
             </Button>
           )}

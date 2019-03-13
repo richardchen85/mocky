@@ -22,6 +22,7 @@ module.exports = app => {
   router.get('/project/getById', project.getById);
   router.get('/project/getByUser', project.getByUser);
   router.get('/project/detail', project.detail);
+  router.post('/project/transfer', project.transfer);
 
   // group
   router.post('/group/save', group.save);

@@ -12,12 +12,10 @@ class ProjectEdit extends PureComponent {
     let {
       fetching,
       project,
-      auth,
       onCancel,
       form: { getFieldDecorator },
     } = this.props;
     project = project || {};
-    const userExcludes = auth ? [auth] : [];
     const members = project.members
       ? project.members.map(user => {
           return { key: user.id, label: user.nickname };
@@ -49,7 +47,7 @@ class ProjectEdit extends PureComponent {
           <Form.Item label="成员" {...formItemProps}>
             {getFieldDecorator('members', {
               initialValue: members,
-            })(<UserSelect excludes={userExcludes} style={{ width: 350 }} />)}
+            })(<UserSelect style={{ width: 350 }} />)}
           </Form.Item>
         </Form>
       </Modal>

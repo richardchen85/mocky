@@ -4,6 +4,7 @@ import { Spin } from 'antd';
 import PageLayout from '../../components/PageLayout';
 import ProjectInfo from '../../components/project/ProjectInfo';
 import GroupTabs from '../../components/project/GroupTabs';
+import TransferFrom from './TransferForm';
 
 import { actions } from '../../redux/project';
 
@@ -17,6 +18,7 @@ class ProjectDetail extends PureComponent {
       match,
       group,
       itface,
+      transfer,
       setGroup,
       setInterface,
       sortGroup,
@@ -35,7 +37,7 @@ class ProjectDetail extends PureComponent {
 
     return (
       <PageLayout auth={auth} logout={logout}>
-        <ProjectInfo data={data} auth={auth} />
+        <ProjectInfo data={data} auth={auth} openTransfer={this.openTransfer} />
         <GroupTabs
           projectId={data.id}
           groups={groups}
@@ -50,6 +52,7 @@ class ProjectDetail extends PureComponent {
           onInterfaceDelete={this.deleteInterface}
           onInterfaceSort={sortInterface}
         />
+        {transfer.show && <TransferFrom />}
       </PageLayout>
     );
   }
@@ -95,6 +98,14 @@ class ProjectDetail extends PureComponent {
   deleteInterface = id => {
     this.props.deleteInterface(id);
   };
+
+  /**
+   * 打开转移对话框
+   */
+  openTransfer = () => {
+    const { data, setTransfer } = this.props;
+    setTransfer({ show: true, project_id: data.id });
+  };
 }
 
 export default connect(
@@ -111,5 +122,6 @@ export default connect(
     deleteInterface: actions.deleteInterface,
     saveInterface: actions.saveInterface,
     sortInterface: actions.sortInterface,
+    setTransfer: actions.setTransfer,
   }
 )(ProjectDetail);

@@ -28,6 +28,7 @@ const projectDetailReducers = createReducer(
     data: {},
     group: { data: null, editing: false, saving: false },
     itface: { data: null, editing: false, saving: false },
+    transfer: { show: false, saving: false },
   },
   {
     [types.GET_DETAIL]: (state, { payload }) => {
@@ -41,6 +42,9 @@ const projectDetailReducers = createReducer(
     },
     [types.SET_INTERFACE]: (state, { payload }) => {
       return { ...state, itface: { ...state.itface, ...payload } };
+    },
+    [types.SET_TRANSFER]: (state, { payload }) => {
+      return { ...state, transfer: { ...state.transfer, ...payload } };
     },
   }
 );

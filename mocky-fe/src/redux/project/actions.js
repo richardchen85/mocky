@@ -7,6 +7,8 @@ export default {
   setProject: project => ({ type: types.SET_PROJECT, payload: project }),
   saveProject: project => ({ type: types.SAVE_PROJECT, payload: project }),
   deleteProject: id => ({ type: types.DELETE_PROJECT, payload: id }),
+  setTransfer: (transfer) => ({ type: types.SET_TRANSFER, payload: transfer }),
+  saveTransfer: (data) => ({ type: types.SAVE_TRANSFER, payload: data }),
 
   getDetail: id => ({ type: types.GET_DETAIL, payload: id }),
   setDetail: (project = {}) => ({ type: types.SET_DETAIL, payload: project }),

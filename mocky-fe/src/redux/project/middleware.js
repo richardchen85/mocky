@@ -88,6 +88,27 @@ export default ({ dispatch, getState }) => next => action => {
       break;
     }
 
+    case `${types.GET_DETAIL}_${API_ERROR}`: {
+      next(actions.setDetail(action.payload));
+      break;
+    }
+
+    case types.SAVE_TRANSFER: {
+      next(apiRequest({ url: PROJECT.TRANSFER, method: 'POST', body: action.payload, feature: types.SAVE_TRANSFER }));
+      break;
+    }
+
+    case `${types.SAVE_TRANSFER}_${API_SUCCESS}`: {
+      next(actions.setTransfer({ show: false, saving: false }));
+      break;
+    }
+
+    case `${types.SAVE_TRANSFER}_${API_ERROR}`: {
+      next(actions.setTransfer({ saving: false }));
+      fetchDetail(dispatch, getState);
+      break;
+    }
+
     // group
     case types.SAVE_GROUP: {
       next(
