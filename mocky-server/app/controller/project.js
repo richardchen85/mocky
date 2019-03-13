@@ -213,6 +213,40 @@ class ProjectController extends Controller {
       this.fail(messages.common.sysError);
     }
   }
+
+  /**
+   * owner 转移
+   */
+  async transfer() {
+    const { request, service, logger, user } = this.ctx;
+    const param = request.body;
+    const { project_id, user_id } = param;
+    const rule = {
+      project_id: 'number',
+      user_id: 'number',
+    };
+
+    if (!this.isValid(rule, param)) return;
+
+    try {
+      const savedProject = await service.project.getById(project_id);
+      if (!savedProject) {
+        this.fail(messages.common.notFound);
+        return;
+      }
+      // 只有 owner 可以转移
+      if (savedProject.user_id !== user.id) {
+        this.fail(messages.common.notAllowed);
+        return;
+      }
+
+      const result = service.project.update({ id: project_id, user_id });
+      this.success(result);
+    } catch (e) {
+      logger.error(e);
+      this.fail(messages.common.sysError);
+    }
+  }
 }
 
 module.exports = ProjectController;

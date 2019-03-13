@@ -35,7 +35,7 @@ class ProjectDetail extends PureComponent {
 
     return (
       <PageLayout auth={auth} logout={logout}>
-        <ProjectInfo data={data} />
+        <ProjectInfo data={data} auth={auth} />
         <GroupTabs
           projectId={data.id}
           groups={groups}
