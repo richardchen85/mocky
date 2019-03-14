@@ -6,6 +6,7 @@ import { actions } from '../../redux/project';
 
 function TransferForm(props) {
   const {
+    show,
     saving,
     project_id,
     error,
@@ -32,7 +33,7 @@ function TransferForm(props) {
 
   return (
     <Modal
-      visible={true}
+      visible={show}
       title="转移项目"
       maskClosable={false}
       confirmLoading={saving}

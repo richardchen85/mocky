@@ -18,7 +18,6 @@ class ProjectDetail extends PureComponent {
       match,
       group,
       itface,
-      transfer,
       setGroup,
       setInterface,
       sortGroup,
@@ -52,7 +51,7 @@ class ProjectDetail extends PureComponent {
           onInterfaceDelete={this.deleteInterface}
           onInterfaceSort={sortInterface}
         />
-        {transfer.show && <TransferFrom />}
+        <TransferFrom />
       </PageLayout>
     );
   }

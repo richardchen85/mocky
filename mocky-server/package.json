@@ -4,13 +4,13 @@
   "description": "mocky server side project",
   "private": true,
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "egg": "^2.2.1",
-    "egg-mysql": "^3.0.0",
-    "egg-redis": "^2.0.0",
-    "egg-scripts": "^2.5.0",
-    "egg-validate": "^2.0.2",
-    "egg-view-nunjucks": "^2.2.0"
+    "bcryptjs": "2.4.3",
+    "egg": "2.20.1",
+    "egg-mysql": "3.0.0",
+    "egg-redis": "2.3.0",
+    "egg-scripts": "2.11.0",
+    "egg-validate": "2.0.2",
+    "egg-view-nunjucks": "2.2.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",
