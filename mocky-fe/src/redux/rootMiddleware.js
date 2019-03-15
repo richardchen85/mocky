@@ -1,11 +1,11 @@
 import { apiMiddleware } from './api';
-import { middleware as authMiddleware } from './auth';
+// import { middleware as authMiddleware } from './auth';
 import { middleware as projectMiddleware } from './project';
 import { middleware as dataMapMiddleware } from './dataMap';
 import { middleware as mockMiddleware } from './mock';
 
 export default [
-  authMiddleware,
+  // authMiddleware,
   projectMiddleware,
   dataMapMiddleware,
   mockMiddleware,

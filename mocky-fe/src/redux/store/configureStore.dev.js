@@ -1,14 +1,13 @@
 import { createStore, applyMiddleware, compose } from 'redux';
-import rootReducer from '../rootReducer';
-import rootMiddleware from '../rootMiddleware';
+import { reducer, middleware } from '../rootModel';
 
 const configureStore = preloadedState => {
   const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-  const store = createStore(rootReducer, preloadedState, composeEnhancer(applyMiddleware(...rootMiddleware)));
+  const store = createStore(reducer, preloadedState, composeEnhancer(applyMiddleware(...middleware)));
 
   if (module.hot) {
     module.hot.accept(() => {
-      const nextRootReducer = require('../rootReducer');
+      const nextRootReducer = require('../rootModel').reducer;
       store.replaceReducer(nextRootReducer);
     });
   }
