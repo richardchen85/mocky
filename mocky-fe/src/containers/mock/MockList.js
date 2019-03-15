@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { Spin } from 'antd';
 import MockList from '../../components/mock/MockList';
 
-import { actions } from '../../redux/mock';
-
 class MockListContainer extends PureComponent {
   static propTypes = {
     projectId: PropTypes.number.isRequired,
@@ -13,7 +11,7 @@ class MockListContainer extends PureComponent {
   };
 
   render() {
-    const { fetching, projectId, itf, data, mock, getMock, setMock } = this.props;
+    const { fetching, projectId, itf, data, edit } = this.props;
 
     if (fetching) {
       return (
@@ -31,9 +29,9 @@ class MockListContainer extends PureComponent {
           data={data}
           onDelete={this.deleteMock}
           onSave={this.saveMock}
-          mock={mock}
-          getMock={getMock}
-          setMock={setMock}
+          edit={edit}
+          getMock={this.getMock}
+          setEdit={this.setEdit}
         />
       </div>
     );
@@ -50,28 +48,25 @@ class MockListContainer extends PureComponent {
   }
 
   getList() {
-    const { itf, getList } = this.props;
-    getList(itf.id);
+    const { itf, dispatch } = this.props;
+    dispatch({ type: 'mock/getList', payload: itf.id });
   }
 
   deleteMock = id => {
-    this.props.delete(id);
+    this.props.dispatch({ type: 'mock/delete', payload: id });
   };
 
   saveMock = mock => {
-    this.props.save(mock);
+    this.props.dispatch({ type: 'mock/save', payload: mock });
   };
+
+  getMock = (id) => {
+    this.props.dispatch({ type: 'mock/getMock', payload: id });
+  };
+
+  setEdit = (edit) => {
+    this.props.dispatch({ type: 'mock/edit', payload: edit });
+  }
 }
 
-export default connect(
-  state => ({
-    ...state.mock.list,
-  }),
-  {
-    getList: actions.getList,
-    delete: actions.delete,
-    getMock: actions.getMock,
-    setMock: actions.setMock,
-    save: actions.save,
-  }
-)(MockListContainer);
+export default connect(state => ({ ...state.mock }))(MockListContainer);

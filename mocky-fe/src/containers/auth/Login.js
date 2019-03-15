@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import LoginForm from '../../components/auth/Login';
-import { actions } from '../../redux/auth';
 
 class Login extends PureComponent {
   render() {
@@ -24,16 +23,11 @@ class Login extends PureComponent {
   }
 
   submit = values => {
-    const { login, fetching } = this.props;
-    !fetching && login(values);
+    const { dispatch, fetching } = this.props;
+    !fetching && dispatch({ type: 'auth/login', payload: values });
   };
 }
 
-export default connect(
-  state => ({
-    ...state.auth,
-  }),
-  {
-    login: actions.login,
-  }
-)(Login);
+export default connect(state => ({
+  ...state.auth,
+}))(Login);

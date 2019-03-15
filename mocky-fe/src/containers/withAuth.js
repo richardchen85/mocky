@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { actions } from '../redux/auth';
 
 export default function withAuth(WrappedComponent) {
   const WithAuth = props => {
@@ -10,20 +9,16 @@ export default function withAuth(WrappedComponent) {
       return <Redirect to="/user/login" />;
     }
 
-    return <WrappedComponent {...props} />;
+    const logout = () => {
+      props.dispatch({ type: 'auth/logout' });
+    };
+
+    return <WrappedComponent {...props} logout={logout} />;
   };
 
   WithAuth.propTypes = {
     auth: PropTypes.object.isRequired,
-    logout: PropTypes.func.isRequired,
   };
 
-  return connect(
-    state => ({
-      auth: state.auth.user,
-    }),
-    {
-      logout: actions.logout,
-    }
-  )(WithAuth);
+  return connect(state => ({ auth: state.auth.user }))(WithAuth);
 }

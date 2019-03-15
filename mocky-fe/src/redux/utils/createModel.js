@@ -3,22 +3,20 @@ export default function createModel(model) {
 
   return {
     reducer: (state = initialState, action) => {
-      const reducer = reducers[namespace + '/' + Object.keys(reducers).find(action.type)];
-      if (reducer) {
-        return reducer(state, action);
+      const type = Object.keys(reducers).find(key => namespace + '/' + key === action.type);
+
+      if (type) {
+        return reducers[type](state, action);
       }
       return state;
     },
     middleware: store => next => action => {
       next(action);
-      const middleware = effects[namespace + '/' + Object.keys(effects).find(action.key)];
-      middleware && middleware(
-        store,
-        action => {
-          const { type, ...payload } = action;
-          next({ type: namespace + '/' + type, ...payload})
-        }
-      );
-    }
-  }
+
+      const type = Object.keys(effects).find(key => namespace + '/' + key === action.type);
+      if (type) {
+        effects[type](store, next, action);
+      }
+    },
+  };
 }

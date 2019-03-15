@@ -9,11 +9,11 @@ class MockList extends PureComponent {
     projectId: PropTypes.number.isRequired,
     itf: PropTypes.object.isRequired,
     data: PropTypes.array.isRequired,
-    mock: PropTypes.object.isRequired,
+    edit: PropTypes.object.isRequired,
     onDelete: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     getMock: PropTypes.func.isRequired,
-    setMock: PropTypes.func.isRequired,
+    setEdit: PropTypes.func.isRequired,
   };
 
   columns = [
@@ -34,22 +34,22 @@ class MockList extends PureComponent {
   ];
 
   render() {
-    const { data, mock } = this.props;
+    const { data, edit } = this.props;
     const codeMode = this.getCodeMode();
 
     return (
       <>
         <div style={{ marginBottom: 10 }}>
-          <Button type="primary" size="small" onClick={this.handleCreate}>
+          <Button htmlType="button" type="primary" size="small" onClick={this.handleCreate}>
             添加模拟数据
           </Button>
         </div>
         <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false} />
-        {mock.editing && (
+        {edit.editing && (
           <MockForm
-            data={mock.data}
+            data={edit.data}
             mode={codeMode}
-            saving={mock.saving}
+            saving={edit.saving}
             onCancel={this.handleCancel}
             onSave={this.handleSave}
           />
@@ -59,8 +59,8 @@ class MockList extends PureComponent {
   }
 
   handleCreate = () => {
-    const { projectId, itf, setMock } = this.props;
-    setMock({
+    const { projectId, itf, setEdit } = this.props;
+    setEdit({
       editing: true,
       data: {
         project_id: projectId,
@@ -85,16 +85,16 @@ class MockList extends PureComponent {
     });
   };
 
-  handleSave = mock => {
+  handleSave = edit => {
     const {
       onSave,
-      mock: { saving },
+      edit: { saving },
     } = this.props;
-    !saving && onSave(mock);
+    !saving && onSave(edit);
   };
 
   handleCancel = () => {
-    this.props.setMock({ editing: false, saving: false });
+    this.props.setEdit({ editing: false, saving: false });
   };
 
   getCodeMode() {
