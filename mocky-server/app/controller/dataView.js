@@ -11,7 +11,7 @@ class DataViewController extends Controller {
    * ALL /dataView/[project_id]/[mock.url]
    */
   async view() {
-    const { request, service, logger, params } = this.ctx;
+    const { ctx, ctx: { request, service, logger, params } } = this;
     const param = {
       project_id: parseInt(params[0]),
       url: params[1],
@@ -61,9 +61,10 @@ class DataViewController extends Controller {
       if (itface.jsonp_callback) {
         callback = request.query[itface.jsonp_callback];
       }
-      this.ctx.set('Content-Type', contentTypes.getByKey(itface.content_type).content);
-      this.ctx.status = mock.status_code;
-      this.ctx.body = callback ? `${callback}(${mock.body})` : mock.body;
+      ctx.set('Access-Control-Allow-Origin', '*');
+      ctx.set('Content-Type', contentTypes.getByKey(itface.content_type).content);
+      ctx.status = mock.status_code;
+      ctx.body = callback ? `${callback}(${mock.body})` : mock.body;
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);
