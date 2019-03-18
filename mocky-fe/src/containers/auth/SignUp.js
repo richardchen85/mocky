@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import SignUpForm from '../../components/auth/SignUp';
+import { types } from '../../redux/model/auth';
 
 class SignUp extends PureComponent {
   render() {
@@ -24,7 +25,7 @@ class SignUp extends PureComponent {
 
   submit = values => {
     const { dispatch, fetching } = this.props;
-    !fetching && dispatch({ type: 'auth/signUp', payload: values });
+    !fetching && dispatch({ type: types.signUp, payload: values });
   };
 }
 

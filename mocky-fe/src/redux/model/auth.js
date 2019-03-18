@@ -1,39 +1,67 @@
-import { apiRequest, API_SUCCESS, API_ERROR } from '../api';
+import { apiRequest } from '../api';
 import { AUTH } from '../../constants/url';
 import createModel from '../utils/createModel';
 
+const namespace = 'auth';
+
+export const types = {
+  signUp: `${namespace}/signUp`,
+  login: `${namespace}/login`,
+  setAuth: `${namespace}/setAuth`,
+  logout: `${namespace}/logout`,
+};
+
 export default createModel({
-  namespace: 'auth',
+  namespace: namespace,
   state: { fetching: false, user: {}, error: null },
   reducers: {
     setAuth: (state, { payload }) => ({ ...state, ...payload }),
   },
   effects: {
     signUp: (store, next, { payload }) => {
-      next(apiRequest({ url: AUTH.SIGN_UP, method: 'POST', body: payload, feature: 'auth/signUp' }));
-      next({ type: 'auth/setAuth', payload: { fetching: true, error: null } });
-    },
-    [`signUp_${API_SUCCESS}`]: (store, next, { payload }) => {
-      next({ type: 'auth/setAuth', payload: { fetching: false, user: payload || {} } });
-    },
-    [`signUp_${API_ERROR}`]: (store, next, { payload }) => {
-      next({ type: 'auth/setAuth', payload: { fetching: false, error: payload.message } });
+      next({ type: types.setAuth, payload: { fetching: true, error: null } });
+      next(
+        apiRequest({
+          url: AUTH.SIGN_UP,
+          method: 'POST',
+          body: payload,
+          feature: types.signUp,
+          success: data => {
+            next({ type: types.setAuth, payload: { fetching: false, user: data || {} } });
+          },
+          error: errorMsg => {
+            next({ type: types.setAuth, payload: { fetching: false, error: errorMsg } });
+          },
+        })
+      );
     },
     login: (store, next, { payload }) => {
-      next(apiRequest({ url: AUTH.LOGIN, method: 'POST', body: payload, feature: 'auth/login' }));
-      next({ type: 'auth/setAuth', payload: { fetching: true, error: null } });
+      next({ type: types.setAuth, payload: { fetching: true, error: null } });
+      next(
+        apiRequest({
+          url: AUTH.LOGIN,
+          method: 'POST',
+          body: payload,
+          feature: types.login,
+          success: data => {
+            next({ type: types.setAuth, payload: { fetching: false, user: data || {} } });
+          },
+          error: errorMsg => {
+            next({ type: types.setAuth, payload: { fetching: false, error: errorMsg } });
+          },
+        })
+      );
     },
-    [`login_${API_SUCCESS}`]: (store, next, { payload }) => {
-      next({ type: 'auth/setAuth', payload: { fetching: false, user: payload || {} } });
-    },
-    [`login_${API_ERROR}`]: (store, next, { payload }) => {
-      next({ type: 'auth/setAuth', payload: { fetching: false, error: payload.message } });
-    },
-    logout: (store, next, { payload }) => {
-      next(apiRequest({ url: AUTH.LOGOUT, feature: 'auth/logout' }));
-    },
-    [`logout_${API_SUCCESS}`]: (store, next, { payload }) => {
-      next({ type: 'auth/setAuth', payload: { user: {} } });
+    logout: (store, next) => {
+      next(
+        apiRequest({
+          url: AUTH.LOGOUT,
+          feature: types.logout,
+          success: () => {
+            next({ type: types.setAuth, payload: { user: {} } });
+          },
+        })
+      );
     },
   },
 });

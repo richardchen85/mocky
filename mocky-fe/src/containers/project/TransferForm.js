@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Alert, Form, Modal } from 'antd';
 import UserSelect from '../../components/UserSelect';
+import { types } from '../../redux/model/projectDetail';
 
 function TransferForm(props) {
   const { show, saving, project_id, error, form, dispatch } = props;
@@ -9,13 +10,13 @@ function TransferForm(props) {
   function handleSubmit() {
     form.validateFields((err, { user }) => {
       if (!err) {
-        dispatch({ type: 'projectDetail/saveTransfer', payload: { project_id, user_id: Number(user.key) } });
+        dispatch({ type: types.saveTransfer, payload: { project_id, user_id: Number(user.key) } });
       }
     });
   }
 
   function handleCancel() {
-    props.dispatch({ type: 'projectDetail/setTransfer', payload: { show: false } });
+    props.dispatch({ type: types.setTransfer, payload: { show: false } });
   }
 
   return (

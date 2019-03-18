@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Spin } from 'antd';
 import DataMapList from '../../components/dataMap/DataMapList';
+import { types } from '../../redux/model/dataMap';
 
 class DataMapListContainer extends PureComponent {
   static propTypes = {
@@ -51,19 +52,19 @@ class DataMapListContainer extends PureComponent {
    */
   getList() {
     const { interfaceId, dispatch } = this.props;
-    dispatch({ type: 'dataMap/getList', payload: interfaceId });
+    dispatch({ type: types.getList, payload: interfaceId });
   }
 
   deleteDataMap = id => {
-    this.props.dispatch({ type: 'dataMap/delete', payload: id });
+    this.props.dispatch({ type: types.delete, payload: id });
   };
 
   setEdit = (edit) => {
-    this.props.dispatch({ type: 'dataMap/edit', payload: edit });
+    this.props.dispatch({ type: types.edit, payload: edit });
   };
 
   saveDataMap = dataMap => {
-    this.props.dispatch({ type: 'dataMap/save', payload: dataMap });
+    this.props.dispatch({ type: types.save, payload: dataMap });
   };
 }
 

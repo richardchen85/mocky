@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Spin } from 'antd';
 import MockList from '../../components/mock/MockList';
+import { types } from '../../redux/model/mock';
 
 class MockListContainer extends PureComponent {
   static propTypes = {
@@ -42,30 +43,30 @@ class MockListContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.itf !== this.props.itf) {
+    if (prevProps.itf.id !== this.props.itf.id) {
       this.getList();
     }
   }
 
   getList() {
     const { itf, dispatch } = this.props;
-    dispatch({ type: 'mock/getList', payload: itf.id });
+    dispatch({ type: types.getList, payload: itf.id });
   }
 
   deleteMock = id => {
-    this.props.dispatch({ type: 'mock/delete', payload: id });
+    this.props.dispatch({ type: types.delete, payload: id });
   };
 
   saveMock = mock => {
-    this.props.dispatch({ type: 'mock/save', payload: mock });
+    this.props.dispatch({ type: types.save, payload: mock });
   };
 
   getMock = (id) => {
-    this.props.dispatch({ type: 'mock/getMock', payload: id });
+    this.props.dispatch({ type: types.getMock, payload: id });
   };
 
   setEdit = (edit) => {
-    this.props.dispatch({ type: 'mock/edit', payload: edit });
+    this.props.dispatch({ type: types.edit, payload: edit });
   }
 }
 

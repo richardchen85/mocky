@@ -5,6 +5,7 @@ import PageLayout from '../../components/PageLayout';
 import ProjectInfo from '../../components/project/ProjectInfo';
 import GroupTabs from '../../components/project/GroupTabs';
 import TransferFrom from './TransferForm';
+import { types } from '../../redux/model/projectDetail';
 
 class ProjectDetail extends PureComponent {
   render() {
@@ -51,11 +52,11 @@ class ProjectDetail extends PureComponent {
    */
   getDetail() {
     const { match, dispatch } = this.props;
-    dispatch({ type: 'projectDetail/getDetail', payload: match.params.id });
+    dispatch({ type: types.getDetail, payload: match.params.id });
   }
 
   setGroupEdit = edit => {
-    this.props.dispatch({ type: 'projectDetail/setGroupEdit', payload: edit });
+    this.props.dispatch({ type: types.setGroupEdit, payload: edit });
   };
 
   /**
@@ -63,22 +64,22 @@ class ProjectDetail extends PureComponent {
    * @param {*} group
    */
   saveGroup = group => {
-    this.props.dispatch({ type: 'projectDetail/saveGroup', payload: group });
+    this.props.dispatch({ type: types.saveGroup, payload: group });
   };
 
   /**
    * 删除分组
    */
   deleteGroup = id => {
-    this.props.dispatch({ type: 'projectDetail/deleteGroup', payload: id });
+    this.props.dispatch({ type: types.deleteGroup, payload: id });
   };
 
   sortGroup = ids => {
-    this.props.dispatch({ type: 'projectDetail/sortGroup', payload: ids });
+    this.props.dispatch({ type: types.sortGroup, payload: ids });
   };
 
   setInterfaceEdit = edit => {
-    this.props.dispatch({ type: 'projectDetail/setInterfaceEdit', payload: edit });
+    this.props.dispatch({ type: types.setInterfaceEdit, payload: edit });
   };
 
   /**
@@ -86,18 +87,18 @@ class ProjectDetail extends PureComponent {
    * @param {*} itf
    */
   saveInterface = itf => {
-    this.props.dispatch({ type: 'projectDetail/saveInterface', payload: itf });
+    this.props.dispatch({ type: types.saveInterface, payload: itf });
   };
 
   /**
    * 删除接口
    */
   deleteInterface = id => {
-    this.props.dispatch({ type: 'projectDetail/deleteInterface', payload: id });
+    this.props.dispatch({ type: types.deleteInterface, payload: id });
   };
 
   sortInterface = ids => {
-    this.props.dispatch({ type: 'projectDetail/sortInterface', payload: ids });
+    this.props.dispatch({ type: types.sortInterface, payload: ids });
   };
 
   /**
@@ -105,7 +106,7 @@ class ProjectDetail extends PureComponent {
    */
   openTransfer = () => {
     const { data, dispatch } = this.props;
-    dispatch({ type: 'projectDetail/setTransfer', payload: { show: true, project_id: data.id } });
+    dispatch({ type: types.setTransfer, payload: { show: true, project_id: data.id } });
   };
 }
 

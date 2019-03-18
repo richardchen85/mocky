@@ -1,18 +1,29 @@
-import { apiRequest, API_SUCCESS, API_ERROR } from '../api';
+import { apiRequest } from '../api';
 import { MOCK } from '../../constants/url';
 import createModel from '../utils/createModel';
 
 function refreshList({ dispatch, getState }) {
   try {
     const { interface_id } = getState().mock;
-    interface_id && dispatch({ type: 'mock/getList', payload: interface_id });
+    interface_id && dispatch({ type: types.getList, payload: interface_id });
   } catch (e) {
     console.error(e);
   }
 }
 
+const namespace = 'mock';
+
+export const types = {
+  getList: `${namespace}/getList`,
+  setList: `${namespace}/setList`,
+  getMock: `${namespace}/getMock`,
+  edit: `${namespace}/edit`,
+  save: `${namespace}/save`,
+  delete: `${namespace}/delete`,
+};
+
 export default createModel({
-  namespace: 'mock',
+  namespace: namespace,
   state: {
     fetching: false,
     interface_id: null,
@@ -32,32 +43,57 @@ export default createModel({
   },
   effects: {
     getList: (store, next, { payload }) => {
-      next(apiRequest({ url: MOCK.GET_LIST + payload, feature: 'mock/getList' }));
-    },
-    [`getList_${API_SUCCESS}`]: (store, next, { payload }) => {
-      next({ type: 'mock/setList', payload });
+      next(
+        apiRequest({
+          url: MOCK.GET_LIST + payload,
+          feature: types.getList,
+          success: data => {
+            next({ type: types.setList, payload: data });
+          },
+          error: () => {
+            //
+          },
+        })
+      );
     },
     getMock: (store, next, { payload }) => {
-      next(apiRequest({ url: MOCK.GET_MOCK + payload, feature: 'mock/getMock' }));
-    },
-    [`getMock_${API_SUCCESS}`]: (store, next, { payload }) => {
-      next({ type: 'mock/edit', payload: { editing: true, data: payload } });
+      next(
+        apiRequest({
+          url: MOCK.GET_MOCK + payload,
+          feature: types.getMock,
+          success: data => {
+            next({ type: types.edit, payload: { editing: true, data } });
+          },
+        })
+      );
     },
     save: (store, next, { payload }) => {
-      next(apiRequest({ url: MOCK.SAVE, method: 'POST', body: payload, feature: 'mock/save' }));
-    },
-    [`save_${API_SUCCESS}`]: (store, next, { payload }) => {
-      next({ type: 'mock/edit', payload: { data: null, editing: false, saving: false } });
-      refreshList(store);
-    },
-    [`save_${API_ERROR}`]: (store, next, { payload }) => {
-      next({ type: 'mock/edit', payload: { saving: false } });
+      next(
+        apiRequest({
+          url: MOCK.SAVE,
+          method: 'POST',
+          body: payload,
+          feature: types.save,
+          success: () => {
+            next({ type: types.edit, payload: { data: null, editing: false, saving: false } });
+            refreshList(store);
+          },
+          error: () => {
+            next({ type: types.edit, payload: { saving: false } });
+          },
+        })
+      );
     },
     delete: (store, next, { payload }) => {
-      next(apiRequest({ url: MOCK.DELETE + payload, feature: 'mock/delete' }));
-    },
-    [`delete_${API_SUCCESS}`]: (store, next, { payload }) => {
-      refreshList(store);
+      next(
+        apiRequest({
+          url: MOCK.DELETE + payload,
+          feature: types.delete,
+          success: () => {
+            refreshList(store);
+          },
+        })
+      );
     },
   },
 });

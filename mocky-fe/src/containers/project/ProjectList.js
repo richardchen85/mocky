@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import PageLayout from '../../components/PageLayout';
 import ProjectList from '../../components/project/ProjectList';
+import { types } from '../../redux/model/projectList';
 
 class ProjectListContainer extends PureComponent {
   static propTypes = {
@@ -36,7 +37,7 @@ class ProjectListContainer extends PureComponent {
   }
 
   getList = () => {
-    this.props.dispatch({ type: 'projectList/getList' });
+    this.props.dispatch({ type: types.getList });
   };
 
   onItemClick = projectId => {
@@ -46,19 +47,19 @@ class ProjectListContainer extends PureComponent {
   };
 
   onItemDelete = projectId => {
-    this.props.dispatch({ type: 'projectList/delete', payload: projectId });
+    this.props.dispatch({ type: types.delete, payload: projectId });
   };
 
   getProject = (projectId) => {
-    this.props.dispatch({ type: 'projectList/getProject', payload: projectId });
+    this.props.dispatch({ type: types.getProject, payload: projectId });
   };
 
   setEdit = (edit) => {
-    this.props.dispatch({ type: 'projectList/edit', payload: edit });
+    this.props.dispatch({ type: types.edit, payload: edit });
   };
 
   saveProject = project => {
-    this.props.dispatch({ type: 'projectList/save', payload: project });
+    this.props.dispatch({ type: types.save, payload: project });
   };
 }
 
