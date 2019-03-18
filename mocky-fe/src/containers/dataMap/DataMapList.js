@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { Spin } from 'antd';
 import DataMapList from '../../components/dataMap/DataMapList';
 
-import { actions } from '../../redux/dataMap';
-
 class DataMapListContainer extends PureComponent {
   static propTypes = {
     projectId: PropTypes.number.isRequired,
@@ -13,7 +11,7 @@ class DataMapListContainer extends PureComponent {
   };
 
   render() {
-    const { fetching, data, projectId, interfaceId, dataMap, setDataMap } = this.props;
+    const { fetching, data, projectId, interfaceId, edit } = this.props;
 
     if (fetching) {
       return (
@@ -29,8 +27,8 @@ class DataMapListContainer extends PureComponent {
           projectId={projectId}
           interfaceId={interfaceId}
           data={data}
-          setDataMap={setDataMap}
-          dataMap={dataMap}
+          setEdit={this.setEdit}
+          edit={edit}
           onDelete={this.deleteDataMap}
           onSave={this.saveDataMap}
         />
@@ -52,27 +50,21 @@ class DataMapListContainer extends PureComponent {
    * 查询当前接口的所有映射规则
    */
   getList() {
-    const { interfaceId, getList } = this.props;
-    getList(interfaceId);
+    const { interfaceId, dispatch } = this.props;
+    dispatch({ type: 'dataMap/getList', payload: interfaceId });
   }
 
   deleteDataMap = id => {
-    this.props.delete(id);
+    this.props.dispatch({ type: 'dataMap/delete', payload: id });
+  };
+
+  setEdit = (edit) => {
+    this.props.dispatch({ type: 'dataMap/edit', payload: edit });
   };
 
   saveDataMap = dataMap => {
-    this.props.save(dataMap);
+    this.props.dispatch({ type: 'dataMap/save', payload: dataMap });
   };
 }
 
-export default connect(
-  state => ({
-    ...state.dataMap.list,
-  }),
-  {
-    getList: actions.getList,
-    setDataMap: actions.setDataMap,
-    delete: actions.delete,
-    save: actions.save,
-  }
-)(DataMapListContainer);
+export default connect(state => ({ ...state.dataMap }))(DataMapListContainer);

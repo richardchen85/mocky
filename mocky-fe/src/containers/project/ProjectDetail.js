@@ -6,23 +6,9 @@ import ProjectInfo from '../../components/project/ProjectInfo';
 import GroupTabs from '../../components/project/GroupTabs';
 import TransferFrom from './TransferForm';
 
-import { actions } from '../../redux/project';
-
 class ProjectDetail extends PureComponent {
   render() {
-    const {
-      auth,
-      logout,
-      data,
-      fetching,
-      match,
-      group,
-      itface,
-      setGroup,
-      setInterface,
-      sortGroup,
-      sortInterface,
-    } = this.props;
+    const { auth, logout, data, fetching, match, groupEdit, interfaceEdit } = this.props;
     const groups = data.groups || [];
     const currentId = Number(match.params.id);
 
@@ -40,16 +26,16 @@ class ProjectDetail extends PureComponent {
         <GroupTabs
           projectId={data.id}
           groups={groups}
-          group={group}
-          itface={itface}
-          setGroup={setGroup}
-          setInterface={setInterface}
+          groupEdit={groupEdit}
+          interfaceEdit={interfaceEdit}
+          setGroupEdit={this.setGroupEdit}
+          setInterface={this.setInterfaceEdit}
           onGroupSave={this.saveGroup}
           onGroupDelete={this.deleteGroup}
-          onGroupSort={sortGroup}
+          onGroupSort={this.sortGroup}
           onInterfaceSave={this.saveInterface}
           onInterfaceDelete={this.deleteInterface}
-          onInterfaceSort={sortInterface}
+          onInterfaceSort={this.sortInterface}
         />
         <TransferFrom />
       </PageLayout>
@@ -64,23 +50,35 @@ class ProjectDetail extends PureComponent {
    * 拉取当前项目的详细数据
    */
   getDetail() {
-    const { match, getDetail } = this.props;
-    getDetail(match.params.id);
+    const { match, dispatch } = this.props;
+    dispatch({ type: 'projectDetail/getDetail', payload: match.params.id });
   }
+
+  setGroupEdit = edit => {
+    this.props.dispatch({ type: 'projectDetail/setGroupEdit', payload: edit });
+  };
 
   /**
    * 保存分组
    * @param {*} group
    */
   saveGroup = group => {
-    this.props.saveGroup(group);
+    this.props.dispatch({ type: 'projectDetail/saveGroup', payload: group });
   };
 
   /**
    * 删除分组
    */
   deleteGroup = id => {
-    this.props.deleteGroup(id);
+    this.props.dispatch({ type: 'projectDetail/deleteGroup', payload: id });
+  };
+
+  sortGroup = ids => {
+    this.props.dispatch({ type: 'projectDetail/sortGroup', payload: ids });
+  };
+
+  setInterfaceEdit = edit => {
+    this.props.dispatch({ type: 'projectDetail/setInterfaceEdit', payload: edit });
   };
 
   /**
@@ -88,39 +86,27 @@ class ProjectDetail extends PureComponent {
    * @param {*} itf
    */
   saveInterface = itf => {
-    this.props.saveInterface(itf);
+    this.props.dispatch({ type: 'projectDetail/saveInterface', payload: itf });
   };
 
   /**
    * 删除接口
    */
   deleteInterface = id => {
-    this.props.deleteInterface(id);
+    this.props.dispatch({ type: 'projectDetail/deleteInterface', payload: id });
+  };
+
+  sortInterface = ids => {
+    this.props.dispatch({ type: 'projectDetail/sortInterface', payload: ids });
   };
 
   /**
    * 打开转移对话框
    */
   openTransfer = () => {
-    const { data, setTransfer } = this.props;
-    setTransfer({ show: true, project_id: data.id });
+    const { data, dispatch } = this.props;
+    dispatch({ type: 'projectDetail/setTransfer', payload: { show: true, project_id: data.id } });
   };
 }
 
-export default connect(
-  state => ({
-    ...state.project.detail,
-  }),
-  {
-    getDetail: actions.getDetail,
-    setGroup: actions.setGroup,
-    deleteGroup: actions.deleteGroup,
-    saveGroup: actions.saveGroup,
-    sortGroup: actions.sortGroup,
-    setInterface: actions.setInterface,
-    deleteInterface: actions.deleteInterface,
-    saveInterface: actions.saveInterface,
-    sortInterface: actions.sortInterface,
-    setTransfer: actions.setTransfer,
-  }
-)(ProjectDetail);
+export default connect(state => ({ ...state.projectDetail }))(ProjectDetail);

@@ -9,22 +9,22 @@ export const AUTH = {
 export const PROJECT = {
   GET_LIST: '/project/getByUser',
   GET_PROJECT: '/project/getById?id=',
-  SAVE_PROJECT: '/project/save',
-  DELETE_PROJECT: '/project/delete?id=',
+  SAVE: '/project/save',
+  DELETE: '/project/delete?id=',
   GET_DETAIL: '/project/detail?id=',
   TRANSFER: '/project/transfer',
 };
 
 export const GROUP = {
-  SAVE_GROUP: '/group/save',
-  DELETE_GROUP: '/group/delete?id=',
-  SORT_GROUP: '/group/sort',
+  SAVE: '/group/save',
+  DELETE: '/group/delete?id=',
+  SORT: '/group/sort',
 };
 
 export const INTERFACE = {
-  SAVE_INTERFACE: '/interface/save',
-  DELETE_INTERFACE: '/interface/delete?id=',
-  SORT_INTERFACE: '/interface/sort',
+  SAVE: '/interface/save',
+  DELETE: '/interface/delete?id=',
+  SORT: '/interface/sort',
 };
 
 export const DATA_MAP = {

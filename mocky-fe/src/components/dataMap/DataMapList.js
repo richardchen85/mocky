@@ -9,7 +9,8 @@ class DataMapList extends PureComponent {
     projectId: PropTypes.number.isRequired,
     interfaceId: PropTypes.number.isRequired,
     data: PropTypes.array.isRequired,
-    setDataMap: PropTypes.func.isRequired,
+    edit: PropTypes.object.isRequired,
+    setEdit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
   };
@@ -47,7 +48,7 @@ class DataMapList extends PureComponent {
   ];
 
   render() {
-    const { data, dataMap } = this.props;
+    const { data, edit } = this.props;
 
     return (
       <>
@@ -57,10 +58,10 @@ class DataMapList extends PureComponent {
           </Button>
         </div>
         <Table columns={this.columns} dataSource={data} rowKey="id" size="small" bordered={true} pagination={false} />
-        {dataMap.editing && (
+        {edit.editing && (
           <DataMapForm
-            data={dataMap.data}
-            saving={dataMap.saving}
+            data={edit.data}
+            saving={edit.saving}
             onCancel={this.handleCancel}
             onSave={this.handleSave}
           />
@@ -70,8 +71,8 @@ class DataMapList extends PureComponent {
   }
 
   handleCreate = () => {
-    const { projectId, interfaceId, setDataMap } = this.props;
-    setDataMap({
+    const { projectId, interfaceId, setEdit } = this.props;
+    setEdit({
       editing: true,
       data: {
         project_id: projectId,
@@ -82,7 +83,7 @@ class DataMapList extends PureComponent {
   };
 
   handleEdit = dataMap => {
-    this.props.setDataMap({ editing: true, data: dataMap });
+    this.props.setEdit({ editing: true, data: dataMap });
   };
 
   handleDelete = id => {
@@ -100,13 +101,13 @@ class DataMapList extends PureComponent {
   handleSave = dataMap => {
     const {
       onSave,
-      dataMap: { saving },
+      edit: { saving },
     } = this.props;
     !saving && onSave(dataMap);
   };
 
   handleCancel = () => {
-    this.props.setDataMap({ editing: false, saving: false });
+    this.props.setEdit({ editing: false, saving: false });
   };
 }
 

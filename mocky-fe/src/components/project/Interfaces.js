@@ -13,7 +13,7 @@ class Interfaces extends PureComponent {
     groupId: PropTypes.number.isRequired,
     groups: PropTypes.array.isRequired,
     interfaces: PropTypes.array.isRequired,
-    itface: PropTypes.object.isRequired,
+    interfaceEdit: PropTypes.object.isRequired,
     setInterface: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
@@ -26,7 +26,7 @@ class Interfaces extends PureComponent {
 
   render() {
     const { activeId } = this.state;
-    const { interfaces, projectId, itface, groups } = this.props;
+    const { interfaces, projectId, interfaceEdit, groups } = this.props;
     const activeInterface = interfaces.find(itf => itf.id === activeId);
 
     return (
@@ -52,11 +52,11 @@ class Interfaces extends PureComponent {
               <Icon type="plus" /> 新建接口
             </span>
           </div>
-          {itface.editing && (
+          {interfaceEdit.editing && (
             <InterfaceForm
-              data={itface.data}
+              data={interfaceEdit.data}
               groups={groups}
-              saving={itface.saving}
+              saving={interfaceEdit.saving}
               onCancel={this.handleCancel}
               onSave={this.handleSave}
             />
@@ -103,7 +103,7 @@ class Interfaces extends PureComponent {
   handleSave = itf => {
     const {
       onSave,
-      itface: { saving },
+      interfaceEdit: { saving },
     } = this.props;
     !saving && onSave(itf);
   };

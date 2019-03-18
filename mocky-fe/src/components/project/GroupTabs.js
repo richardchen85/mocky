@@ -11,9 +11,9 @@ class GroupTabs extends PureComponent {
   static propTypes = {
     projectId: PropTypes.number.isRequired,
     groups: PropTypes.array.isRequired,
-    group: PropTypes.object.isRequired,
-    itface: PropTypes.object.isRequired,
-    setGroup: PropTypes.func.isRequired,
+    groupEdit: PropTypes.object.isRequired,
+    interfaceEdit: PropTypes.object.isRequired,
+    setGroupEdit: PropTypes.func.isRequired,
     setInterface: PropTypes.func.isRequired,
     onGroupSave: PropTypes.func.isRequired,
     onGroupDelete: PropTypes.func.isRequired,
@@ -32,8 +32,8 @@ class GroupTabs extends PureComponent {
     const {
       projectId,
       groups,
-      group,
-      itface,
+      groupEdit,
+      interfaceEdit,
       setInterface,
       onGroupSave,
       onInterfaceDelete,
@@ -65,10 +65,10 @@ class GroupTabs extends PureComponent {
             <span className="fake-link" onClick={this.handleCreate}>
               <Icon type="plus-square" /> 添加分组
             </span>
-            {group.editing && (
+            {groupEdit.editing && (
               <GroupForm
-                group={group.data}
-                saving={group.saving}
+                group={groupEdit.data}
+                saving={groupEdit.saving}
                 onCancel={this.handleCancel}
                 onSave={this.handleSave}
               />
@@ -81,7 +81,7 @@ class GroupTabs extends PureComponent {
             groupId={activeGroup.id}
             groups={groups}
             interfaces={activeGroup.interfaces}
-            itface={itface}
+            interfaceEdit={interfaceEdit}
             setInterface={setInterface}
             onDelete={onInterfaceDelete}
             onSave={onInterfaceSave}
@@ -112,27 +112,27 @@ class GroupTabs extends PureComponent {
   };
 
   handleCreate = () => {
-    const { setGroup, projectId } = this.props;
-    setGroup({
+    const { setGroupEdit, projectId } = this.props;
+    setGroupEdit({
       data: { project_id: projectId },
       editing: true,
     });
   };
 
   handleEdit = group => {
-    this.props.setGroup({ editing: true, data: group });
+    this.props.setGroupEdit({ editing: true, data: group });
   };
 
   handleSave = group => {
     const {
       onGroupSave,
-      group: { saving },
+      groupEdit: { saving },
     } = this.props;
     !saving && onGroupSave(group);
   };
 
   handleCancel = () => {
-    this.props.setGroup({ editing: false, saving: false, data: null });
+    this.props.setGroupEdit({ editing: false, saving: false, data: null });
   };
 
   handleDelete = group => {

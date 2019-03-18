@@ -2,33 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Alert, Form, Modal } from 'antd';
 import UserSelect from '../../components/UserSelect';
-import { actions } from '../../redux/project';
 
 function TransferForm(props) {
-  const {
-    show,
-    saving,
-    project_id,
-    error,
-    setTransfer,
-    saveTransfer,
-    form,
-    form: { getFieldDecorator },
-  } = props;
+  const { show, saving, project_id, error, form, dispatch } = props;
 
   function handleSubmit() {
-    form.validateFields((err, {user}) => {
-      if (!err && saveTransfer) {
-        saveTransfer({
-          project_id,
-          user_id: Number(user.key),
-        });
+    form.validateFields((err, { user }) => {
+      if (!err) {
+        dispatch({ type: 'projectDetail/saveTransfer', payload: { project_id, user_id: Number(user.key) } });
       }
     });
   }
 
   function handleCancel() {
-    setTransfer({ show: false });
+    props.dispatch({ type: 'projectDetail/setTransfer', payload: { show: false } });
   }
 
   return (
@@ -48,7 +35,7 @@ function TransferForm(props) {
           style={{ marginBottom: 15 }}
         />
         <Form.Item>
-          {getFieldDecorator('user', {
+          {form.getFieldDecorator('user', {
             rules: [{ required: true, message: '请输入项目的新拥有者！' }],
           })(<UserSelect placeholder="转移给？" mode={null} />)}
         </Form.Item>
@@ -64,12 +51,4 @@ function TransferForm(props) {
 
 const FormWrapped = Form.create()(TransferForm);
 
-export default connect(
-  state => ({
-    ...state.project.detail.transfer,
-  }),
-  {
-    setTransfer: actions.setTransfer,
-    saveTransfer: actions.saveTransfer,
-  }
-)(FormWrapped);
+export default connect(state => ({ ...state.projectDetail.transfer }))(FormWrapped);

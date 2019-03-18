@@ -10,15 +10,16 @@ class ProjectList extends PureComponent {
     projects: PropTypes.array.isRequired,
     user: PropTypes.object.isRequired,
     fetching: PropTypes.bool.isRequired,
+    edit: PropTypes.object.isRequired,
     getProject: PropTypes.func.isRequired,
-    setProject: PropTypes.func.isRequired,
+    setEdit: PropTypes.func.isRequired,
     onItemClick: PropTypes.func.isRequired,
     onItemSave: PropTypes.func.isRequired,
     onItemDelete: PropTypes.func.isRequired,
   };
 
   render() {
-    const { projects, project, user, fetching, onItemClick } = this.props;
+    const { projects, edit, user, fetching, onItemClick } = this.props;
 
     if (fetching) {
       return (
@@ -46,10 +47,10 @@ class ProjectList extends PureComponent {
             />
           ))}
         </div>
-        {project.editing && (
+        {edit.editing && (
           <ProjectEdit
-            fetching={project.saving}
-            project={project.data}
+            fetching={edit.saving}
+            project={edit.data}
             auth={user}
             onCancel={this.handleCancel}
             onOk={this.handleOk}
@@ -60,7 +61,7 @@ class ProjectList extends PureComponent {
   }
 
   handleCreate = () => {
-    this.props.setProject({ editing: true, data: {} });
+    this.props.setEdit({ editing: true, data: {} });
   };
 
   handleEdit = project => {
@@ -82,13 +83,13 @@ class ProjectList extends PureComponent {
   handleOk = project => {
     const {
       onItemSave,
-      project: { saving },
+      edit: { saving },
     } = this.props;
     !saving && onItemSave(project);
   };
 
   handleCancel = () => {
-    this.props.setProject({ data: null, editing: false, saving: false });
+    this.props.setEdit({ data: null, editing: false, saving: false });
   };
 }
 
