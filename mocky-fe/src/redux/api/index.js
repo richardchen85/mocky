@@ -6,9 +6,9 @@ export const API_SUCCESS = 'API_SUCCESS';
 export const API_ERROR = 'API_ERROR';
 
 // action creators
-export const apiRequest = ({ url, method, body, feature, success, error }) => ({
+export const apiRequest = ({ feature, ...rest }) => ({
   type: `${feature}_${API_REQUEST}`,
-  meta: { url, method, body, feature, success, error },
+  meta: { feature, ...rest },
 });
 
 export const apiSuccess = ({ feature }) => ({
@@ -24,16 +24,16 @@ export const apiMiddleware = ({ dispatch }) => next => action => {
   next(action);
 
   if (action.type.includes(API_REQUEST)) {
-    const { body, url, method, feature, success, error } = action.meta;
+    const { url, feature, success, error: errorCallback, ...rest } = action.meta;
 
-    fetch(url, { body, method })
+    fetch(url, { ...rest })
       .then(json => {
         dispatch(apiSuccess({ feature }));
         success && success(json.data);
       })
-      .catch(errorMsg => {
+      .catch(error => {
         dispatch(apiError({ feature }));
-        error && error(errorMsg);
+        errorCallback && errorCallback(error.message);
       });
   }
 };

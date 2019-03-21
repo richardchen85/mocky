@@ -26,6 +26,7 @@ export default createModel({
           method: 'POST',
           body: payload,
           feature: types.signUp,
+          toastError: false,
           success: data => {
             next({ type: types.setAuth, payload: { fetching: false, user: data || {} } });
           },
@@ -43,6 +44,7 @@ export default createModel({
           method: 'POST',
           body: payload,
           feature: types.login,
+          toastError: false,
           success: data => {
             next({ type: types.setAuth, payload: { fetching: false, user: data || {} } });
           },

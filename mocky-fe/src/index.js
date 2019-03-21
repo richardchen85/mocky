@@ -17,7 +17,7 @@ function startRender(preloadState = {}) {
   );
 }
 
-get(AUTH.GET)
+get(AUTH.GET, { toastError: false })
   .then(json => {
     startRender({ auth: { fetching: false, user: json.data, error: null } });
   })
