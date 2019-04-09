@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Form, Input } from 'antd';
+import { Modal, Form, Input, Switch } from 'antd';
 import CodeArea from '../CodeArea';
 
 const formItemProps = {
@@ -48,6 +48,12 @@ class MockForm extends PureComponent {
               rules: [{ required: true, message: '请输入HTTP状态码！' }],
               initialValue: data.status_code || 200,
             })(<Input maxLength={3} type="number" />)}
+          </Form.Item>
+          <Form.Item label="使用Mock.js" {...formItemProps}>
+            {getFieldDecorator('mock_js', {
+              valuePropName: 'checked',
+              initialValue: Boolean(data.mock_js),
+            })(<Switch />)}
           </Form.Item>
           <Form.Item label="内容" {...formItemProps}>
             {getFieldDecorator('body', {

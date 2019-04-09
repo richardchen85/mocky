@@ -5,6 +5,7 @@ const validateRule = require('../validateRules/dataView');
 const messages = require('../common/messages');
 const contentTypes = require('../common/contentTypes');
 const dataMapFroms = require('../common/dataMapFroms');
+const Mock = require('mockjs');
 
 class DataViewController extends Controller {
   /**
@@ -55,6 +56,10 @@ class DataViewController extends Controller {
       if (!mock) {
         this.fail(messages.common.notFound);
         return;
+      }
+
+      if (mock.mock_js) {
+        mock.body = Mock.mock(JSON.parse(mock.body));
       }
 
       let callback;

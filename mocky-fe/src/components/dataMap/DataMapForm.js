@@ -107,7 +107,7 @@ class DataMapForm extends PureComponent {
     } = this.props;
 
     form.validateFields((err, values) => {
-      var fields = values;
+      let fields = values;
       if (typeof fields.regex !== 'undefined') {
         fields.regex = Number(fields.regex);
       }

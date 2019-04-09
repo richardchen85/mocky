@@ -14,6 +14,9 @@ module.exports = {
   status_code: {
     type: 'integer',
   },
+  mock_js: {
+    type: 'boolean',
+  },
   body: {
     type: 'string',
     max: 25000,

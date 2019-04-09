@@ -10,7 +10,8 @@
     "egg-redis": "2.3.0",
     "egg-scripts": "2.11.0",
     "egg-validate": "2.0.2",
-    "egg-view-nunjucks": "2.2.0"
+    "egg-view-nunjucks": "2.2.0",
+    "mockjs": "1.0.1-beta3"
   },
   "devDependencies": {
     "autod": "^3.0.1",
