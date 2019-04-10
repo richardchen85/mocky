@@ -1,8 +1,10 @@
 .signUp-form {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 500px;
   margin: auto;
+  border: 1px solid #eee;
+  padding: 30px 30px 0 30px;
 }
 .signUp-form-button {
   width: 100%;

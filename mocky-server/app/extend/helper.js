@@ -37,4 +37,7 @@ module.exports = {
 
     throw new Error('str must be a string or RegExp');
   },
+  random(base = 1000, seed = 9999) {
+    return Math.random() * seed + base;
+  },
 };

@@ -5,7 +5,7 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  const { home, user, project, group, interface: itface, mock, dataView, dataMap } = controller;
+  const { home, user, project, group, interface: itface, mock, dataView, dataMap, mail } = controller;
 
   router.get('/', home.index);
 
@@ -51,4 +51,7 @@ module.exports = app => {
   router.get('/dataMap/delete', dataMap.delete);
   router.get('/dataMap/detail', dataMap.detail);
   router.get('/dataMap/list', dataMap.list);
+
+  // mail
+  router.post('/mail/sendMail', mail.sendMail);
 };

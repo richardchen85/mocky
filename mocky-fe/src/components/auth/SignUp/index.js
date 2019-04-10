@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Form, Icon, Input, Button, Alert } from 'antd';
+import { Form, Input, Button, Alert } from 'antd';
 import './index.css';
+import { EMAIL_CODE_COUNTDOWN } from '../../../constants/common';
 
 const FormItem = Form.Item;
 
@@ -15,33 +16,46 @@ class SignUp extends PureComponent {
   };
 
   state = {
+    counting: 0,
     confirmDirty: false,
   };
 
   render() {
+    const { counting } = this.state;
     const {
       form: { getFieldDecorator },
       fetching,
       errorMsg,
     } = this.props;
+    const formItemLayout = {
+      labelCol: {
+        span: 6,
+      },
+      wrapperCol: {
+        span: 18,
+      },
+    };
+
     return (
-      <Form onSubmit={this.handleSubmit} className="signUp-form">
-        <FormItem>
+      <Form onSubmit={this.handleSubmit} className="signUp-form" {...formItemLayout}>
+        <FormItem label={'邮箱'}>
           {getFieldDecorator('email', {
             rules: [
               { required: true, message: '请输入邮箱', whitespace: true },
               { min: 5, message: '邮箱至少5个字符' },
               { type: 'email', message: '请输入正确的邮箱' },
             ],
-          })(
-            <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="邮箱"
-              maxLength={50}
-            />
-          )}
+          })(<Input maxLength={50} />)}
         </FormItem>
-        <FormItem>
+        <FormItem label={'邮箱验证码'}>
+          {getFieldDecorator('mail_code', {
+            rules: [{ required: true, message: '请输入邮件验证码', whitespace: true }],
+          })(<Input maxLength={20} />)}
+          <Button htmlType={'button'} disabled={!!counting} onClick={this.sendMailCode}>
+            {!!counting ? `请${counting}秒后再获取新验证码` : '获取邮箱验证码'}
+          </Button>
+        </FormItem>
+        <FormItem label={'昵称'}>
           {getFieldDecorator('nickname', {
             rules: [
               { required: true, message: '请输入昵称', whitespace: true },
@@ -52,49 +66,28 @@ class SignUp extends PureComponent {
                 message: '昵称只能是数字、字母和下划线组成',
               },
             ],
-          })(
-            <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="昵称"
-              maxLength={20}
-            />
-          )}
+          })(<Input maxLength={20} />)}
         </FormItem>
-        <FormItem>
+        <FormItem label={'密码'}>
           {getFieldDecorator('password', {
             rules: [
               { required: true, message: '请输入密码' },
               { min: 6, message: '密码至少6个字符' },
               { validator: this.validateToNextPassword },
             ],
-          })(
-            <Input
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              type="password"
-              placeholder="密码"
-              maxLength={12}
-            />
-          )}
+          })(<Input type="password" maxLength={12} />)}
         </FormItem>
-        <FormItem>
+        <FormItem label={'确认密码'}>
           {getFieldDecorator('confirm', {
             rules: [{ required: true, message: '请再次输入密码' }, { validator: this.compareToFirstPassword }],
-          })(
-            <Input
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              type="password"
-              placeholder="确认密码"
-              maxLength={12}
-              onBlur={this.handleConfirmBlur}
-            />
-          )}
+          })(<Input type="password" maxLength={12} onBlur={this.handleConfirmBlur} />)}
         </FormItem>
         {errorMsg && (
-          <FormItem>
+          <FormItem wrapperCol={{ offset: 6 }}>
             <Alert message={errorMsg} type="error" />
           </FormItem>
         )}
-        <FormItem>
+        <FormItem wrapperCol={{ offset: 6 }}>
           <Button type="primary" htmlType="submit" loading={fetching} className="signUp-form-button">
             注册
           </Button>
@@ -136,6 +129,28 @@ class SignUp extends PureComponent {
       }
     });
   };
+
+  sendMailCode = () => {
+    this.setState({
+      counting: EMAIL_CODE_COUNTDOWN,
+    });
+    this.startCountDown();
+  };
+
+  startCountDown() {
+    setTimeout(() => {
+      if (!!this.state.counting) {
+        this.setState(
+          state => ({
+            counting: state.counting - 1,
+          }),
+          () => {
+            !!this.state.counting && this.startCountDown();
+          }
+        );
+      }
+    }, 1000);
+  }
 }
 
 export default Form.create()(SignUp);

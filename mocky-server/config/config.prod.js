@@ -30,7 +30,7 @@ module.exports = () => {
 
   config.userAuth = {
     cookie_key: config.auth_cookie_name,
-    adminUsers: [ 1 ],
+    adminUsers: [1],
   };
 
   // mysql
@@ -42,6 +42,18 @@ module.exports = () => {
       password: process.env.mysql_password || '',
       database: process.env.mysql_database || '',
       dateStrings: true,
+    },
+  };
+
+  // smtp mail config
+  config.mail = {
+    from: '"mocky" <clq_web@126.com>',
+    host: 'smtp.126.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.mail_user || '',
+      pass: process.env.mail_password || '',
     },
   };
 
