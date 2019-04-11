@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Layout } from 'antd';
 import UserInfo from './UserInfo';
+import MKFooter from './MKFooter';
 
 const { Header, Content, Footer } = Layout;
 
@@ -22,10 +23,7 @@ class PageLayout extends PureComponent {
         </Header>
         <Content style={{ backgroundColor: '#fff', padding: 15 }}>{this.props.children}</Content>
         <Footer style={{ textAlign: 'center' }}>
-          <p>
-            Created by Richard Chen &nbsp;&nbsp;
-            <a href="mailto:clq_web@126.com">clq_web@126.com</a>
-          </p>
+          <MKFooter />
         </Footer>
       </Layout>
     );

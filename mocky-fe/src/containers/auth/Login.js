@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import LoginForm from '../../components/auth/Login';
 import { types } from '../../redux/model/auth';
+import MKFooter from '../../components/MKFooter';
 
 class Login extends PureComponent {
   render() {
@@ -12,7 +13,12 @@ class Login extends PureComponent {
       return <Redirect to={{ pathname: '/' }} />;
     }
 
-    return <LoginForm onSubmit={this.submit} fetching={fetching} errorMsg={error} />;
+    return (
+      <div className="page-auth">
+        <LoginForm onSubmit={this.submit} fetching={fetching} errorMsg={error} />
+        <MKFooter />
+      </div>
+    );
   }
 
   componentDidMount() {
