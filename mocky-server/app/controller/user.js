@@ -4,6 +4,8 @@ const Controller = require('../core/baseController');
 const userRule = require('../validateRules/user');
 const messages = require('../common/messages');
 const userStatus = require('../common/userStatus');
+const emailTypes = require('../common/emailTypes');
+const cacheKeys = require('../common/cacheKeys');
 
 class UserController extends Controller {
   /**
@@ -13,13 +15,22 @@ class UserController extends Controller {
     const {
       config,
       ctx: { request, service, logger, cookies },
+      app: { redis }
     } = this;
 
     if (!this.isValid(userRule.signUp, request.body)) return;
 
-    const { email, nickname, password } = request.body;
+    const { email, mail_code, nickname, password } = request.body;
 
     try {
+      // 检查邮箱验证码
+      const cacheKey = cacheKeys.EMAIL_VERIFY_PREFIX + `${email}_${emailTypes.types.EMAIL_VERIFY.type}`;
+      const cachedCode = await redis.get(cacheKey);
+      if (!cachedCode || mail_code !== cachedCode) {
+        this.fail(messages.common.invalidEmailCode);
+        return;
+      }
+
       // 重复检查
       const old = await service.user.checkExists(email, nickname);
       if (old) {

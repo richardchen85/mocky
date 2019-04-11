@@ -1,30 +1,26 @@
 'use strict';
 
 const Controller = require('../core/baseController');
-const messages = require('../common/messages');
-const { sendMail } = require('../validateRules/mail');
+const { sendMailRules } = require('../validateRules/mail');
 const emailTypes = require('../common/emailTypes');
 
-function mailMessage({ type, email }, data = {}) {
-  const emailType = emailTypes.getByType(type);
-  const content = emailType.render(data);
-  return {
-    to: email,
-    subject: emailType.subject,
-    text: emailType.render(data),
-    html: emailType.render(),
-  };
-}
-
 class MailController extends Controller {
-  sendMail() {
-    const { request, response, logger, service } = this.ctx;
+  async sendMail() {
+    const { request, logger, service } = this.ctx;
     const param = request.body;
 
-    if (!this.isValid(sendMail, param)) return;
+    if (!this.isValid(sendMailRules, param)) return;
 
     try {
-      this.app.sendMail(mailMessage(param))
+      const emailType = emailTypes.getByType(param.type);
+
+      if (!emailType) {
+        this.fail('未知的邮件类型');
+        return;
+      }
+
+      await service.sendMail[emailType.service](param.email, emailType);
+      this.success('邮件发送成功');
     } catch (e) {
       logger.error(e);
       this.fail('邮件发送失败');

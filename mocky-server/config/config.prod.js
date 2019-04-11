@@ -45,6 +45,17 @@ module.exports = () => {
     },
   };
 
+  // redis
+  config.redis = {
+    client: {
+      port: 6379,
+      host: 'localhost',
+      password: process.env.redis_password || '',
+      keyPrefix: 'mocky_',
+      db: 0,
+    },
+  };
+
   // smtp mail config
   config.mail = {
     from: '"mocky" <clq_web@126.com>',

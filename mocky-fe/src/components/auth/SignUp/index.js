@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { Form, Input, Button, Alert } from 'antd';
 import './index.css';
 import { EMAIL_CODE_COUNTDOWN } from '../../../constants/common';
+import { post } from '../../../utils/fetch';
+import { SEMD_MAIL } from '../../../constants/url';
 
 const FormItem = Form.Item;
 
@@ -16,12 +18,13 @@ class SignUp extends PureComponent {
   };
 
   state = {
+    emailSending: false,
     counting: 0,
     confirmDirty: false,
   };
 
   render() {
-    const { counting } = this.state;
+    const { counting, emailSending } = this.state;
     const {
       form: { getFieldDecorator },
       fetching,
@@ -51,7 +54,7 @@ class SignUp extends PureComponent {
           {getFieldDecorator('mail_code', {
             rules: [{ required: true, message: '请输入邮件验证码', whitespace: true }],
           })(<Input maxLength={20} />)}
-          <Button htmlType={'button'} disabled={!!counting} onClick={this.sendMailCode}>
+          <Button htmlType={'button'} disabled={!!counting} onClick={this.sendMailCode} loading={emailSending}>
             {!!counting ? `请${counting}秒后再获取新验证码` : '获取邮箱验证码'}
           </Button>
         </FormItem>
@@ -131,10 +134,26 @@ class SignUp extends PureComponent {
   };
 
   sendMailCode = () => {
-    this.setState({
-      counting: EMAIL_CODE_COUNTDOWN,
+    const {
+      form: { validateFields },
+    } = this.props;
+    validateFields(['email'], (errors, values) => {
+      if (errors) return;
+      this.setState({ emailSending: true });
+      post(SEMD_MAIL.SEND, { type: 1, email: values.email }, { toastSuccess: true })
+        .then(() => {
+          this.setState({
+            counting: EMAIL_CODE_COUNTDOWN,
+            emailSending: false,
+          });
+          this.startCountDown();
+        })
+        .catch(() => {
+          this.setState({
+            emailSending: false,
+          });
+        });
     });
-    this.startCountDown();
   };
 
   startCountDown() {

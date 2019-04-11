@@ -60,5 +60,40 @@ module.exports = appInfo => {
     jsonLimit: '800kb',
   };
 
+  // mysql
+  config.mysql = {
+    client: {
+      host: '127.0.0.1',
+      port: '3306',
+      user: 'root',
+      password: '',
+      database: 'mocky',
+      dateStrings: true,
+    },
+  };
+
+  // redis
+  config.redis = {
+    client: {
+      port: 6379,
+      host: '127.0.0.1',
+      password: '',
+      keyPrefix: 'mocky_',
+      db: 0,
+    },
+  };
+
+  // smtp mail config
+  config.mail = {
+    from: '"mocky" <clq_web@126.com>',
+    host: 'smtp.126.com',
+    port: 587,
+    secure: true,
+    auth: {
+      user: '',
+      pass: '',
+    },
+  };
+
   return config;
 };

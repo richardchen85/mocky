@@ -15,6 +15,9 @@ const toastType = {
 };
 
 function toast(type, content) {
+  if (typeof content !== 'string') {
+    content = String(content);
+  }
   if (type === toastType.error) {
     message.error(content);
   } else if (type === toastType.success) {
@@ -65,7 +68,7 @@ function _success(json, options, resolve, reject) {
     });
   }
 
-  toastSuccess && toast(toastType.success, json.message || messages.success);
+  toastSuccess && toast(toastType.success, json.message || json.data || messages.success);
 
   resolve(json);
 }

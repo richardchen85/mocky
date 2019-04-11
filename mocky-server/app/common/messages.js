@@ -12,6 +12,7 @@ module.exports = {
     success: '操作成功',
     notLogged: '未登录',
     notAllowed: '未授权',
+    invalidEmailCode: '邮箱验证码错误',
   },
   user: {
     emailExists: '该邮箱已注册',

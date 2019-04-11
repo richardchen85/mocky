@@ -39,3 +39,7 @@ export const MOCK = {
   GET_MOCK: '/mock/detail?id=',
   SAVE: '/mock/save',
 };
+
+export const SEMD_MAIL = {
+  SEND: '/mail/sendMail',
+};
