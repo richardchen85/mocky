@@ -8,7 +8,7 @@ module.exports = {
       render(data) {
         return `欢迎使用 mocky，您本次邮箱验证码为：${data.code}`;
       },
-      service: 'sendEmailVerifyMail'
+      service: 'sendEmailVerifyMail',
     },
   },
   getByType(type) {

@@ -1,4 +1,4 @@
-.signUp-form {
+.findPass-form {
   display: flex;
   flex-direction: column;
   width: 500px;
@@ -7,6 +7,6 @@
   border-radius: 5px;
   padding: 30px 30px 0 30px;
 }
-.signUp-form-button {
+.findPass-form-button {
   width: 100%;
 }

@@ -9,6 +9,7 @@ export const types = {
   login: `${namespace}/login`,
   setAuth: `${namespace}/setAuth`,
   logout: `${namespace}/logout`,
+  resetPass: `${namespace}/resetPass`,
 };
 
 export default createModel({
@@ -61,6 +62,28 @@ export default createModel({
           feature: types.logout,
           success: () => {
             next({ type: types.setAuth, payload: { user: {} } });
+          },
+        })
+      );
+    },
+    resetPass: (store, next, { payload }) => {
+      next({ type: types.setAuth, payload: { fetching: true, error: null } });
+      next(
+        apiRequest({
+          url: AUTH.RESET_PASS,
+          method: 'POST',
+          body: payload,
+          feature: types.resetPass,
+          toastError: false,
+          toastSuccess: true,
+          success: () => {
+            next({ type: types.setAuth, payload: { fetching: false } });
+            setTimeout(() => {
+              window.location.href = '/user/login';
+            }, 2000);
+          },
+          error: errorMsg => {
+            next({ type: types.setAuth, payload: { fetching: false, error: errorMsg } });
           },
         })
       );

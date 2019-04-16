@@ -4,6 +4,7 @@ export const AUTH = {
   GET: '/user/get',
   LOGOUT: '/user/logout',
   SEARCH: '/user/search?key=',
+  RESET_PASS: '/user/resetPass',
 };
 
 export const PROJECT = {

@@ -15,7 +15,7 @@ class UserController extends Controller {
     const {
       config,
       ctx: { request, service, logger, cookies },
-      app: { redis }
+      app: { redis },
     } = this;
 
     if (!this.isValid(userRule.signUp, request.body)) return;
@@ -121,6 +121,33 @@ class UserController extends Controller {
     try {
       const users = await service.user.search(key);
       this.success(users);
+    } catch (e) {
+      logger.error(e);
+      this.fail(messages.common.sysError);
+    }
+  }
+
+  async resetPass() {
+    const {
+      ctx: { request, service, logger },
+      app: { redis },
+    } = this;
+
+    if (!this.isValid(userRule.resetPass, request.body)) return;
+
+    const { email, mail_code, password } = request.body;
+
+    try {
+      // 检查邮箱验证码
+      const cacheKey = cacheKeys.EMAIL_VERIFY_PREFIX + `${email}_${emailTypes.types.EMAIL_VERIFY.type}`;
+      const cachedCode = await redis.get(cacheKey);
+      if (!cachedCode || mail_code !== cachedCode) {
+        this.fail(messages.common.invalidEmailCode);
+        return;
+      }
+
+      await service.user.resetPass(email, password);
+      this.success('密码修改成功');
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);

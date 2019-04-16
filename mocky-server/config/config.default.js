@@ -29,7 +29,7 @@ module.exports = appInfo => {
     includes: [
       /^\/(user|project|group|interface|mock|erp)/,
     ],
-    excludes: [ '/user/signUp', '/user/login' ],
+    excludes: [ '/user/signUp', '/user/login', '/user/resetPass' ],
   };
 
   // static

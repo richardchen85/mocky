@@ -3,6 +3,7 @@ import Login from './containers/auth/Login';
 import SignUp from './containers/auth/SignUp';
 import ProjectList from './containers/project/ProjectList';
 import ProjectDetail from './containers/project/ProjectDetail';
+import FindPassword from './containers/auth/FindPassword';
 
 export default [
   {
@@ -21,5 +22,9 @@ export default [
   {
     path: '/user/signUp',
     component: SignUp,
+  },
+  {
+    path: '/user/findPassword',
+    component: FindPassword,
   },
 ];

@@ -65,6 +65,9 @@ class Login extends PureComponent {
         </FormItem>
         <FormItem>
           没有用户？<Link to={{ pathname: '/user/signUp' }}>立即注册</Link>
+          <Link to={{ pathname: '/user/findPassword' }} style={{ marginLeft: 40 }}>
+            找回密码
+          </Link>
         </FormItem>
       </Form>
     );

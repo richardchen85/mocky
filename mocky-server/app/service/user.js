@@ -110,6 +110,25 @@ class UserService extends BaseService {
     const users = await this.app.mysql.query(sql, [key + '%']);
     return users.map(user => userInfoFilter(user));
   }
+
+  /**
+   * reset password
+   * @param {String} email -
+   * @param {String} newPass -
+   * @return {Boolean} success -
+   */
+  async resetPass(email, newPass) {
+    const { logger } = this.ctx;
+    // 重复检查
+    const savedUser = await super.get({ email, status: userStatus.NORMAL });
+    if (!savedUser) {
+      logger.warn(`无效用户 ${email} 重置密码`);
+      return false;
+    }
+
+    savedUser.password = newPass;
+    return await this.update(savedUser);
+  }
 }
 
 module.exports = UserService;

@@ -58,6 +58,7 @@ module.exports = () => {
 
   // smtp mail config
   config.mail = {
+    pool: true,
     from: '"mocky" <clq_web@126.com>',
     host: 'smtp.126.com',
     port: 465,
@@ -66,6 +67,7 @@ module.exports = () => {
       user: process.env.mail_user || '',
       pass: process.env.mail_password || '',
     },
+    connectionTimeout: 10000,
   };
 
   return config;
