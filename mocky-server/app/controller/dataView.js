@@ -103,7 +103,7 @@ class DataViewController extends Controller {
       } else if (map.from === dataMapFroms.query) {
         source = request.querystring;
       } else if (map.from === dataMapFroms.body) {
-        source = request.body;
+        source = JSON.stringify(request.body);
       }
 
       if (!map.regex) {
