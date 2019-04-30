@@ -16,6 +16,7 @@ module.exports = class ProjectService extends BaseService {
   /**
    * insert project with members use sql transaction
    * @param {Object} project project
+   * @return {Number} id id
    * @example project
    *  {
    *    name: 'project1',
@@ -35,6 +36,8 @@ module.exports = class ProjectService extends BaseService {
         await this.ctx.service.member.insertByTransaction(trans, created.insertId, members);
       }
       await trans.commit();
+
+      return created.insertId;
     } catch (err) {
       await trans.rollback();
       throw err;
@@ -90,7 +93,7 @@ module.exports = class ProjectService extends BaseService {
       },
       orders: [['id', 'desc']],
     };
-    return super.query(param);
+    return super.search(param);
   }
 
   joined(user_id) {
@@ -120,5 +123,9 @@ module.exports = class ProjectService extends BaseService {
     `;
     const rows = await this.app.mysql.query(sql, [project_id, user_id, project_id, user_id]);
     return rows[0].count > 0;
+  }
+
+  async transfer(project_id, user_id) {
+    return super.update({ id: project_id, user_id }, { where: { id: project_id } });
   }
 };

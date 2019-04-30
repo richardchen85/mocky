@@ -5,17 +5,12 @@ const userRule = require('../validateRules/user');
 const messages = require('../common/messages');
 const userStatus = require('../common/userStatus');
 const emailTypes = require('../common/emailTypes');
-const cacheKeys = require('../common/cacheKeys');
 
 class UserController extends Controller {
-  /**
-   * post /user/signUp
-   */
   async signUp() {
     const {
       config,
       ctx: { request, service, logger, cookies },
-      app: { redis },
     } = this;
 
     if (!this.isValid(userRule.signUp, request.body)) return;
@@ -24,8 +19,7 @@ class UserController extends Controller {
 
     try {
       // 检查邮箱验证码
-      const cacheKey = cacheKeys.EMAIL_VERIFY_PREFIX + `${email}_${emailTypes.types.EMAIL_VERIFY.type}`;
-      const cachedCode = await redis.get(cacheKey);
+      const cachedCode = await service.cache.getEmailVerifyCode(email, emailTypes.types.EMAIL_VERIFY);
       if (!cachedCode || mail_code !== cachedCode) {
         this.fail(messages.common.invalidEmailCode);
         return;
@@ -45,10 +39,18 @@ class UserController extends Controller {
         status: userStatus.NORMAL,
       });
       const user = await service.user.getById(userId);
+
+      try {
+        await service.cache.setUser(user);
+      } catch (e) {
+        logger.error(e);
+      }
+
       cookies.set(config.auth_cookie_name, user.id.toString(), {
         encrypt: true,
         httpOnly: true,
       });
+
       this.success(user);
     } catch (e) {
       logger.error(e);
@@ -56,9 +58,6 @@ class UserController extends Controller {
     }
   }
 
-  /**
-   * post /user/login
-   */
   async login() {
     const {
       config,
@@ -79,7 +78,19 @@ class UserController extends Controller {
           maxAge,
           httpOnly: true,
         });
-        this.success(loginResult.user);
+
+        let user;
+        try {
+          user = await service.cache.getUser(loginResult.id);
+        } catch (e) {
+          logger.error(e);
+        }
+
+        if (!user) {
+          user = await service.user.getById(loginResult.id);
+        }
+
+        this.success(user);
       } else {
         logger.warn(`用户登录失败，email: ${email}，password: ${password}`);
         this.fail(loginResult.code === 1 ? messages.user.emailNotExists : messages.user.passwordError);
@@ -90,24 +101,20 @@ class UserController extends Controller {
     }
   }
 
-  /**
-   * get /user/logout
-   */
   async logout() {
     this.ctx.cookies.set(this.config.auth_cookie_name);
     this.success();
   }
 
-  /**
-   * get /user/get
-   */
   async getUser() {
     const { user } = this.ctx;
     user ? this.success(user) : this.fail(messages.common.notLogged);
   }
 
   /**
-   * get /user/search query: key=abc
+   * 根据用户名搜索用户
+   * @example
+   *   get /user/search?key=abc
    */
   async search() {
     const { request, service, logger } = this.ctx;
@@ -119,7 +126,7 @@ class UserController extends Controller {
     }
 
     try {
-      const users = await service.user.search(key);
+      const users = await service.user.searchByNickname(key);
       this.success(users);
     } catch (e) {
       logger.error(e);
@@ -128,10 +135,7 @@ class UserController extends Controller {
   }
 
   async resetPass() {
-    const {
-      ctx: { request, service, logger },
-      app: { redis },
-    } = this;
+    const { request, service, logger } = this;
 
     if (!this.isValid(userRule.resetPass, request.body)) return;
 
@@ -139,8 +143,7 @@ class UserController extends Controller {
 
     try {
       // 检查邮箱验证码
-      const cacheKey = cacheKeys.EMAIL_VERIFY_PREFIX + `${email}_${emailTypes.types.EMAIL_VERIFY.type}`;
-      const cachedCode = await redis.get(cacheKey);
+      const cachedCode = await service.cache.getEmailVerifyCode(email, emailTypes.types.EMAIL_VERIFY.type);
       if (!cachedCode || mail_code !== cachedCode) {
         this.fail(messages.common.invalidEmailCode);
         return;

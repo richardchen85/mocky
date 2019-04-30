@@ -5,9 +5,6 @@ const validateRule = require('../validateRules/project');
 const messages = require('../common/messages');
 
 class ProjectController extends Controller {
-  /**
-   * post /project/save
-   */
   async save() {
     const { request, service, logger, user } = this.ctx;
     const param = request.body;
@@ -21,8 +18,15 @@ class ProjectController extends Controller {
         if (!(await this.ownerOrMemberOfProject(param.id))) return;
 
         await service.project.update(param);
+
+        // 有修改，删除缓存
+        try {
+          await service.cache.delProject(param.id);
+        } catch (e) {
+          logger.error(e);
+        }
       } else {
-        await service.project.insert(
+        param.id = await service.project.insert(
           Object.assign(param, {
             user_id: user.id,
             create_user: user.nickname,
@@ -37,9 +41,6 @@ class ProjectController extends Controller {
     }
   }
 
-  /**
-   * get /project/delete?id=1
-   */
   async delete() {
     const { request, service, logger, user } = this.ctx;
     const id = request.query.id;
@@ -66,6 +67,13 @@ class ProjectController extends Controller {
       }
 
       await service.project.deleteById(id);
+
+      try {
+        await service.cache.delProject(id);
+      } catch (e) {
+        logger.error(e);
+      }
+
       this.success();
     } catch (e) {
       logger.error(e);
@@ -73,11 +81,8 @@ class ProjectController extends Controller {
     }
   }
 
-  /**
-   * get /project/getById?id=1
-   */
   async getById() {
-    const { request, service, logger } = this.ctx;
+    const { request, service, logger, user } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -86,21 +91,40 @@ class ProjectController extends Controller {
       return;
     }
 
+    let project;
+
+    // get from cache
     try {
-      // get project
-      const project = await service.project.getById(id);
+      project = await service.cache.getProject(id);
+      if (project) {
+        if (project.owner.id !== user.id && !project.members.find(u => u.id === user.id)) {
+          this.fail(messages.common.notAllowed);
+        } else {
+          this.success(project);
+        }
+        return;
+      }
+    } catch (e) {
+      logger.error(e);
+    }
+
+    // get from db
+    try {
+      // check privilege
+      if (!(await this.ownerOrMemberOfProject(project.id))) return;
+
+      project = await service.project.getById(id);
       if (!project) {
         this.fail(messages.common.notFound);
         return;
       }
 
-      // check privilege
-      if (!(await this.ownerOrMemberOfProject(project.id))) return;
+      // get owner
+      project.owner = await service.user.getById(project.user_id);
 
-      // get owner and members
+      // get members
       let memberIds = await service.member.getByProject(project.id);
       memberIds = memberIds.map(m => m.user_id);
-      project.owner = await service.user.getById(project.user_id);
       if (memberIds.length > 0) {
         project.members = await service.user.query({
           where: {
@@ -109,6 +133,13 @@ class ProjectController extends Controller {
         });
       } else {
         project.members = [];
+      }
+
+      // 存缓存
+      try {
+        await service.cache.setProject(project);
+      } catch (e) {
+        logger.error(e);
       }
 
       this.success(project);
@@ -229,7 +260,18 @@ class ProjectController extends Controller {
     if (!this.isValid(rule, param)) return;
 
     try {
-      const savedProject = await service.project.getById(project_id);
+      let savedProject;
+
+      try {
+        savedProject = await service.cache.getProject(project_id);
+      } catch (e) {
+        logger.error(e);
+      }
+
+      if (!savedProject) {
+        savedProject = await service.project.getById(project_id);
+      }
+
       if (!savedProject) {
         this.fail(messages.common.notFound);
         return;
@@ -240,7 +282,16 @@ class ProjectController extends Controller {
         return;
       }
 
-      const result = service.project.update({ id: project_id, user_id });
+      savedProject.user_id = user_id;
+
+      try {
+        await service.cache.setProject(savedProject);
+      } catch (e) {
+        logger.error(e);
+      }
+
+      const result = service.project.transfer(project_id, user_id);
+
       this.success(result);
     } catch (e) {
       logger.error(e);

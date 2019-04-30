@@ -12,7 +12,6 @@ class BaseService extends Service {
     this.tableName = '';
     this.insertFields = [];
     this.updateFields = [];
-    this.getFields = [];
     this.queryFields = [];
   }
 
@@ -47,9 +46,13 @@ class BaseService extends Service {
     return result.affectedRows === 1 ? result.insertId : 0;
   }
 
-  async delete(id) {
+  async deleteById(id) {
     const result = await this.app.mysql.delete(this.tableName, { id });
     return result.affectedRows === 1;
+  }
+
+  async deleteByConditions(conditions) {
+    const result = await this.app.mysql.delete(this.tableName, conditions);
   }
 
   async update(model, options = { where: {} }) {
@@ -63,31 +66,23 @@ class BaseService extends Service {
 
   async getById(id) {
     const options = {};
-    this.getFields.length &&
+    this.queryFields.length &&
       Object.assign(options, {
-        columns: this.getFields,
+        columns: this.queryFields,
       });
     return await this.app.mysql.get(this.tableName, { id }, options);
   }
 
-  async get(param, options = {}) {
-    this.getFields.length &&
-      Object.assign(options, {
-        columns: this.getFields,
-      });
-    return await this.app.mysql.get(this.tableName, param, options);
+  async count(conditions) {
+    return await this.app.mysql.count(this.tableName, conditions);
   }
 
-  async count(param) {
-    return await this.app.mysql.count(this.tableName, param);
-  }
-
-  async query(param) {
+  async search(conditions) {
     this.queryFields.length &&
-      Object.assign(param, {
+      Object.assign(conditions, {
         columns: this.queryFields,
       });
-    return await this.app.mysql.select(this.tableName, param);
+    return await this.app.mysql.select(this.tableName, conditions);
   }
 }
 

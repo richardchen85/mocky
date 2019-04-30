@@ -1,7 +1,6 @@
 'use strict';
 
 const Service = require('egg').Service;
-const cacheKeys = require('../common/cacheKeys');
 
 module.exports = class DataMapService extends Service {
   async send(mailMessage) {
@@ -9,14 +8,10 @@ module.exports = class DataMapService extends Service {
   }
 
   async sendEmailVerifyMail(to, emailType) {
-    const {
-      app: { redis },
-      ctx: { helper },
-    } = this;
+    const { helper, service }  = this.ctx;
     const code = helper.random();
-    const cacheKey = cacheKeys.EMAIL_VERIFY_PREFIX + `${to}_${emailType.type}`;
 
-    await redis.setex(cacheKey, 60 * 60 * 24, code);
+    await service.cache.setEmailVerifyCode(to, emailType.type, code);
 
     const content = emailType.render({ code });
     await this.send({

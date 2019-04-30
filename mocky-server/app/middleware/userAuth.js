@@ -6,7 +6,7 @@
 
 module.exports = config => {
   return async function userAuth(ctx, next) {
-    const { cookies, helper, service, request } = ctx;
+    const { cookies, helper, service, request, logger } = ctx;
     const uid = cookies.get(config.cookie_key, {
       encrypt: true,
     });
@@ -21,7 +21,22 @@ module.exports = config => {
       return await next();
     }
 
-    const user = uid ? await service.user.getById(uid) : null;
+    let user;
+    if (uid) {
+      try {
+        user = await service.cache.getUser(uid);
+      } catch (e) {
+        logger.error(e);
+      }
+
+      if (!user) {
+        try {
+          user = await service.user.getById(uid);
+        } catch (e) {
+          logger.error(e);
+        }
+      }
+    }
 
     if (user) {
       if (config.adminUsers.indexOf(user.id) >= 0) {

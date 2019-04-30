@@ -21,12 +21,7 @@ module.exports = class ProjectService extends BaseService {
    */
   insertByTransaction(trans, project_id, values) {
     values = values.map(m => [project_id, m]);
-    return trans.query(
-      `
-      INSERT INTO ${this.tableName} (project_id, user_id) VALUES ?
-    `,
-      [values]
-    );
+    return trans.query(`INSERT INTO ${this.tableName} (project_id, user_id) VALUES ?`, [values]);
   }
 
   /**
@@ -77,17 +72,10 @@ module.exports = class ProjectService extends BaseService {
   }
 
   getByProject(project_id) {
-    return super.query({
+    return super.search({
       where: {
         project_id,
       },
-    });
-  }
-
-  isMember(project_id, user_id) {
-    return super.get({
-      project_id,
-      user_id,
     });
   }
 

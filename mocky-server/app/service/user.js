@@ -16,19 +16,13 @@
 
 const BaseService = require('../core/baseService');
 const userStatus = require('../common/userStatus');
-
-const filterFields = ['password', 'create_time', 'update_time', 'status'];
-const userInfoFilter = user => {
-  filterFields.forEach(field => {
-    delete user[field];
-  });
-  return user;
-};
+const cacheKeys = require('../common/cacheKeys');
 
 class UserService extends BaseService {
   constructor(...args) {
     super(...args);
     this.tableName = 'mk_user';
+    this.queryFields = ['id', 'email', 'nickname', 'status', 'create_time', 'update_time'];
   }
 
   async insert(user) {
@@ -46,14 +40,6 @@ class UserService extends BaseService {
       user.password = this.ctx.helper.bHash(user.password);
     }
     return await super.update(user);
-  }
-
-  async getById(id) {
-    const user = await super.getById(id);
-    if (user) {
-      userInfoFilter(user);
-    }
-    return user;
   }
 
   /**
@@ -78,37 +64,47 @@ class UserService extends BaseService {
     return false;
   }
 
+  /**
+   * 用户登录操作
+   * @param email email
+   * @param password password
+   * @return {Promise<{code: number, success: boolean}>} code: 0 正确，1 未注册，2：密码错误
+   */
   async login(email, password) {
     email = email.trim().toLowerCase();
-    const user = await this.app.mysql.get(this.tableName, {
-      email,
-      status: userStatus.NORMAL,
-    });
+    const sql = `SELECT id,password FROM ${this.tableName} WHERE email=? AND status=?`;
+    const user = await this.app.mysql.query(sql, [email, userStatus.NORMAL]);
+    const existed = user[0];
     let validPassword = false;
-    if (user) {
-      validPassword = this.ctx.helper.bCompare(password, user.password);
+    if (existed) {
+      validPassword = this.ctx.helper.bCompare(password, existed.password);
     }
     return {
       success: validPassword,
-      code: user ? (validPassword ? 0 : 2) : 1,
-      user: user ? userInfoFilter(user) : null,
+      code: existed ? (validPassword ? 0 : 2) : 1,
+      id: existed.id,
     };
   }
 
-  async query(param) {
-    const users = await super.query(param);
-    if (users && users.length > 0) {
-      users.forEach(user => {
-        userInfoFilter(user);
-      });
+  async getById(id) {
+    const { redis } = this.app;
+    const cacheKey = cacheKeys.USER + id;
+
+    let user = await redis.get(cacheKey);
+    if (!user) {
+      user = super.getById(id);
+      if (user) {
+        await redis.set(cacheKey, user);
+      }
     }
-    return users;
+    return user;
   }
 
-  async search(key) {
-    const sql = `SELECT * FROM ${this.tableName} WHERE nickname LIKE ? ORDER BY id DESC`;
-    const users = await this.app.mysql.query(sql, [key + '%']);
-    return users.map(user => userInfoFilter(user));
+  async searchByNickname(key) {
+    const sql = `
+      SELECT ${this.queryFields.join(',')} FROM ${this.tableName} WHERE nickname LIKE ? LIMIT 0,10 ORDER BY id DESC
+    `;
+    return await this.app.mysql.query(sql, [key + '%']);
   }
 
   /**
@@ -120,14 +116,14 @@ class UserService extends BaseService {
   async resetPass(email, newPass) {
     const { logger } = this.ctx;
     // 重复检查
-    const savedUser = await super.get({ email, status: userStatus.NORMAL });
-    if (!savedUser) {
+    const savedUser = await super.search({ email, status: userStatus.NORMAL });
+    if (savedUser.length === 0) {
       logger.warn(`无效用户 ${email} 重置密码`);
       return false;
     }
 
-    savedUser.password = newPass;
-    return await this.update(savedUser);
+    savedUser[0].password = newPass;
+    return await this.update(savedUser[0]);
   }
 }
 
