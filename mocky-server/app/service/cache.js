@@ -3,7 +3,7 @@
 const Service = require('egg').Service;
 const cacheKeys = require('../common/cacheKeys');
 
-export default class CacheService extends Service {
+module.exports = class CacheService extends Service {
   async setObject(key, object) {
     return this.ctx.app.redis.set(key, JSON.stringify(object));
   }
@@ -20,13 +20,13 @@ export default class CacheService extends Service {
    */
 
   async setEmailVerifyCode(email, type, code) {
-    const key = cacheKeys.EMAIL_VERIFY_PREFIX + email + '_' + type;
+    const key = cacheKeys.EMAIL_VERIFY_PREFIX(email, type);
     const expires = 60 * 60 * 24;
     return this.ctx.app.redis.setex(key, expires, code);
   }
 
   async getEmailVerifyCode(email, type) {
-    return this.ctx.app.redis.get(cacheKeys.EMAIL_VERIFY_PREFIX + email + '_' + type);
+    return this.ctx.app.redis.get(cacheKeys.EMAIL_VERIFY_PREFIX(email, type));
   }
 
   /**
@@ -35,15 +35,15 @@ export default class CacheService extends Service {
    */
 
   async setUser(user) {
-    return this.setObject(cacheKeys.USER + user.id, user);
+    return this.setObject(cacheKeys.USER(user.id), user);
   }
 
   async delUser(id) {
-    return this.ctx.app.redis.del(cacheKeys.USER + id);
+    return this.ctx.app.redis.del(cacheKeys.USER(id));
   }
 
   async getUser(id) {
-    return this.getObject(cacheKeys.USER + id);
+    return this.getObject(cacheKeys.USER(id));
   }
 
   /**
@@ -52,14 +52,14 @@ export default class CacheService extends Service {
    */
 
   async setProject(project) {
-    return this.setObject(cacheKeys.PROJECT + project.id, project);
+    return this.setObject(cacheKeys.PROJECT(project.id), project);
   }
 
   async delProject(id) {
-    return this.ctx.app.redis.del(cacheKeys.PROJECT + id);
+    return this.ctx.app.redis.del(cacheKeys.PROJECT(id));
   }
 
   async getProject(id) {
-    return this.getObject(cacheKeys.PROJECT + id);
+    return this.getObject(cacheKeys.PROJECT(id));
   }
 }

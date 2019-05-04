@@ -18,13 +18,6 @@ class ProjectController extends Controller {
         if (!(await this.ownerOrMemberOfProject(param.id))) return;
 
         await service.project.update(param);
-
-        // 有修改，删除缓存
-        try {
-          await service.cache.delProject(param.id);
-        } catch (e) {
-          logger.error(e);
-        }
       } else {
         param.id = await service.project.insert(
           Object.assign(param, {
@@ -53,8 +46,8 @@ class ProjectController extends Controller {
 
     try {
       // only owner can remove project
-      const owned = await service.project.get({ id, user_id: user.id });
-      if (!owned) {
+      const savedProject = await service.project.getById(id);
+      if (!savedProject || savedProject.user_id !== user.id) {
         this.fail(messages.common.notAllowed);
         return;
       }
@@ -68,12 +61,6 @@ class ProjectController extends Controller {
 
       await service.project.deleteById(id);
 
-      try {
-        await service.cache.delProject(id);
-      } catch (e) {
-        logger.error(e);
-      }
-
       this.success();
     } catch (e) {
       logger.error(e);
@@ -82,7 +69,7 @@ class ProjectController extends Controller {
   }
 
   async getById() {
-    const { request, service, logger, user } = this.ctx;
+    const { request, service, logger } = this.ctx;
     const id = request.query.id;
 
     if (!id) {
@@ -91,55 +78,14 @@ class ProjectController extends Controller {
       return;
     }
 
-    let project;
-
-    // get from cache
-    try {
-      project = await service.cache.getProject(id);
-      if (project) {
-        if (project.owner.id !== user.id && !project.members.find(u => u.id === user.id)) {
-          this.fail(messages.common.notAllowed);
-        } else {
-          this.success(project);
-        }
-        return;
-      }
-    } catch (e) {
-      logger.error(e);
-    }
-
-    // get from db
     try {
       // check privilege
-      if (!(await this.ownerOrMemberOfProject(project.id))) return;
+      if (!(await this.ownerOrMemberOfProject(id))) return;
 
-      project = await service.project.getById(id);
+      const project = await service.project.getById(id);
       if (!project) {
         this.fail(messages.common.notFound);
         return;
-      }
-
-      // get owner
-      project.owner = await service.user.getById(project.user_id);
-
-      // get members
-      let memberIds = await service.member.getByProject(project.id);
-      memberIds = memberIds.map(m => m.user_id);
-      if (memberIds.length > 0) {
-        project.members = await service.user.query({
-          where: {
-            id: memberIds,
-          },
-        });
-      } else {
-        project.members = [];
-      }
-
-      // 存缓存
-      try {
-        await service.cache.setProject(project);
-      } catch (e) {
-        logger.error(e);
       }
 
       this.success(project);
@@ -151,47 +97,15 @@ class ProjectController extends Controller {
 
   /**
    * 获取用户拥有和参与的项目
-   * get /project/getByUser
    */
   async getByUser() {
-    const {
-      ctx,
-      ctx: { service, logger, user },
-    } = this;
+    const { service, logger, user } = this.ctx;
     const id = user.id;
 
     try {
-      let owned = [];
-      let joined = [];
+      const projects = await service.project.getByUser(id);
 
-      const pOwned = service.project.owned(id);
-      // 超管可以查所有项目
-      const pJoined = ctx.isAdmin ? service.project.query() : service.project.joined(id);
-      await Promise.all([pOwned, pJoined]).then(values => {
-        owned = values[0];
-        joined = values[1];
-      });
-
-      joined.forEach(p1 => {
-        if (p1.user_id !== id) {
-          owned.push(p1);
-        }
-      });
-
-      // add owner to project
-      if (owned.length > 0) {
-        const ownerIds = owned.map(p => p.user_id);
-        const owners = await service.user.query({
-          where: {
-            id: ownerIds,
-          },
-        });
-        owned.forEach(p => {
-          p.owner = owners.find(u => u.id === p.user_id);
-        });
-      }
-
-      this.success(owned);
+      this.success(projects);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);
@@ -199,7 +113,7 @@ class ProjectController extends Controller {
   }
 
   /**
-   * get /project/detail?id=1
+   * 项目详情页
    */
   async detail() {
     const { request, service, logger } = this.ctx;
@@ -212,15 +126,15 @@ class ProjectController extends Controller {
     }
 
     try {
+      // check privilege
+      if (!(await this.ownerOrMemberOfProject(id))) return;
+
       // get project
       const project = await service.project.getById(id);
       if (!project) {
         this.fail(messages.common.notFound);
         return;
       }
-
-      // check privilege
-      if (!(await this.ownerOrMemberOfProject(project.id))) return;
 
       // get group
       let groups = [];
@@ -260,39 +174,22 @@ class ProjectController extends Controller {
     if (!this.isValid(rule, param)) return;
 
     try {
-      let savedProject;
-
-      try {
-        savedProject = await service.cache.getProject(project_id);
-      } catch (e) {
-        logger.error(e);
-      }
-
-      if (!savedProject) {
-        savedProject = await service.project.getById(project_id);
-      }
+      const savedProject = await service.project.getById(project_id);
 
       if (!savedProject) {
         this.fail(messages.common.notFound);
         return;
       }
+
       // 只有 owner 可以转移
       if (savedProject.user_id !== user.id) {
         this.fail(messages.common.notAllowed);
         return;
       }
 
-      savedProject.user_id = user_id;
+      await service.project.transfer(project_id, user_id);
 
-      try {
-        await service.cache.setProject(savedProject);
-      } catch (e) {
-        logger.error(e);
-      }
-
-      const result = service.project.transfer(project_id, user_id);
-
-      this.success(result);
+      this.success();
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);

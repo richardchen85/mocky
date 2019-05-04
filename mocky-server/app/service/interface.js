@@ -18,7 +18,7 @@ module.exports = class InterfaceService extends BaseService {
   }
 
   getByProject(project_id) {
-    return super.query({
+    return super.search({
       where: {
         project_id,
       },

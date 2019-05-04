@@ -14,7 +14,7 @@ module.exports = class GroupService extends BaseService {
   }
 
   getByProject(project_id) {
-    return super.query({
+    return super.search({
       where: {
         project_id,
       },

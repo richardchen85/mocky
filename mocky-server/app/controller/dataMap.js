@@ -107,7 +107,7 @@ class DataMapController extends Controller {
       // check privilege
       if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
 
-      const maps = await service.dataMap.query({
+      const maps = await service.dataMap.search({
         where: {
           interface_id,
         },

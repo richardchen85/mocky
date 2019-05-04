@@ -40,12 +40,6 @@ class UserController extends Controller {
       });
       const user = await service.user.getById(userId);
 
-      try {
-        await service.cache.setUser(user);
-      } catch (e) {
-        logger.error(e);
-      }
-
       cookies.set(config.auth_cookie_name, user.id.toString(), {
         encrypt: true,
         httpOnly: true,
@@ -73,22 +67,13 @@ class UserController extends Controller {
       // 记住密码保存30天
       const maxAge = remember ? 30 * 24 * 60 * 60 * 1000 : null;
       if (loginResult.success) {
-        cookies.set(config.auth_cookie_name, loginResult.user.id.toString(), {
+        cookies.set(config.auth_cookie_name, loginResult.id.toString(), {
           encrypt: true,
           maxAge,
           httpOnly: true,
         });
 
-        let user;
-        try {
-          user = await service.cache.getUser(loginResult.id);
-        } catch (e) {
-          logger.error(e);
-        }
-
-        if (!user) {
-          user = await service.user.getById(loginResult.id);
-        }
+        const user = await service.user.getById(loginResult.id);
 
         this.success(user);
       } else {

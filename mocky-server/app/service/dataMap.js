@@ -15,7 +15,7 @@ class DataMapService extends BaseService {
   }
 
   getByInterface(interface_id) {
-    return super.query({
+    return super.search({
       where: {
         interface_id,
       },

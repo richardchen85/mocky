@@ -82,19 +82,21 @@ class UserService extends BaseService {
     return {
       success: validPassword,
       code: existed ? (validPassword ? 0 : 2) : 1,
-      id: existed.id,
+      id: existed && existed.id,
     };
   }
 
   async getById(id) {
     const { redis } = this.app;
-    const cacheKey = cacheKeys.USER + id;
+    const cacheKey = cacheKeys.USER(id);
 
     let user = await redis.get(cacheKey);
-    if (!user) {
-      user = super.getById(id);
+    if (user) {
+      user = JSON.parse(user);
+    } else {
+      user = await super.getById(id);
       if (user) {
-        await redis.set(cacheKey, user);
+        await redis.set(cacheKey, JSON.stringify(user));
       }
     }
     return user;
@@ -102,7 +104,7 @@ class UserService extends BaseService {
 
   async searchByNickname(key) {
     const sql = `
-      SELECT ${this.queryFields.join(',')} FROM ${this.tableName} WHERE nickname LIKE ? LIMIT 0,10 ORDER BY id DESC
+      SELECT ${this.queryFields.join(',')} FROM ${this.tableName} WHERE nickname LIKE ? ORDER BY id DESC LIMIT 0,10
     `;
     return await this.app.mysql.query(sql, [key + '%']);
   }

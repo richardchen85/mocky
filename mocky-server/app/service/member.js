@@ -32,7 +32,7 @@ module.exports = class ProjectService extends BaseService {
    */
   async syncByProject(trans, project_id, members) {
     // get saved members
-    const saved = await super.query({
+    const saved = await super.search({
       where: {
         project_id,
       },

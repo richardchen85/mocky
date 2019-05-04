@@ -5,6 +5,7 @@
  */
 
 const BaseService = require('../core/baseService');
+const cacheKeys = require('../common/cacheKeys');
 
 module.exports = class ProjectService extends BaseService {
   constructor(args) {
@@ -33,11 +34,25 @@ module.exports = class ProjectService extends BaseService {
       const created = await trans.insert(this.tableName, project);
       // save members
       if (members && members.length > 0) {
-        await this.ctx.service.member.insertByTransaction(trans, created.insertId, members);
+        await this.service.member.insertByTransaction(trans, created.insertId, members);
       }
       await trans.commit();
 
       return created.insertId;
+    } catch (err) {
+      await trans.rollback();
+      throw err;
+    }
+  }
+
+  async deleteById(id) {
+    const trans = await this.app.mysql.beginTransaction();
+
+    try {
+      await trans.delete(this.tableName, { id });
+      await this.service.member.deleteByProject(trans, id);
+      await trans.commit();
+      await this.app.redis.del(cacheKeys.PROJECT(id));
     } catch (err) {
       await trans.rollback();
       throw err;
@@ -64,26 +79,104 @@ module.exports = class ProjectService extends BaseService {
       await trans.update(this.tableName, project);
       // sync members
       if (members) {
-        await this.ctx.service.member.syncByProject(trans, project.id, members);
+        await this.service.member.syncByProject(trans, project.id, members);
       }
       await trans.commit();
+      await this.app.redis.del(cacheKeys.PROJECT(project.id));
     } catch (err) {
       await trans.rollback();
       throw err;
     }
   }
 
-  async deleteById(id) {
-    const trans = await this.app.mysql.beginTransaction();
+  async getById(id) {
+    const { redis } = this.app;
+    const { service } = this.ctx;
+    const cacheKey = cacheKeys.PROJECT(id);
 
-    try {
-      await trans.delete(this.tableName, { id });
-      await this.ctx.service.member.deleteByProject(trans, id);
-      await trans.commit();
-    } catch (err) {
-      await trans.rollback();
-      throw err;
+    let project = await redis.get(cacheKey);
+    if (project) {
+      project = JSON.parse(project);
+    } else {
+      project = await super.getById(id);
+
+      // get owner
+      project.owner = await service.user.getById(project.user_id);
+
+      // get members
+      let memberIds = await service.member.getByProject(project.id);
+      memberIds = memberIds.map(m => m.user_id);
+      if (memberIds.length > 0) {
+        project.members = await service.user.search({
+          where: {
+            id: memberIds,
+          },
+        });
+      } else {
+        project.members = [];
+      }
+
+      await redis.set(cacheKey, JSON.stringify(project));
     }
+
+    return project;
+  }
+
+  async getByUser(user_id) {
+    const { service } = this;
+    const owned = await this.owned(user_id);
+    const joined = await this.joined(user_id);
+
+    joined.forEach(p1 => {
+      if (p1.user_id !== user_id) {
+        owned.push(p1);
+      }
+    });
+
+    if (owned.length > 0) {
+      const ownerIds = [];
+      const projectIds = [];
+
+      owned.forEach(p => {
+        ownerIds.push(p.user_id);
+        projectIds.push(p.id);
+      });
+
+      const ownerPromise = service.user.search({
+        where: {
+          id: ownerIds,
+        },
+      });
+      const memberPromise = service.member.search({
+        where: {
+          project_id: projectIds,
+        },
+      });
+      const [owners, members] = await Promise.all([ownerPromise, memberPromise]);
+
+      let memberIds = [];
+      owned.forEach(p => {
+        p.owner = owners.find(u => u.id === p.user_id);
+        const pMemberIds = members.filter(m => m.project_id === p.id).map(m => m.user_id);
+        p.members = pMemberIds;
+        memberIds = memberIds.concat(pMemberIds);
+      });
+
+      if (memberIds.length > 0) {
+        const members = await service.user.search({
+          where: {
+            id: memberIds,
+          },
+        });
+        owned.forEach(p => {
+          p.members = p.members.map(mId => {
+            return members.find(m => m.id === mId);
+          });
+        });
+      }
+    }
+
+    return owned;
   }
 
   owned(user_id) {
@@ -126,6 +219,7 @@ module.exports = class ProjectService extends BaseService {
   }
 
   async transfer(project_id, user_id) {
-    return super.update({ id: project_id, user_id }, { where: { id: project_id } });
+    await super.update({ id: project_id, user_id }, { where: { id: project_id } });
+    await this.app.redis.del(cacheKeys.PROJECT(project_id));
   }
 };

@@ -21,28 +21,18 @@ module.exports = config => {
       return await next();
     }
 
-    let user;
     if (uid) {
       try {
-        user = await service.cache.getUser(uid);
+        const user = await service.user.getById(uid);
+        if (user) {
+          if (config.adminUsers.indexOf(user.id) >= 0) {
+            ctx.isAdmin = true;
+          }
+          ctx.user = user;
+        }
       } catch (e) {
         logger.error(e);
       }
-
-      if (!user) {
-        try {
-          user = await service.user.getById(uid);
-        } catch (e) {
-          logger.error(e);
-        }
-      }
-    }
-
-    if (user) {
-      if (config.adminUsers.indexOf(user.id) >= 0) {
-        ctx.isAdmin = true;
-      }
-      ctx.user = user;
     }
 
     await next();
