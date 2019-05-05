@@ -75,7 +75,8 @@ class ProjectDetail extends PureComponent {
   };
 
   sortGroup = ids => {
-    this.props.dispatch({ type: types.sortGroup, payload: ids });
+    const { data, dispatch } = this.props;
+    dispatch({ type: types.sortGroup, payload: { ids, project_id: data.id } });
   };
 
   setInterfaceEdit = edit => {
@@ -98,7 +99,8 @@ class ProjectDetail extends PureComponent {
   };
 
   sortInterface = ids => {
-    this.props.dispatch({ type: types.sortInterface, payload: ids });
+    const { data, dispatch } = this.props;
+    dispatch({ type: types.sortInterface, payload: { ids, project_id: data.id } });
   };
 
   /**

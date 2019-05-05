@@ -23,6 +23,7 @@ class UserService extends BaseService {
     super(...args);
     this.tableName = 'mk_user';
     this.queryFields = ['id', 'email', 'nickname', 'status', 'create_time', 'update_time'];
+    this.cacheKeyFn = cacheKeys.user;
   }
 
   async insert(user) {
@@ -84,22 +85,6 @@ class UserService extends BaseService {
       code: existed ? (validPassword ? 0 : 2) : 1,
       id: existed && existed.id,
     };
-  }
-
-  async getById(id) {
-    const { redis } = this.app;
-    const cacheKey = cacheKeys.USER(id);
-
-    let user = await redis.get(cacheKey);
-    if (user) {
-      user = JSON.parse(user);
-    } else {
-      user = await super.getById(id);
-      if (user) {
-        await redis.set(cacheKey, JSON.stringify(user));
-      }
-    }
-    return user;
   }
 
   async searchByNickname(key) {

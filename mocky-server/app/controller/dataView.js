@@ -12,7 +12,10 @@ class DataViewController extends Controller {
    * ALL /dataView/[project_id]/[mock.url]
    */
   async view() {
-    const { ctx, ctx: { request, service, logger, params } } = this;
+    const {
+      ctx,
+      ctx: { request, service, logger, params },
+    } = this;
     const param = {
       project_id: parseInt(params[0]),
       url: params[1],
@@ -25,11 +28,8 @@ class DataViewController extends Controller {
     }
 
     try {
-      const itface = await service.interface.get({
-        project_id: param.project_id,
-        url: param.url,
-      });
-
+      let itface = await service.interface.getByProject(param.project_id);
+      itface = itface.filter(itf => itf.url === param.url);
       if (!itface) {
         this.fail(messages.common.notFound);
         return;
@@ -44,13 +44,13 @@ class DataViewController extends Controller {
 
       if (mockId) {
         // 从匹配规则中取 mock_id
-        mock = await service.mock.get({
-          interface_id: itface.id,
-          id: mockId,
-        });
+        mock = await service.mock.getById(mockId);
+        if (mock.interface_id !== itface.id) {
+          mock = null;
+        }
       } else {
         // 匹配规则没有匹配到，则默认取第一条
-        mock = await service.mock.get({ interface_id: itface.id });
+        mock = await service.mock.getByInterface(itface.id)[0];
       }
 
       if (!mock) {

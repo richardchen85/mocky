@@ -12,6 +12,7 @@ module.exports = class ProjectService extends BaseService {
     super(args);
     this.tableName = 'mk_project';
     this.updateFields = ['name', 'desc'];
+    this.cacheKeyFn = cacheKeys.project;
   }
 
   /**
@@ -45,14 +46,15 @@ module.exports = class ProjectService extends BaseService {
     }
   }
 
-  async deleteById(id) {
-    const trans = await this.app.mysql.beginTransaction();
+  async delete(id) {
+    const { mysql } = this.app;
+    const trans = await mysql.beginTransaction();
 
     try {
       await trans.delete(this.tableName, { id });
       await this.service.member.deleteByProject(trans, id);
       await trans.commit();
-      await this.app.redis.del(cacheKeys.PROJECT(id));
+      await super.deleteCache(id);
     } catch (err) {
       await trans.rollback();
       throw err;
@@ -71,7 +73,8 @@ module.exports = class ProjectService extends BaseService {
    *  }
    */
   async update(project) {
-    const trans = await this.app.mysql.beginTransaction();
+    const { mysql } = this.app;
+    const trans = await mysql.beginTransaction();
 
     try {
       const members = project.members;
@@ -82,7 +85,7 @@ module.exports = class ProjectService extends BaseService {
         await this.service.member.syncByProject(trans, project.id, members);
       }
       await trans.commit();
-      await this.app.redis.del(cacheKeys.PROJECT(project.id));
+      await super.deleteCache(project.id);
     } catch (err) {
       await trans.rollback();
       throw err;
@@ -90,14 +93,11 @@ module.exports = class ProjectService extends BaseService {
   }
 
   async getById(id) {
-    const { redis } = this.app;
     const { service } = this.ctx;
-    const cacheKey = cacheKeys.PROJECT(id);
 
-    let project = await redis.get(cacheKey);
-    if (project) {
-      project = JSON.parse(project);
-    } else {
+    let project = await super.getCache(id);
+
+    if (!project) {
       project = await super.getById(id);
 
       // get owner
@@ -116,7 +116,7 @@ module.exports = class ProjectService extends BaseService {
         project.members = [];
       }
 
-      await redis.set(cacheKey, JSON.stringify(project));
+      project && await super.setCache(project);
     }
 
     return project;
@@ -220,6 +220,6 @@ module.exports = class ProjectService extends BaseService {
 
   async transfer(project_id, user_id) {
     await super.update({ id: project_id, user_id }, { where: { id: project_id } });
-    await this.app.redis.del(cacheKeys.PROJECT(project_id));
+    await this.app.redis.del(this.cacheKeyFn(project_id));
   }
 };

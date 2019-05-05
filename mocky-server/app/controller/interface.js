@@ -55,13 +55,11 @@ class InterfaceController extends Controller {
       if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
 
       // check empty
-      let mocks = [];
-      let dataMaps = [];
-      await Promise.all([service.mock.getByInterface(id), service.dataMap.getByInterface(id)]).then(values => {
-        mocks = values[0];
-        dataMaps = values[1];
-      });
-      if (mocks.length > 0 || dataMaps.length > 0) {
+      const itfPromise = service.mock.count({ interface_id: id });
+      const dataMapPromise = service.dataMap.count({ interface_id: id });
+      const [mocks, dataMaps] = await Promise.all([itfPromise, dataMapPromise]);
+
+      if (mocks > 0 || dataMaps > 0) {
         return this.fail('不能删除有映射规则和模拟数据的接口');
       }
 
@@ -105,7 +103,12 @@ class InterfaceController extends Controller {
    */
   async sort() {
     const { request, service, logger } = this.ctx;
-    const ids = request.body.ids;
+    const { ids, project_id } = request.body;
+
+    if (!project_id) {
+      this.fail(messages.common.paramError);
+      return;
+    }
 
     if (!ids || ids.length < 1) {
       this.success();
@@ -113,12 +116,7 @@ class InterfaceController extends Controller {
     }
 
     try {
-      for (let i = 0; i < ids.length; i++) {
-        await service.interface.update({
-          id: parseInt(ids[i], 10),
-          priority: i + 1,
-        });
-      }
+      await service.interface.sort(ids, project_id);
       this.success();
     } catch (e) {
       logger.error(e);

@@ -96,7 +96,12 @@ class GroupController extends Controller {
    */
   async sort() {
     const { request, service, logger } = this.ctx;
-    const ids = request.body.ids;
+    const { ids, project_id } = request.body;
+
+    if (!project_id) {
+      this.fail(messages.common.paramError);
+      return;
+    }
 
     if (!ids || ids.length < 1) {
       this.success();
@@ -104,12 +109,10 @@ class GroupController extends Controller {
     }
 
     try {
-      for (let i = 0; i < ids.length; i++) {
-        await service.group.update({
-          id: parseInt(ids[i], 10),
-          priority: i + 1,
-        });
-      }
+      // check privilege
+      if (!(await this.ownerOrMemberOfProject(project_id))) return;
+
+      await service.group.sort(ids, project_id);
       this.success();
     } catch (e) {
       logger.error(e);

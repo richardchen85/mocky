@@ -6,6 +6,39 @@
 
 const { Service } = require('egg');
 
+/**
+ * 将二维数组转换成CASE WHEN THEN的批量更新条件
+ * @param {Array} datas 二维数组
+ * @param {String} field 列名
+ * @return {String} sql语句
+ */
+function parseUpdate(datas, field) {
+  const keys = Object.keys(datas[0]);
+  const updates = [];
+  keys.forEach(key => {
+    let cases = `${key} = CASE ${field} `;
+    datas.forEach(data => {
+      cases += `WHEN ${data[field]} THEN ${data[key]} `;
+    });
+    cases += ' END';
+    updates.push(cases);
+  });
+  return updates.join();
+}
+
+/**
+ * 解析where条件
+ * @param {Object} params
+ * @return {String} 条件
+ */
+function parseParams(params) {
+  const wheres = [];
+  Object.keys(params).forEach(key => {
+    wheres.push(`${key}=${params[key]}`);
+  });
+  return wheres.length > 0 ? ' AND ' + wheres.join(' AND ') : '';
+}
+
 class BaseService extends Service {
   constructor(args) {
     super(args);
@@ -13,6 +46,57 @@ class BaseService extends Service {
     this.insertFields = [];
     this.updateFields = [];
     this.queryFields = [];
+    this.cacheKeyFn = null;
+    this.cacheKeyByParentFn = null;
+    this.parentIdName = '';
+  }
+
+  async setCache(model) {
+    if (this.cacheKeyFn) {
+      await this.app.redis.set(this.cacheKeyFn(model.id), JSON.stringify(model));
+    }
+  }
+
+  async deleteCache(id) {
+    if (this.cacheKeyFn) {
+      await this.app.redis.del(this.cacheKeyFn(id));
+    }
+  }
+
+  async getCache(id) {
+    let cached;
+    if (this.cacheKeyFn) {
+      cached = await this.app.redis.get(this.cacheKeyFn(id));
+      if (cached) {
+        cached = JSON.parse(cached);
+      }
+    }
+    return cached;
+  }
+
+  async setCacheByParent(models) {
+    if (this.cacheKeyByParentFn) {
+      await this.app.redis.set(this.cacheKeyByParentFn(models[0]), JSON.stringify(models));
+    }
+  }
+
+  async deleteCacheByParent(model) {
+    if (this.cacheKeyByParentFn) {
+      await this.app.redis.del(this.cacheKeyByParentFn(model[this.parentIdName]));
+    }
+  }
+
+  async getCacheByParent(parent_id) {
+    let cached;
+    if (this.cacheKeyByParentFn) {
+      cached = await this.app.redis.get(this.cacheKeyByParentFn(parent_id));
+      if (cached) {
+        cached = JSON.parse(cached);
+      } else {
+        cached = [];
+      }
+    }
+    return cached;
   }
 
   /**
@@ -42,17 +126,19 @@ class BaseService extends Service {
    */
   async insert(model) {
     model = this.fieldFilter(model, this.insertFields);
+
+    await this.deleteCacheByParent(model);
+
     const result = await this.app.mysql.insert(this.tableName, model);
     return result.affectedRows === 1 ? result.insertId : 0;
   }
 
-  async deleteById(id) {
-    const result = await this.app.mysql.delete(this.tableName, { id });
-    return result.affectedRows === 1;
-  }
+  async delete(model) {
+    await this.deleteCache(model.id);
+    await this.deleteCacheByParent(model);
 
-  async deleteByConditions(conditions) {
-    const result = await this.app.mysql.delete(this.tableName, conditions);
+    const result = await this.app.mysql.delete(this.tableName, { id: model.id });
+    return result.affectedRows === 1;
   }
 
   async update(model, options = { where: {} }) {
@@ -60,17 +146,55 @@ class BaseService extends Service {
       id: model.id,
     });
     model = this.fieldFilter(model, this.updateFields);
+
+    await this.deleteCache(model.id);
+    await this.deleteCacheByParent(model);
+
     const result = await this.app.mysql.update(this.tableName, model, options);
     return result.affectedRows === 1;
   }
 
+  async batchUpdate(datas, field, params) {
+    const updates = parseUpdate(datas, field);
+    const wheres = params ? parseParams(params) : '';
+    const fields = datas.map(data => data[field]);
+
+    // delete caches
+    const saved = this.search({
+      where: {
+        [field]: fields,
+        ...params,
+      },
+    });
+    saved.forEach(async item => {
+      await this.deleteCache(item.id);
+      await this.deleteCacheByParent(item);
+    });
+
+    const sql = `
+      UPDATE ${this.tableName} SET
+        ${updates}
+      WHERE ${field} IN (${fields}) ${wheres}
+    `;
+    const result = await this.app.mysql.query(sql);
+    return result.affectedRows;
+  }
+
   async getById(id) {
+    let result = await this.getCache(id);
+
+    if (result) return result;
+
     const options = {};
     this.queryFields.length &&
       Object.assign(options, {
         columns: this.queryFields,
       });
-    return await this.app.mysql.get(this.tableName, { id }, options);
+    result = await this.app.mysql.get(this.tableName, { id }, options);
+
+    result && (await this.setCache(result));
+
+    return result;
   }
 
   async count(conditions) {

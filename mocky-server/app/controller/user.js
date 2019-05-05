@@ -19,7 +19,7 @@ class UserController extends Controller {
 
     try {
       // 检查邮箱验证码
-      const cachedCode = await service.cache.getEmailVerifyCode(email, emailTypes.types.EMAIL_VERIFY);
+      const cachedCode = await service.sendMail.getEmailVerifyCode(email, emailTypes.types.EMAIL_VERIFY);
       if (!cachedCode || mail_code !== cachedCode) {
         this.fail(messages.common.invalidEmailCode);
         return;
@@ -128,7 +128,7 @@ class UserController extends Controller {
 
     try {
       // 检查邮箱验证码
-      const cachedCode = await service.cache.getEmailVerifyCode(email, emailTypes.types.EMAIL_VERIFY.type);
+      const cachedCode = await service.sendMail.getEmailVerifyCode(email, emailTypes.types.EMAIL_VERIFY.type);
       if (!cachedCode || mail_code !== cachedCode) {
         this.fail(messages.common.invalidEmailCode);
         return;

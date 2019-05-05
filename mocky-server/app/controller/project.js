@@ -59,7 +59,7 @@ class ProjectController extends Controller {
         return;
       }
 
-      await service.project.deleteById(id);
+      await service.project.delete(id);
 
       this.success();
     } catch (e) {
@@ -136,17 +136,10 @@ class ProjectController extends Controller {
         return;
       }
 
-      // get group
-      let groups = [];
-      // get interface
-      let interfaces = [];
-
       const pGroup = service.group.getByProject(project.id);
       const pItf = service.interface.getByProject(project.id);
-      await Promise.all([pGroup, pItf]).then(values => {
-        groups = values[0];
-        interfaces = values[1];
-      });
+      const [groups, interfaces] = await Promise.all([pGroup, pItf]);
+
       groups.forEach(group => {
         group.interfaces = interfaces.filter(itf => itf.group_id === group.id);
       });

@@ -119,7 +119,7 @@ export default createModal({
       );
     },
     sortGroup: (store, next, { payload }) => {
-      next(apiRequest({ url: GROUP.SORT, method: 'POST', body: { ids: payload }, feature: types.sortGroup }));
+      next(apiRequest({ url: GROUP.SORT, method: 'POST', body: { ...payload }, feature: types.sortGroup }));
     },
 
     // 接口相关
@@ -152,7 +152,7 @@ export default createModal({
       );
     },
     sortInterface: (store, next, { payload }) => {
-      next(apiRequest({ url: INTERFACE.SORT, method: 'POST', body: { ids: payload }, feature: types.sortInterface }));
+      next(apiRequest({ url: INTERFACE.SORT, method: 'POST', body: { ...payload }, feature: types.sortInterface }));
     },
   },
 });
