@@ -129,8 +129,6 @@ module.exports = class ProjectService extends BaseService {
   }
 
   async getByUser(user_id) {
-    const { service } = this;
-
     let projectsByUser = await super.getCacheByParent(user_id);
 
     if (!projectsByUser) {
@@ -142,44 +140,7 @@ module.exports = class ProjectService extends BaseService {
 
       projectsByUser = await super.search({ where: { id: idsByUser }, orders: [['modify_time', 'DESC']] });
 
-      const ownerIds = [];
-
-      projectsByUser.forEach(p => {
-        ownerIds.push(p.user_id);
-      });
-
-      const ownerPromise = service.user.search({
-        where: {
-          id: ownerIds,
-        },
-      });
-      const memberPromise = service.member.search({
-        where: {
-          project_id: idsByUser,
-        },
-      });
-      const [owners, members] = await Promise.all([ownerPromise, memberPromise]);
-
-      let memberIds = [];
-      projectsByUser.forEach(p => {
-        p.owner = owners.find(u => u.id === p.user_id);
-        const pMemberIds = members.filter(m => m.project_id === p.id).map(m => m.user_id);
-        p.members = pMemberIds;
-        memberIds = memberIds.concat(pMemberIds);
-      });
-
-      if (memberIds.length > 0) {
-        const members = await service.user.search({
-          where: {
-            id: memberIds,
-          },
-        });
-        projectsByUser.forEach(p => {
-          p.members = p.members.map(mId => {
-            return members.find(m => m.id === mId);
-          });
-        });
-      }
+      await this.getOwnerAndMembers(projectsByUser);
 
       await super.setCacheByParent(user_id, projectsByUser);
     }
@@ -201,6 +162,48 @@ module.exports = class ProjectService extends BaseService {
     `;
 
     return await this.app.mysql.query(sql, [user_id, user_id]);
+  }
+
+  async getOwnerAndMembers(projects) {
+    const { service } = this;
+    const ownerIds = [];
+
+    projects.forEach(p => {
+      ownerIds.push(p.user_id);
+    });
+
+    const ownerPromise = service.user.search({
+      where: {
+        id: ownerIds,
+      },
+    });
+    const memberPromise = service.member.search({
+      where: {
+        project_id: projects.map(p => p.id),
+      },
+    });
+    const [owners, members] = await Promise.all([ownerPromise, memberPromise]);
+
+    let memberIds = [];
+    projects.forEach(p => {
+      p.owner = owners.find(u => u.id === p.user_id);
+      const pMemberIds = members.filter(m => m.project_id === p.id).map(m => m.user_id);
+      p.members = pMemberIds;
+      memberIds = memberIds.concat(pMemberIds);
+    });
+
+    if (memberIds.length > 0) {
+      const memberUsers = await service.user.search({
+        where: {
+          id: memberIds,
+        },
+      });
+      projects.forEach(p => {
+        p.members = p.members.map(mId => {
+          return memberUsers.find(m => m.id === mId);
+        });
+      });
+    }
   }
 
   async ownerOrMember(project_id, user_id) {

@@ -16,6 +16,7 @@ module.exports = app => {
   router.get('/user/get', user.getUser);
   router.get('/user/search', user.search);
   router.post('/user/resetPass', user.resetPass);
+  router.get('/user/all', user.all);
 
   // project
   router.post('/project/save', project.save);
@@ -24,6 +25,7 @@ module.exports = app => {
   router.get('/project/getByUser', project.getByUser);
   router.get('/project/detail', project.detail);
   router.post('/project/transfer', project.transfer);
+  router.get('/project/all', project.all);
 
   // group
   router.post('/group/save', group.save);

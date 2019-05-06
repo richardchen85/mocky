@@ -188,6 +188,37 @@ class ProjectController extends Controller {
       this.fail(messages.common.sysError);
     }
   }
+
+  async all() {
+    const { request, service, logger } = this.ctx;
+    const { pageIndex = 1, pageSize = 20 } = request.query;
+
+    try {
+      const count = await service.project.count();
+      let result = [];
+      if (count > 0) {
+        result = await service.project.search({
+          limit: pageSize,
+          offset: pageIndex - 1,
+        });
+
+        if (result.length > 0) {
+          await service.project.getOwnerAndMembers(result);
+        }
+      }
+      this.success({
+        pagination: {
+          pageIndex,
+          pageSize,
+          count,
+        },
+        data: result,
+      });
+    } catch (e) {
+      logger.error(e);
+      this.fail(messages.common.sysError);
+    }
+  }
 }
 
 module.exports = ProjectController;

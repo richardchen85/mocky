@@ -15,7 +15,7 @@ module.exports = appInfo => {
   config.proxy = true;
 
   // add your config here
-  config.middleware = ['errorPage', 'userAuth', 'userRequired'];
+  config.middleware = ['errorPage', 'userAuth', 'userRequired', 'adminRequired'];
 
   // userAuth middleware configuration
   config.auth_cookie_name = 'uid_dev';
@@ -33,7 +33,7 @@ module.exports = appInfo => {
 
   // admin required
   config.adminRequired = {
-    includes: [/^\/redis/],
+    includes: [/^\/(redis|project\/all|user\/all)/],
   };
 
   // static

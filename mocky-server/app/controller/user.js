@@ -117,7 +117,7 @@ class UserController extends Controller {
   }
 
   async resetPass() {
-    const { request, service, logger } = this;
+    const { request, service, logger } = this.ctx;
 
     if (!this.isValid(userRule.resetPass, request.body)) return;
 
@@ -133,6 +133,33 @@ class UserController extends Controller {
 
       await service.user.resetPass(email, password);
       this.success('密码修改成功');
+    } catch (e) {
+      logger.error(e);
+      this.fail(messages.common.sysError);
+    }
+  }
+
+  async all() {
+    const { request, service, logger } = this.ctx;
+    const { pageIndex = 1, pageSize = 20 } = request.query;
+
+    try {
+      const count = await service.user.count();
+      let result = [];
+      if (count > 0) {
+        result = await service.user.search({
+          limit: pageSize,
+          offset: pageIndex - 1,
+        });
+      }
+      this.success({
+        pagination: {
+          pageIndex,
+          pageSize,
+          count,
+        },
+        data: result,
+      });
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);
