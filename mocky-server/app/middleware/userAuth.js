@@ -26,6 +26,7 @@ module.exports = config => {
         const user = await service.user.getById(uid);
         if (user) {
           if (config.adminUsers.indexOf(user.id) >= 0) {
+            user.isAdmin = true;
             ctx.isAdmin = true;
           }
           ctx.user = user;

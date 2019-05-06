@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Layout } from 'antd';
+import { NavLink } from 'react-router-dom';
+import { Icon, Layout } from 'antd';
 import UserInfo from './UserInfo';
 import MKFooter from './MKFooter';
 
@@ -18,7 +19,21 @@ class PageLayout extends PureComponent {
     return (
       <Layout>
         <Header>
-          <div id="logo">mocky</div>
+          <div id={'logo'}>mocky</div>
+          {/*<div className={'top-menu'}>*/}
+            {/*<NavLink to={'/'} exact={true}>*/}
+              {/*<Icon type="home" />*/}
+              {/*首页*/}
+            {/*</NavLink>*/}
+            {/*<NavLink to={'/project/all'}>*/}
+              {/*<Icon type="wallet" />*/}
+              {/*项目*/}
+            {/*</NavLink>*/}
+            {/*<NavLink to={'/user/list'}>*/}
+              {/*<Icon type="user" />*/}
+              {/*用户*/}
+            {/*</NavLink>*/}
+          {/*</div>*/}
           <UserInfo auth={auth} logout={logout} />
         </Header>
         <Content style={{ backgroundColor: '#fff', padding: 15 }}>{this.props.children}</Content>

@@ -57,8 +57,8 @@ class GroupController extends Controller {
         return this.fail('不能删除有接口数据的分组');
       }
 
-      await service.group.delete(id);
-      this.success();
+      const result = await service.group.delete(savedGroup);
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);

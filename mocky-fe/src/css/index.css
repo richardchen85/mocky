@@ -29,6 +29,24 @@ code {
   color: #fff;
 }
 
+.top-menu {
+  float: left;
+  height: 100%;
+}
+.top-menu a {
+  display: inline-block;
+  padding: 0 20px;
+  font-size: 16px;
+}
+.top-menu a:hover,
+.top-menu a.active {
+  background: #000;
+  color: #fff;
+}
+.top-menu a i {
+  margin-right: 2px;
+}
+
 .loading {
   position: fixed;
   top: 0;

@@ -10,6 +10,12 @@ module.exports = {
   project(id) {
     return 'project_' + id;
   },
+  projectByUser(user_id) {
+    return 'project_by_user_' + user_id;
+  },
+  memberByProject(project_id) {
+    return 'member_by_project_' + project_id;
+  },
   group(id) {
     return 'group_' + id;
   },

@@ -89,9 +89,9 @@ class UserService extends BaseService {
 
   async searchByNickname(key) {
     const sql = `
-      SELECT ${this.queryFields.join(',')} FROM ${this.tableName} WHERE nickname LIKE ? ORDER BY id DESC LIMIT 0,10
+      SELECT ${this.queryFields.join(',')} FROM ${this.tableName} WHERE status=? AND nickname LIKE ? ORDER BY id DESC LIMIT 0,10
     `;
-    return await this.app.mysql.query(sql, [key + '%']);
+    return await this.app.mysql.query(sql, [userStatus.NORMAL, key + '%']);
   }
 
   /**

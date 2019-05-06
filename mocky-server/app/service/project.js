@@ -13,6 +13,8 @@ module.exports = class ProjectService extends BaseService {
     this.tableName = 'mk_project';
     this.updateFields = ['name', 'desc'];
     this.cacheKeyFn = cacheKeys.project;
+    this.cacheKeyByParentFn = cacheKeys.projectByUser;
+    this.parentIdName = 'user_id';
   }
 
   /**
@@ -30,6 +32,8 @@ module.exports = class ProjectService extends BaseService {
     const trans = await this.app.mysql.beginTransaction();
 
     try {
+      await super.deleteCacheByParent(project);
+
       const members = project.members;
       delete project.members;
       const created = await trans.insert(this.tableName, project);
@@ -46,15 +50,16 @@ module.exports = class ProjectService extends BaseService {
     }
   }
 
-  async delete(id) {
+  async delete(project) {
     const { mysql } = this.app;
     const trans = await mysql.beginTransaction();
 
     try {
-      await trans.delete(this.tableName, { id });
-      await this.service.member.deleteByProject(trans, id);
+      await Promise.all([super.deleteCacheByParent(project), super.deleteCache(project.id)]);
+
+      await trans.delete(this.tableName, { id: project.id });
+      await this.service.member.deleteByProject(trans, project.id);
       await trans.commit();
-      await super.deleteCache(id);
     } catch (err) {
       await trans.rollback();
       throw err;
@@ -77,6 +82,8 @@ module.exports = class ProjectService extends BaseService {
     const trans = await mysql.beginTransaction();
 
     try {
+      await Promise.all([super.deleteCacheByParent(project), super.deleteCache(project.id)]);
+
       const members = project.members;
       delete project.members;
       await trans.update(this.tableName, project);
@@ -85,7 +92,6 @@ module.exports = class ProjectService extends BaseService {
         await this.service.member.syncByProject(trans, project.id, members);
       }
       await trans.commit();
-      await super.deleteCache(project.id);
     } catch (err) {
       await trans.rollback();
       throw err;
@@ -116,7 +122,7 @@ module.exports = class ProjectService extends BaseService {
         project.members = [];
       }
 
-      project && await super.setCache(project);
+      project && (await super.setCache(project));
     }
 
     return project;
@@ -124,22 +130,22 @@ module.exports = class ProjectService extends BaseService {
 
   async getByUser(user_id) {
     const { service } = this;
-    const owned = await this.owned(user_id);
-    const joined = await this.joined(user_id);
 
-    joined.forEach(p1 => {
-      if (p1.user_id !== user_id) {
-        owned.push(p1);
+    let projectsByUser = await super.getCacheByParent(user_id);
+
+    if (!projectsByUser) {
+      let idsByUser = await this.getIdsByUser(user_id);
+      if (idsByUser.length === 0) {
+        return idsByUser;
       }
-    });
+      idsByUser = idsByUser.map(item => item.id);
 
-    if (owned.length > 0) {
+      projectsByUser = await super.search({ where: { id: idsByUser }, orders: [['modify_time', 'DESC']] });
+
       const ownerIds = [];
-      const projectIds = [];
 
-      owned.forEach(p => {
+      projectsByUser.forEach(p => {
         ownerIds.push(p.user_id);
-        projectIds.push(p.id);
       });
 
       const ownerPromise = service.user.search({
@@ -149,13 +155,13 @@ module.exports = class ProjectService extends BaseService {
       });
       const memberPromise = service.member.search({
         where: {
-          project_id: projectIds,
+          project_id: idsByUser,
         },
       });
       const [owners, members] = await Promise.all([ownerPromise, memberPromise]);
 
       let memberIds = [];
-      owned.forEach(p => {
+      projectsByUser.forEach(p => {
         p.owner = owners.find(u => u.id === p.user_id);
         const pMemberIds = members.filter(m => m.project_id === p.id).map(m => m.user_id);
         p.members = pMemberIds;
@@ -168,40 +174,33 @@ module.exports = class ProjectService extends BaseService {
             id: memberIds,
           },
         });
-        owned.forEach(p => {
+        projectsByUser.forEach(p => {
           p.members = p.members.map(mId => {
             return members.find(m => m.id === mId);
           });
         });
       }
+
+      await super.setCacheByParent(user_id, projectsByUser);
     }
 
-    return owned;
+    return projectsByUser;
   }
 
-  owned(user_id) {
-    const param = {
-      where: {
-        user_id,
-      },
-      orders: [['id', 'desc']],
-    };
-    return super.search(param);
-  }
-
-  joined(user_id) {
-    const { service } = this.ctx;
+  async getIdsByUser(user_id) {
+    const { service } = this;
     const sql = `
-      SELECT
-        m.project_id, p.*
-      FROM ${service.member.tableName} AS m
-      INNER JOIN ${this.tableName} AS p
-        ON m.project_id=p.id
-      WHERE m.user_id=?
-      ORDER BY p.id DESC
+      SELECT DISTINCT(id) FROM (
+        SELECT id FROM ${this.tableName} WHERE user_id=?
+        UNION
+        SELECT p.id FROM ${service.member.tableName} AS m
+          INNER JOIN ${this.tableName} AS p
+            ON m.project_id=p.id
+          WHERE m.user_id=?
+      ) AS p
     `;
 
-    return this.app.mysql.query(sql, [user_id]);
+    return await this.app.mysql.query(sql, [user_id, user_id]);
   }
 
   async ownerOrMember(project_id, user_id) {
@@ -219,7 +218,13 @@ module.exports = class ProjectService extends BaseService {
   }
 
   async transfer(project_id, user_id) {
-    await super.update({ id: project_id, user_id }, { where: { id: project_id } });
-    await this.app.redis.del(this.cacheKeyFn(project_id));
+    await Promise.all([
+      super.deleteCacheByParent({ user_id }),
+      super.deleteCacheByParent({ user_id: this.ctx.user.id }),
+      super.deleteCache(project_id),
+    ]);
+
+    const result = await this.app.mysql.update(this.tableName, { user_id }, { where: { id: project_id } });
+    return result.affectedRows === 1;
   }
 };

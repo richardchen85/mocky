@@ -29,7 +29,7 @@ class DataViewController extends Controller {
 
     try {
       let itface = await service.interface.getByProject(param.project_id);
-      itface = itface.filter(itf => itf.url === param.url);
+      itface = itface.filter(itf => itf.url === param.url)[0];
       if (!itface) {
         this.fail(messages.common.notFound);
         return;
@@ -38,19 +38,22 @@ class DataViewController extends Controller {
       // 获取映射规则
       const maps = await service.dataMap.getByInterface(itface.id);
       // 获取匹配的 mock_id
-      const mockId = this.matchMockId(maps, param.url);
+      let mockId = this.matchMockId(maps, param.url);
+      // 没有匹配的规则，获取第一条
+      if (!mockId) {
+        let mocks = await service.mock.getByInterface(itface.id);
+        if (mocks && mocks.length > 0) {
+          mockId = mocks[0].id;
+        }
+      }
+
       // 要返回的 mock 数据
       let mock;
-
       if (mockId) {
-        // 从匹配规则中取 mock_id
         mock = await service.mock.getById(mockId);
         if (mock.interface_id !== itface.id) {
           mock = null;
         }
-      } else {
-        // 匹配规则没有匹配到，则默认取第一条
-        mock = await service.mock.getByInterface(itface.id)[0];
       }
 
       if (!mock) {
@@ -103,7 +106,7 @@ class DataViewController extends Controller {
       } else if (map.from === dataMapFroms.query) {
         source = request.querystring;
       } else if (map.from === dataMapFroms.body) {
-        source = request.rawBody;
+        source = request.rawBody || '';
       }
 
       if (!map.regex) {

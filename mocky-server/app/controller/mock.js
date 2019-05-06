@@ -63,8 +63,8 @@ class MockController extends Controller {
       // check privilege
       if (!(await this.ownerOrMemberOfProject(savedMock.project_id))) return;
 
-      await service.mock.delete(id);
-      this.success();
+      const result = await service.mock.delete(savedMock);
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);

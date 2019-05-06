@@ -61,9 +61,6 @@ class BaseController extends Controller {
   async ownerOrMemberOfProject(project_id) {
     const { service, user } = this.ctx;
 
-    // 超管用户，拥有所有权限
-    if (this.ctx.isAdmin) return true;
-
     if (!(await service.project.ownerOrMember(project_id, user.id))) {
       this.fail(messages.common.notAllowed);
       return false;

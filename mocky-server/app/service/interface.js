@@ -32,7 +32,7 @@ module.exports = class InterfaceService extends BaseService {
         orders: [['priority', 'ASC']],
       });
 
-      result.length > 0 && await super.setCacheByParent(result);
+      result && (await super.setCacheByParent(project_id, result));
     }
 
     return result;

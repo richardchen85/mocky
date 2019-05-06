@@ -59,9 +59,9 @@ class ProjectController extends Controller {
         return;
       }
 
-      await service.project.delete(id);
+      const result = await service.project.delete(savedProject);
 
-      this.success();
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);
@@ -180,9 +180,9 @@ class ProjectController extends Controller {
         return;
       }
 
-      await service.project.transfer(project_id, user_id);
+      const result = await service.project.transfer(project_id, user_id);
 
-      this.success();
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);

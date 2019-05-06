@@ -10,12 +10,11 @@ module.exports = class DataMapService extends Service {
 
   async setEmailVerifyCode(email, type, code) {
     const key = cacheKeys.emailVerify(email, type);
-    const expires = 60 * 60 * 24;
-    return this.app.redis.setex(key, expires, code);
+    return this.service.cache.set(key, code);
   }
 
   async getEmailVerifyCode(email, type) {
-    return this.app.redis.get(cacheKeys.emailVerify(email, type));
+    return this.service.cache.get(cacheKeys.emailVerify(email, type));
   }
 
   async sendEmailVerifyMail(to, emailType) {

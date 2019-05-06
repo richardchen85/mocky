@@ -5,7 +5,7 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  const { home, user, project, group, interface: itface, mock, dataView, dataMap, mail } = controller;
+  const { home, user, project, group, interface: itface, mock, dataView, dataMap, mail, cache } = controller;
 
   router.get('/', home.index);
 
@@ -55,4 +55,10 @@ module.exports = app => {
 
   // mail
   router.post('/mail/sendMail', mail.sendMail);
+
+  // redis
+  router.get('/cache/keys', cache.keys);
+  router.get('/cache/get', cache.get);
+  router.post('/cache/del', cache.del);
+  router.post('/cache/set', cache.set);
 };

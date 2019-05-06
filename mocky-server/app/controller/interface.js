@@ -63,8 +63,8 @@ class InterfaceController extends Controller {
         return this.fail('不能删除有映射规则和模拟数据的接口');
       }
 
-      await service.interface.delete(id);
-      this.success();
+      const result = await service.interface.delete(savedItface);
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);

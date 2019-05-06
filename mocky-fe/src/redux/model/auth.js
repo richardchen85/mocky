@@ -28,8 +28,8 @@ export default createModel({
           body: payload,
           feature: types.signUp,
           toastError: false,
-          success: data => {
-            next({ type: types.setAuth, payload: { fetching: false, user: data || {} } });
+          success: () => {
+            window.location.href = '/';
           },
           error: errorMsg => {
             next({ type: types.setAuth, payload: { fetching: false, error: errorMsg } });
@@ -46,8 +46,8 @@ export default createModel({
           body: payload,
           feature: types.login,
           toastError: false,
-          success: data => {
-            next({ type: types.setAuth, payload: { fetching: false, user: data || {} } });
+          success: () => {
+            window.location.href = '/';
           },
           error: errorMsg => {
             next({ type: types.setAuth, payload: { fetching: false, error: errorMsg } });

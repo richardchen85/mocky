@@ -53,20 +53,20 @@ class BaseService extends Service {
 
   async setCache(model) {
     if (this.cacheKeyFn) {
-      await this.app.redis.set(this.cacheKeyFn(model.id), JSON.stringify(model));
+      await this.service.cache.set(this.cacheKeyFn(model.id), JSON.stringify(model));
     }
   }
 
   async deleteCache(id) {
     if (this.cacheKeyFn) {
-      await this.app.redis.del(this.cacheKeyFn(id));
+      await this.service.cache.del(this.cacheKeyFn(id));
     }
   }
 
   async getCache(id) {
     let cached;
     if (this.cacheKeyFn) {
-      cached = await this.app.redis.get(this.cacheKeyFn(id));
+      cached = await this.service.cache.get(this.cacheKeyFn(id));
       if (cached) {
         cached = JSON.parse(cached);
       }
@@ -74,26 +74,24 @@ class BaseService extends Service {
     return cached;
   }
 
-  async setCacheByParent(models) {
+  async setCacheByParent(parent_id, models) {
     if (this.cacheKeyByParentFn) {
-      await this.app.redis.set(this.cacheKeyByParentFn(models[0]), JSON.stringify(models));
+      await this.service.cache.set(this.cacheKeyByParentFn(parent_id), JSON.stringify(models));
     }
   }
 
   async deleteCacheByParent(model) {
     if (this.cacheKeyByParentFn) {
-      await this.app.redis.del(this.cacheKeyByParentFn(model[this.parentIdName]));
+      await this.service.cache.del(this.cacheKeyByParentFn(model[this.parentIdName]));
     }
   }
 
   async getCacheByParent(parent_id) {
     let cached;
     if (this.cacheKeyByParentFn) {
-      cached = await this.app.redis.get(this.cacheKeyByParentFn(parent_id));
+      cached = await this.service.cache.get(this.cacheKeyByParentFn(parent_id));
       if (cached) {
         cached = JSON.parse(cached);
-      } else {
-        cached = [];
       }
     }
     return cached;
@@ -125,30 +123,28 @@ class BaseService extends Service {
    * @return {Number} autoincrement id
    */
   async insert(model) {
-    model = this.fieldFilter(model, this.insertFields);
-
     await this.deleteCacheByParent(model);
+
+    model = this.fieldFilter(model, this.insertFields);
 
     const result = await this.app.mysql.insert(this.tableName, model);
     return result.affectedRows === 1 ? result.insertId : 0;
   }
 
   async delete(model) {
-    await this.deleteCache(model.id);
-    await this.deleteCacheByParent(model);
+    await Promise.all([this.deleteCache(model.id), this.deleteCacheByParent(model)]);
 
     const result = await this.app.mysql.delete(this.tableName, { id: model.id });
     return result.affectedRows === 1;
   }
 
   async update(model, options = { where: {} }) {
+    await Promise.all([this.deleteCache(model.id), this.deleteCacheByParent(model)]);
+
     Object.assign(options.where, {
       id: model.id,
     });
     model = this.fieldFilter(model, this.updateFields);
-
-    await this.deleteCache(model.id);
-    await this.deleteCacheByParent(model);
 
     const result = await this.app.mysql.update(this.tableName, model, options);
     return result.affectedRows === 1;
@@ -160,15 +156,14 @@ class BaseService extends Service {
     const fields = datas.map(data => data[field]);
 
     // delete caches
-    const saved = this.search({
+    const saved = await this.search({
       where: {
         [field]: fields,
         ...params,
       },
     });
     saved.forEach(async item => {
-      await this.deleteCache(item.id);
-      await this.deleteCacheByParent(item);
+      await Promise.all([this.deleteCache(item.id), this.deleteCacheByParent(item)]);
     });
 
     const sql = `

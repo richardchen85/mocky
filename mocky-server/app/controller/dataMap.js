@@ -56,8 +56,8 @@ class DataMapController extends Controller {
       // check privilege
       if (!(await this.ownerOrMemberOfProject(savedMap.project_id))) return;
 
-      await service.dataMap.delete(id);
-      this.success();
+      const result = await service.dataMap.delete(savedMap);
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);

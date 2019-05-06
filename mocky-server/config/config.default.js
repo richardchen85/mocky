@@ -15,21 +15,25 @@ module.exports = appInfo => {
   config.proxy = true;
 
   // add your config here
-  config.middleware = [ 'errorPage', 'userAuth', 'userRequired' ];
+  config.middleware = ['errorPage', 'userAuth', 'userRequired'];
 
   // userAuth middleware configuration
   config.auth_cookie_name = 'uid_dev';
   config.userAuth = {
     cookie_key: config.auth_cookie_name,
-    excludes: [ /^\/dataView/ ],
-    adminUsers: [ 1 ],
+    excludes: [/^\/dataView/],
+    adminUsers: [1],
   };
+
   // userRequired middleware configuration
   config.userRequired = {
-    includes: [
-      /^\/(user|project|group|interface|mock|erp)/,
-    ],
-    excludes: [ '/user/signUp', '/user/login', '/user/resetPass' ],
+    includes: [/^\/(user|project|group|interface|mock|erp|redis)/],
+    excludes: ['/user/signUp', '/user/login', '/user/resetPass'],
+  };
+
+  // admin required
+  config.adminRequired = {
+    includes: [/^\/redis/],
   };
 
   // static

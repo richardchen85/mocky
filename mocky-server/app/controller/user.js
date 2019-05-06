@@ -38,14 +38,13 @@ class UserController extends Controller {
         password,
         status: userStatus.NORMAL,
       });
-      const user = await service.user.getById(userId);
 
-      cookies.set(config.auth_cookie_name, user.id.toString(), {
+      cookies.set(config.auth_cookie_name, userId, {
         encrypt: true,
         httpOnly: true,
       });
 
-      this.success(user);
+      this.success(userId);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);
@@ -73,9 +72,7 @@ class UserController extends Controller {
           httpOnly: true,
         });
 
-        const user = await service.user.getById(loginResult.id);
-
-        this.success(user);
+        this.success();
       } else {
         logger.warn(`用户登录失败，email: ${email}，password: ${password}`);
         this.fail(loginResult.code === 1 ? messages.user.emailNotExists : messages.user.passwordError);
