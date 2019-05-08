@@ -11,7 +11,7 @@ function refreshList({ dispatch, getState }) {
   }
 }
 
-const namespace = 'dataMap';
+export const namespace = 'dataMap';
 
 export const types = {
   getList: `${namespace}/getList`,

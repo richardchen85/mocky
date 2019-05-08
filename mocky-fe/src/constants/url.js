@@ -5,6 +5,8 @@ export const AUTH = {
   LOGOUT: '/user/logout',
   SEARCH: '/user/search?key=',
   RESET_PASS: '/user/resetPass',
+  USER_ALL: '/user/all',
+  CHANGE_STATUS: '/user/changeStatus'
 };
 
 export const PROJECT = {
@@ -14,6 +16,7 @@ export const PROJECT = {
   DELETE: '/project/delete?id=',
   GET_DETAIL: '/project/detail?id=',
   TRANSFER: '/project/transfer',
+  GET_ALL: '/project/all',
 };
 
 export const GROUP = {

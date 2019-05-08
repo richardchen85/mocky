@@ -2,6 +2,7 @@
 
 const Controller = require('../core/baseController');
 const validateRule = require('../validateRules/project');
+const pageRule = require('../validateRules/page');
 const messages = require('../common/messages');
 
 class ProjectController extends Controller {
@@ -191,15 +192,16 @@ class ProjectController extends Controller {
 
   async all() {
     const { request, service, logger } = this.ctx;
-    const { pageIndex = 1, pageSize = 20 } = request.query;
+    const current = parseInt(request.query.current, 10) || 1;
+    const pageSize = parseInt(request.query.pageSize, 10) || 20;
 
     try {
-      const count = await service.project.count();
+      const total = await service.project.count();
       let result = [];
-      if (count > 0) {
+      if (total > 0) {
         result = await service.project.search({
           limit: pageSize,
-          offset: pageIndex - 1,
+          offset: current - 1,
         });
 
         if (result.length > 0) {
@@ -207,10 +209,10 @@ class ProjectController extends Controller {
         }
       }
       this.success({
-        pagination: {
-          pageIndex,
+        page: {
+          current,
           pageSize,
-          count,
+          total,
         },
         data: result,
       });

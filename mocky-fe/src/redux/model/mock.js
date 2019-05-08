@@ -11,7 +11,7 @@ function refreshList({ dispatch, getState }) {
   }
 }
 
-const namespace = 'mock';
+export const namespace = 'mock';
 
 export const types = {
   getList: `${namespace}/getList`,

@@ -2,6 +2,7 @@
 
 const Controller = require('../core/baseController');
 const userRule = require('../validateRules/user');
+const pageRule = require('../validateRules/page');
 const messages = require('../common/messages');
 const userStatus = require('../common/userStatus');
 const emailTypes = require('../common/emailTypes');
@@ -141,25 +142,46 @@ class UserController extends Controller {
 
   async all() {
     const { request, service, logger } = this.ctx;
-    const { pageIndex = 1, pageSize = 20 } = request.query;
+    const current = parseInt(request.query.current, 10) || 1;
+    const pageSize = parseInt(request.query.pageSize, 10) || 20;
 
     try {
-      const count = await service.user.count();
+      const total = await service.user.count();
       let result = [];
-      if (count > 0) {
+      if (total > 0) {
         result = await service.user.search({
           limit: pageSize,
-          offset: pageIndex - 1,
+          offset: current - 1,
         });
       }
       this.success({
-        pagination: {
-          pageIndex,
+        page: {
+          current,
           pageSize,
-          count,
+          total,
         },
         data: result,
       });
+    } catch (e) {
+      logger.error(e);
+      this.fail(messages.common.sysError);
+    }
+  }
+
+  async changeStatus() {
+    const { request, service, logger } = this.ctx;
+    const { id, status } = request.query;
+
+    if (!id || !status) {
+      this.fail(messages.common.paramError);
+      return;
+    }
+
+    try {
+      const savedUser = await service.user.getById(id);
+      savedUser.status = status;
+      const result = await service.user.update(savedUser);
+      this.success(result);
     } catch (e) {
       logger.error(e);
       this.fail(messages.common.sysError);

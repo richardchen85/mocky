@@ -1,24 +1,25 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Pagination } from 'antd';
 import PageLayout from '../../components/PageLayout';
 import ProjectList from '../../components/project/ProjectList';
-import { types } from '../../redux/model/projectList';
+import { types } from '../../redux/model/projectAll';
 
-class ProjectListContainer extends PureComponent {
+class ProjectAllContainer extends PureComponent {
   static propTypes = {
     auth: PropTypes.object.isRequired,
   };
 
   render() {
-    const { fetching, data, edit, auth, logout } = this.props;
+    const { fetching, data, page, auth, logout } = this.props;
 
     return (
       <PageLayout auth={auth} logout={logout}>
         <ProjectList
           projects={data}
-          edit={edit}
           user={auth}
+          edit={{}}
           fetching={fetching}
           getProject={this.getProject}
           setEdit={this.setEdit}
@@ -26,16 +27,19 @@ class ProjectListContainer extends PureComponent {
           onItemSave={this.saveProject}
           onItemDelete={this.onItemDelete}
         />
+        <div style={{ textAlign: 'right' }}>
+          <Pagination {...page} onChange={this.handlePageChange} />
+        </div>
       </PageLayout>
     );
   }
 
   componentDidMount() {
-    this.getList();
+    this.fetchList();
   }
 
-  getList = () => {
-    this.props.dispatch({ type: types.getList });
+  fetchList = () => {
+    this.props.dispatch({ type: types.fetchList });
   };
 
   onItemClick = projectId => {
@@ -45,22 +49,26 @@ class ProjectListContainer extends PureComponent {
   };
 
   onItemDelete = projectId => {
-    this.props.dispatch({ type: types.delete, payload: projectId });
+    //this.props.dispatch({ type: types.delete, payload: projectId });
   };
 
   getProject = projectId => {
-    this.props.dispatch({ type: types.getProject, payload: projectId });
+    //this.props.dispatch({ type: types.getProject, payload: projectId });
   };
 
   setEdit = edit => {
-    this.props.dispatch({ type: types.edit, payload: edit });
+    //this.props.dispatch({ type: types.edit, payload: edit });
   };
 
   saveProject = project => {
-    this.props.dispatch({ type: types.save, payload: project });
+    //this.props.dispatch({ type: types.save, payload: project });
+  };
+
+  handlePageChange = current => {
+    this.props.dispatch({ type: types.setPage, payload: { current } });
   };
 }
 
 export default connect(state => ({
-  ...state.projectList,
-}))(ProjectListContainer);
+  ...state.projectAll,
+}))(ProjectAllContainer);

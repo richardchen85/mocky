@@ -14,7 +14,7 @@ function refreshDetail({ dispatch, getState }) {
   );
 }
 
-const namespace = 'projectDetail';
+export const namespace = 'projectDetail';
 
 export const types = {
   getDetail: `${namespace}/getDetail`,

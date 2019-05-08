@@ -19,21 +19,24 @@ class PageLayout extends PureComponent {
     return (
       <Layout>
         <Header>
-          <div id={'logo'}>mocky</div>
-          {/*<div className={'top-menu'}>*/}
-            {/*<NavLink to={'/'} exact={true}>*/}
-              {/*<Icon type="home" />*/}
-              {/*首页*/}
-            {/*</NavLink>*/}
-            {/*<NavLink to={'/project/all'}>*/}
-              {/*<Icon type="wallet" />*/}
-              {/*项目*/}
-            {/*</NavLink>*/}
-            {/*<NavLink to={'/user/list'}>*/}
-              {/*<Icon type="user" />*/}
-              {/*用户*/}
-            {/*</NavLink>*/}
-          {/*</div>*/}
+          <div className={'top-menu'}>
+            <NavLink to={'/'} exact={true}>
+              <Icon type="home" />
+              首页
+            </NavLink>
+            {auth.isAdmin && (
+              <>
+                <NavLink to={'/project/all'}>
+                  <Icon type="wallet" />
+                  项目
+                </NavLink>
+                <NavLink to={'/user/all'}>
+                  <Icon type="user" />
+                  用户
+                </NavLink>
+              </>
+            )}
+          </div>
           <UserInfo auth={auth} logout={logout} />
         </Header>
         <Content style={{ backgroundColor: '#fff', padding: 15 }}>{this.props.children}</Content>

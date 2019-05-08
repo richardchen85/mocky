@@ -17,6 +17,7 @@ module.exports = app => {
   router.get('/user/search', user.search);
   router.post('/user/resetPass', user.resetPass);
   router.get('/user/all', user.all);
+  router.get('/user/changeStatus', user.changeStatus);
 
   // project
   router.post('/project/save', project.save);

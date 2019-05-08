@@ -2,7 +2,7 @@ import { apiRequest } from '../api';
 import { AUTH } from '../../constants/url';
 import createModel from '../utils/createModel';
 
-const namespace = 'auth';
+export const namespace = 'auth';
 
 export const types = {
   signUp: `${namespace}/signUp`,

@@ -6,7 +6,7 @@ function refreshList(store) {
   store.dispatch({ type: types.getList });
 }
 
-const namespace = 'projectList';
+export const namespace = 'projectList';
 
 export const types = {
   getList: `${namespace}/getList`,

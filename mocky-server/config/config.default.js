@@ -33,7 +33,7 @@ module.exports = appInfo => {
 
   // admin required
   config.adminRequired = {
-    includes: [/^\/(redis|project\/all|user\/all)/],
+    includes: ['/redis', '/project/all', '/user/all', '/user/changeStatus'],
   };
 
   // static
