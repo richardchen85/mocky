@@ -41,7 +41,7 @@ class DataViewController extends Controller {
       let mockId = this.matchMockId(maps, param.url);
       // 没有匹配的规则，获取第一条
       if (!mockId) {
-        let mocks = await service.mock.getByInterface(itface.id);
+        const mocks = await service.mock.getByInterface(itface.id);
         if (mocks && mocks.length > 0) {
           mockId = mocks[0].id;
         }

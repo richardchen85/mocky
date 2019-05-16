@@ -2,7 +2,6 @@
 
 const Controller = require('../core/baseController');
 const userRule = require('../validateRules/user');
-const pageRule = require('../validateRules/page');
 const messages = require('../common/messages');
 const userStatus = require('../common/userStatus');
 const emailTypes = require('../common/emailTypes');

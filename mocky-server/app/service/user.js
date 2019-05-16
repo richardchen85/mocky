@@ -67,8 +67,8 @@ class UserService extends BaseService {
 
   /**
    * 用户登录操作
-   * @param email email
-   * @param password password
+   * @param {string} email email
+   * @param {string} password password
    * @return {Promise<{code: number, success: boolean}>} code: 0 正确，1 未注册，2：密码错误
    */
   async login(email, password) {

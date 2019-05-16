@@ -2,7 +2,6 @@
 
 const Controller = require('../core/baseController');
 const validateRule = require('../validateRules/project');
-const pageRule = require('../validateRules/page');
 const messages = require('../common/messages');
 
 class ProjectController extends Controller {

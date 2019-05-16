@@ -28,7 +28,7 @@ function parseUpdate(datas, field) {
 
 /**
  * 解析where条件
- * @param {Object} params
+ * @param {Object} params -
  * @return {String} 条件
  */
 function parseParams(params) {
@@ -157,10 +157,9 @@ class BaseService extends Service {
 
     // delete caches
     const saved = await this.search({
-      where: {
+      where: Object.assign({}, params, {
         [field]: fields,
-        ...params,
-      },
+      }),
     });
     saved.forEach(async item => {
       await Promise.all([this.deleteCache(item.id), this.deleteCacheByParent(item)]);
