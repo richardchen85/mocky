@@ -4,10 +4,10 @@ module.exports = appInfo => {
   const config = {};
 
   config.appId = '13256';
-  config.name = 'mocky-server';
-  config.appDomain = 'mocky.chenliqiang.cn';
+  config.name = 'mocky-api';
+  config.appDomain = 'api.mocky.chenliqiang.cn';
 
-  config.description = 'mocky server side project';
+  config.description = 'mocky api project';
 
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '3344_1234';

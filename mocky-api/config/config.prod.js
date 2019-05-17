@@ -6,7 +6,7 @@ module.exports = () => {
   config.auth_cookie_name = 'uid';
 
   config.logger = {
-    dir: '/home/clq/logs/mocky.chenliqiang.cn',
+    dir: '/home/clq/logs/api.mocky.chenliqiang.cn',
   };
 
   config.customLogger = {
@@ -68,6 +68,12 @@ module.exports = () => {
       pass: process.env.mail_password || '',
     },
     connectionTimeout: 10000,
+  };
+
+  config.cors = {
+    origin: 'https://mocky.chenliqiang.cn',
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
+    credentials: true,
   };
 
   return config;

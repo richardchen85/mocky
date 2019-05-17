@@ -1,6 +1,6 @@
-# mocky-server
+# mocky-api
 
-mocky server side project
+mocky api project
 
 ## QuickStart
 

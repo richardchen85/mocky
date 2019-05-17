@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import messages from '../constants/messages';
+const apiServer = 'http://dev.mocky.chenliqiang.cn';
 
 const defaults = {
   toastError: true,
@@ -106,7 +107,7 @@ export function fetch(url, options) {
       fetchOption.body = JSON.stringify(body);
     }
 
-    _fetch(window.fetch(url, fetchOption), timeout)
+    _fetch(window.fetch(apiServer + url, fetchOption), timeout)
       .then(function(response) {
         return response.json();
       })

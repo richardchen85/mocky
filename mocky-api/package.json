@@ -1,11 +1,12 @@
 {
-  "name": "mocky-server",
+  "name": "mocky-api",
   "version": "1.0.0",
-  "description": "mocky server side project",
+  "description": "mocky api project",
   "private": true,
   "dependencies": {
     "bcryptjs": "2.4.3",
     "egg": "2.20.1",
+    "egg-cors": "^2.2.0",
     "egg-mysql": "3.0.0",
     "egg-redis": "2.3.0",
     "egg-scripts": "2.11.0",
@@ -28,8 +29,8 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --port=8084 --title=mocky-server --workers=1",
-    "stop": "egg-scripts stop --title=mocky-server",
+    "start": "egg-scripts start --daemon --port=8084 --title=mocky-api --workers=1",
+    "stop": "egg-scripts stop --title=mocky-api",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
