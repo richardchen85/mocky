@@ -1,6 +1,10 @@
 import { message } from 'antd';
 import messages from '../constants/messages';
-const apiServer = 'http://dev.mocky.chenliqiang.cn';
+let apiServer = 'https://api.mocky.chenliqiang.cn';
+
+if (process.env.NODE_ENV !== 'production') {
+  apiServer = 'http://127.0.0.1:7001';
+}
 
 const defaults = {
   toastError: true,

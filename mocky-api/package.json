@@ -29,7 +29,7 @@
     "node": ">=8.9.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --port=8084 --title=mocky-api --workers=1",
+    "start": "egg-scripts start --daemon --port=8085 --title=mocky-api --workers=1",
     "stop": "egg-scripts stop --title=mocky-api",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
