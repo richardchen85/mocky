@@ -5,9 +5,7 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  const { home, user, project, group, interface: itface, mock, dataView, dataMap, mail, cache } = controller;
-
-  router.get('/', home.index);
+  const { user, project, group, interface: itface, mock, dataView, dataMap, mail, cache } = controller;
 
   // user
   router.post('/user/signUp', user.signUp);
