@@ -30,7 +30,7 @@ module.exports = () => {
         code: status,
       };
     } else {
-      await ctx.render('index');
+      ctx.body = message;
     }
   };
 };

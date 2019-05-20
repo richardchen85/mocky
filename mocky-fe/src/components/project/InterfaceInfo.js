@@ -6,9 +6,9 @@ class InterfaceInfo extends PureComponent {
     const { data, projectId } = this.props;
     const contentType = contentTypes.getByKey(data.content_type);
 
-    let url = `//mocky.chenliqiang.cn/dataView/${projectId}${data.url}`;
+    let url = `https://api.mocky.chenliqiang.cn/dataView/${projectId}${data.url}`;
     if (window.__DEV__) {
-      url = `//dev.mocky.chenliqiang.cn/dataView/${projectId}${data.url}`;
+      url = `http://127.0.0.1:7001/dataView/${projectId}${data.url}`;
     }
 
     return (

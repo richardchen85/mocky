@@ -36,11 +36,6 @@ module.exports = appInfo => {
     includes: ['/redis', '/project/all', '/user/all', '/user/changeStatus'],
   };
 
-  // static
-  config.static = {
-    prefix: '/misc',
-  };
-
   // security
   config.security = {
     csrf: {
@@ -48,15 +43,6 @@ module.exports = appInfo => {
     },
     xframe: {
       enable: false,
-    },
-  };
-
-  // view config
-  config.view = {
-    defaultViewEngine: 'nunjucks',
-    defaultExtension: '.nj',
-    mapping: {
-      '.nj': 'nunjucks',
     },
   };
 
