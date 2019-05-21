@@ -12,9 +12,6 @@ class MockController extends Controller {
     const { request, service, logger, user } = this.ctx;
     const param = request.body;
 
-    // 去掉换行和空格
-    param.body = param.body.replace(/(\r?\n)|\s/g, '');
-
     if (!this.isValid(validateRule, param)) return;
 
     try {

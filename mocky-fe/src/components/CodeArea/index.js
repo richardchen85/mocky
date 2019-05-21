@@ -66,7 +66,7 @@ class CodeArea extends PureComponent {
   }
 
   getCollapsedValue = () => {
-    return this.cm.getValue().replace(/\n|\s/g, '');
+    return this.cm.getValue().replace(/\r?\n\s*/g, '').trim();
   };
 }
 
