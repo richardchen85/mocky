@@ -16,7 +16,6 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "copy": "./copy.sh",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
