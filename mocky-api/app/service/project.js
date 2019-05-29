@@ -79,11 +79,25 @@ module.exports = class ProjectService extends BaseService {
    */
   async update(project) {
     const { mysql } = this.app;
+    const saved = await this.getById(project.id);
+
+    if (!saved) {
+      throw new Error(`Project [id:${project.id} not found`);
+    }
+
+    // delete cache by all users
+    await super.deleteCacheByParent(saved);
+    if (saved.members && saved.members.length > 0) {
+      await Promise.all(saved.members.map(async member => {
+        return super.deleteCacheByParent({ user_id: member.id })
+      }));
+    }
+
+    await super.deleteCache(project.id);
+
     const trans = await mysql.beginTransaction();
 
     try {
-      await Promise.all([super.deleteCacheByParent(project), super.deleteCache(project.id)]);
-
       const members = project.members;
       delete project.members;
       await trans.update(this.tableName, project);

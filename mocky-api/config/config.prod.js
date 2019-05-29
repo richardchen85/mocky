@@ -71,7 +71,13 @@ module.exports = () => {
   };
 
   config.cors = {
-    origin: 'https://mocky.chenliqiang.cn',
+    origin: ctx => {
+      if (ctx.request.url.startsWith('/dataView/')) {
+        return ctx.get('Origin');
+      } else {
+        return 'https://mocky.chenliqiang.cn';
+      }
+    },
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
     credentials: true,
   };

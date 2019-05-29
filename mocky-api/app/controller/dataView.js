@@ -69,7 +69,6 @@ class DataViewController extends Controller {
       if (itface.jsonp_callback) {
         callback = request.query[itface.jsonp_callback];
       }
-      ctx.set('Access-Control-Allow-Origin', '*');
       ctx.set('Content-Type', contentTypes.getByKey(itface.content_type).content);
       ctx.status = mock.status_code;
       ctx.body = callback ? `${callback}(${mock.body})` : mock.body;
