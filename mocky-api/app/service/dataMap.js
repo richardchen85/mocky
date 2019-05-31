@@ -26,6 +26,7 @@ class DataMapService extends BaseService {
         where: {
           interface_id,
         },
+        orders: [['id', 'desc']],
       });
 
       result && (await super.setCacheByParent(interface_id, result));

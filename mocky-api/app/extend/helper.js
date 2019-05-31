@@ -2,6 +2,26 @@
 
 const bcrypt = require('bcryptjs');
 
+/**
+ * 将字符串切割成定长的数组
+ * @param {String} content -
+ * @param {Number} pieceLen -
+ * @return {Array} -
+ */
+function cutString(content, pieceLen) {
+  const len = content.length;
+  const result = [];
+  if (len <= pieceLen) {
+    result.push(content);
+  } else {
+    for (let i = 0; i < len; i = i + pieceLen) {
+      result.push(content.substring(i, i + pieceLen));
+    }
+  }
+
+  return result;
+}
+
 module.exports = {
   bHash(str) {
     return bcrypt.hashSync(str, 10);
@@ -40,4 +60,5 @@ module.exports = {
   random(base = 1000, seed = 9999) {
     return Math.floor(Math.random() * seed + base);
   },
+  cutString: cutString
 };

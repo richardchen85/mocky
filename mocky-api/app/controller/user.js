@@ -16,10 +16,11 @@ class UserController extends Controller {
     if (!this.isValid(userRule.signUp, request.body)) return;
 
     const { email, mail_code, nickname, password } = request.body;
+    const emailType = emailTypes.types.SIGN_UP.type;
 
     try {
       // 检查邮箱验证码
-      const cachedCode = await service.sendMail.getEmailVerifyCode(email, emailTypes.types.EMAIL_VERIFY);
+      const cachedCode = await service.sendMail.getEmailVerifyCode(email, emailType);
       if (!cachedCode || mail_code !== cachedCode) {
         this.fail(messages.common.invalidEmailCode);
         return;
@@ -39,10 +40,12 @@ class UserController extends Controller {
         status: userStatus.NORMAL,
       });
 
-      cookies.set(config.auth_cookie_name, userId, {
+      cookies.set(config.auth_cookie_name, userId.toString(), {
         encrypt: true,
         httpOnly: true,
       });
+
+      await service.sendMail.delEmailVerifyCode(email, emailType);
 
       this.success(userId);
     } catch (e) {
@@ -122,16 +125,18 @@ class UserController extends Controller {
     if (!this.isValid(userRule.resetPass, request.body)) return;
 
     const { email, mail_code, password } = request.body;
+    const emailType = emailTypes.types.RESET_PASS.type;
 
     try {
       // 检查邮箱验证码
-      const cachedCode = await service.sendMail.getEmailVerifyCode(email, emailTypes.types.EMAIL_VERIFY.type);
+      const cachedCode = await service.sendMail.getEmailVerifyCode(email, emailType);
       if (!cachedCode || mail_code !== cachedCode) {
         this.fail(messages.common.invalidEmailCode);
         return;
       }
 
       await service.user.resetPass(email, password);
+      await service.sendMail.delEmailVerifyCode(email, emailType);
       this.success('密码修改成功');
     } catch (e) {
       logger.error(e);

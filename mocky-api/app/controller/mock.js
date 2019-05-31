@@ -121,12 +121,7 @@ class MockController extends Controller {
       // check privilege
       if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
 
-      const mocks = await service.mock.search({
-        where: {
-          interface_id,
-        },
-        orders: [['id', 'desc']],
-      });
+      const mocks = await service.mock.getByInterface(interface_id);
       this.success(mocks);
     } catch (e) {
       logger.error(e);

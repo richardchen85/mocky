@@ -2,14 +2,22 @@
 
 module.exports = {
   types: {
-    EMAIL_VERIFY: {
+    SIGN_UP: {
       type: 1,
-      subject: 'mocky 邮箱验证',
+      subject: 'mocky 用户注册验证码',
       render(data) {
-        return `欢迎使用 mocky，您本次邮箱验证码为：${data.code}`;
+        return `非常感谢您注册 mocky，您本次注册的验证码为：${data.code}`;
       },
       service: 'sendEmailVerifyMail',
     },
+    RESET_PASS: {
+      type: 2,
+      subject: 'mocky 密码重置验证码',
+      render(data) {
+        return `非常感谢您使用 mocky，您本次密码重置的验证码为：${data.code}`
+      },
+      service: 'sendEmailVerifyMail'
+    }
   },
   getByType(type) {
     const { types } = this;

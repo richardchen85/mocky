@@ -18,7 +18,6 @@ module.exports = {
     type: 'boolean',
   },
   body: {
-    type: 'string',
-    max: 25000,
+    type: 'string'
   },
 };

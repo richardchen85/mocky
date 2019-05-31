@@ -127,7 +127,7 @@ class FindPassForm extends PureComponent {
     validateFields(['email'], (errors, values) => {
       if (errors) return;
       this.setState({ emailSending: true });
-      post(SEMD_MAIL.SEND, { type: 1, email: values.email }, { toastSuccess: true })
+      post(SEMD_MAIL.SEND, { type: 2, email: values.email }, { toastSuccess: true })
         .then(() => {
           this.setState({
             counting: EMAIL_CODE_COUNTDOWN,

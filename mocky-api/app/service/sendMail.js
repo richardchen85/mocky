@@ -17,6 +17,10 @@ module.exports = class DataMapService extends Service {
     return this.service.cache.get(cacheKeys.emailVerify(email, type));
   }
 
+  async delEmailVerifyCode(email, type) {
+    return this.service.cache.del(cacheKeys.emailVerify(email, type));
+  }
+
   async sendEmailVerifyMail(to, emailType) {
     const code = this.ctx.helper.random();
 

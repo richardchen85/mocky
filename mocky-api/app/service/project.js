@@ -117,8 +117,13 @@ module.exports = class ProjectService extends BaseService {
 
     let project = await super.getCache(id);
 
-    if (!project) {
-      project = await super.getById(id);
+    if (project) return project;
+
+    project = await super.getById(id);
+
+    if (project) {
+      // delete cache for only getById
+      await this.deleteCache(id);
 
       // get owner
       project.owner = await service.user.getById(project.user_id);
@@ -136,7 +141,7 @@ module.exports = class ProjectService extends BaseService {
         project.members = [];
       }
 
-      project && (await super.setCache(project));
+      await super.setCache(project);
     }
 
     return project;

@@ -52,6 +52,9 @@ class BaseService extends Service {
   }
 
   async setCache(model) {
+    if (!model.id) {
+      throw new Error(`set cache error, model.id is ${model.id}`);
+    }
     if (this.cacheKeyFn) {
       await this.service.cache.set(this.cacheKeyFn(model.id), JSON.stringify(model));
     }
@@ -75,6 +78,9 @@ class BaseService extends Service {
   }
 
   async setCacheByParent(parent_id, models) {
+    if (!parent_id) {
+      throw new Error(`set cache by parent error, parent_id is ${parent_id}`);
+    }
     if (this.cacheKeyByParentFn) {
       await this.service.cache.set(this.cacheKeyByParentFn(parent_id), JSON.stringify(models));
     }
@@ -120,14 +126,16 @@ class BaseService extends Service {
   /**
    * insert a model
    * @param {*} model model
+   * @param {*} trans mysql transaction
    * @return {Number} autoincrement id
    */
-  async insert(model) {
+  async insert(model, trans) {
     await this.deleteCacheByParent(model);
 
     model = this.fieldFilter(model, this.insertFields);
 
-    const result = await this.app.mysql.insert(this.tableName, model);
+    const executor = trans || this.app.mysql;
+    const result = await executor.insert(this.tableName, model);
     return result.affectedRows === 1 ? result.insertId : 0;
   }
 
@@ -138,7 +146,7 @@ class BaseService extends Service {
     return result.affectedRows === 1;
   }
 
-  async update(model, options = { where: {} }) {
+  async update(model, options = { where: {} }, trans) {
     await Promise.all([this.deleteCache(model.id), this.deleteCacheByParent(model)]);
 
     Object.assign(options.where, {
@@ -146,7 +154,8 @@ class BaseService extends Service {
     });
     model = this.fieldFilter(model, this.updateFields);
 
-    const result = await this.app.mysql.update(this.tableName, model, options);
+    const executor = trans || this.app.mysql;
+    const result = executor.update(this.tableName, model, options);
     return result.affectedRows === 1;
   }
 

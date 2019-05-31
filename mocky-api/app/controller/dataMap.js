@@ -107,12 +107,7 @@ class DataMapController extends Controller {
       // check privilege
       if (!(await this.ownerOrMemberOfProject(savedItface.project_id))) return;
 
-      const maps = await service.dataMap.search({
-        where: {
-          interface_id,
-        },
-        orders: [['id', 'desc']],
-      });
+      const maps = await service.dataMap.getByInterface(interface_id);
       this.success(maps);
     } catch (e) {
       logger.error(e);

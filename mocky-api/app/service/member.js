@@ -24,7 +24,7 @@ module.exports = class ProjectService extends BaseService {
    */
   async insertByTransaction(trans, project_id, values) {
     values = values.map(m => [project_id, m]);
-    return trans.query(`INSERT INTO ${this.tableName} (project_id, user_id) VALUES ?`, [values]);
+    return trans.insert(this.tableName, values);
   }
 
   /**
@@ -67,7 +67,7 @@ module.exports = class ProjectService extends BaseService {
       await trans.query(`DELETE FROM ${this.tableName} WHERE user_id in (?)`, deleted);
     }
     if (added.length > 0) {
-      await trans.query(`INSERT INTO ${this.tableName} (project_id, user_id) VALUES ?`, [added]);
+      await trans.insert(this.tableName, added);
     }
   }
 
