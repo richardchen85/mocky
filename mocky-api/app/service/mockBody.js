@@ -20,7 +20,7 @@ module.exports = class MockService extends BaseService {
         body: piece,
       };
     });
-    return trans.insert(this.tableName, rows);
+    return (await trans.insert(this.tableName, rows)).affectedRows >= 1;
   }
 
   async deleteByMock(trans, mock_id) {

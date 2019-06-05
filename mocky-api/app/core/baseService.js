@@ -155,7 +155,7 @@ class BaseService extends Service {
     model = this.fieldFilter(model, this.updateFields);
 
     const executor = trans || this.app.mysql;
-    const result = executor.update(this.tableName, model, options);
+    const result = await executor.update(this.tableName, model, options);
     return result.affectedRows === 1;
   }
 

@@ -58,6 +58,7 @@ module.exports = class MockService extends BaseService {
         throw err;
       }
     } else {
+      //delete model.body;
       return await super.update(model);
     }
   }
