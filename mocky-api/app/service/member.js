@@ -47,7 +47,7 @@ module.exports = class ProjectService extends BaseService {
     const added = [];
     members.forEach(m => {
       if (saved.filter(s => s.user_id === m).length === 0) {
-        added.push([project_id, m]);
+        added.push({ project_id, user_id: m });
       }
     });
 
