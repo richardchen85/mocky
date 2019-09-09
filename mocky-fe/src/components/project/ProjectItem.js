@@ -14,6 +14,7 @@ class ProjectItem extends PureComponent {
 
   render() {
     const { project, user, onClick, onEdit, onDelete } = this.props;
+    const editable = project.user_id === user.id || user.isAdmin;
 
     return (
       <div className="project-item">
@@ -26,7 +27,7 @@ class ProjectItem extends PureComponent {
           <Icon type="user" title={project.owner.nickname} /> {project.owner.nickname} <br />
           创建于：{project.create_time}
         </div>
-        {project.user_id === user.id && (
+        {editable && (
           <div className="project-ctrl">
             <Icon type="edit" title="修改" onClick={() => onEdit(project)} />
             <Icon type="delete" title="删除" onClick={() => onDelete(project)} />
