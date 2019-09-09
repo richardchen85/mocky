@@ -89,7 +89,8 @@ class UserService extends BaseService {
 
   async searchByNickname(key) {
     const sql = `
-      SELECT ${this.queryFields.join(',')} FROM ${this.tableName} WHERE status=? AND nickname LIKE ? ORDER BY id DESC LIMIT 0,10
+      SELECT ${this.queryFields.join(',')} FROM
+      ${this.tableName} WHERE status=? AND nickname LIKE ? ORDER BY id DESC LIMIT 0,10
     `;
     return await this.app.mysql.query(sql, [userStatus.NORMAL, key + '%']);
   }
@@ -103,14 +104,13 @@ class UserService extends BaseService {
   async resetPass(email, newPass) {
     const { logger } = this.ctx;
     // 重复检查
-    const savedUser = await super.search({ email, status: userStatus.NORMAL });
-    if (savedUser.length === 0) {
-      logger.warn(`无效用户 ${email} 重置密码`);
-      return false;
+    const savedUser = await super.search({ where: { email, status: userStatus.NORMAL } });
+    if (savedUser.length === 1 && savedUser[0].email === email) {
+      savedUser[0].password = newPass;
+      return await this.update(savedUser[0]);
     }
-
-    savedUser[0].password = newPass;
-    return await this.update(savedUser[0]);
+    logger.warn(`无效用户 ${email} 重置密码`);
+    return false;
   }
 }
 
